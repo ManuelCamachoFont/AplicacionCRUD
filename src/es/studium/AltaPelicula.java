@@ -19,11 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
 public class AltaPelicula extends WindowAdapter implements ActionListener {
@@ -59,17 +56,6 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
-
-	String driver = "com.mysql.cj.jdbc.Driver";
-	String url = "jdbc:mysql://localhost:3306/p_cine";
-	String usuario = "studium";
-	String password = "Studium2025#";
-
-	String sentenciaSQLDirectores = "SELECT * FROM directores";
-
-	Connection connection = null;
-	Statement statement = null;
-	ResultSet rs = null;
 
 	public AltaPelicula() {
 
@@ -108,6 +94,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		mnuConsAct.addActionListener(this);
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
+		
+		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
 
 		ventana.setMenuBar(mnuBar);
 
@@ -193,10 +181,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		String sentencia = "INSERT INTO peliculas VALUES (null, \"" + titulo + "\", \"" + genero + "\", \"" + estreno + "\", \""+ director + "\")";
 
 		try {
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			statement.executeUpdate(sentencia);
+			BD.conectarBD();
+			BD.statement.executeUpdate(sentencia);
 			dialogo.setTitle("Enhorabuena");
 			dialogo.setBackground(new Color(180, 211, 178));
 			dialogo.setSize(300, 80);
@@ -212,10 +198,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			lblDia.setText("Error de conexión: url, usuario o clave" + se);
 		} finally {
 			try {
-				if (connection != null) {
-
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException e) {
 				dialogo.setTitle("Error");
 				dialogo.setBackground(new Color(243, 70, 74));
@@ -230,17 +213,15 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		try
 
 		{
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			rs = statement.executeQuery(sentenciaSQLDirectores);
+			BD.conectarBD();
+			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
 			choDirector.add("Seleccionar un director...");
-			while (rs.next()) {
-				choDirector.add(rs.getInt("idDirector") +
+			while (BD.rs.next()) {
+				choDirector.add(BD.rs.getInt("idDirector") +
 
-						" " + rs.getString("nombreDirector") +
+						" " + BD.rs.getString("nombreDirector") +
 
-						" " + rs.getString("apellidosDirector"));
+						" " + BD.rs.getString("apellidosDirector"));
 			}
 		}
 
@@ -254,9 +235,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			lblDia.setText("Error de conexión: url, usuario o clave" + se);
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException e) {
 				dialogo.setTitle("Error");
 				dialogo.setBackground(new Color(243, 70, 74));

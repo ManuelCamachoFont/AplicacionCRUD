@@ -81,7 +81,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
 		
-		// Desconexión en el menú
+		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
 		
 		ventana.setMenuBar(mnuBar);
 			
@@ -150,6 +150,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		}
 		
 		if (e.getSource() == btnLogOut) {
+			Usuario.cerrarSesion();
 			new Principal();
 			java.awt.Window[] ventanas = java.awt.Window.getWindows();
 			for (java.awt.Window v : ventanas) {

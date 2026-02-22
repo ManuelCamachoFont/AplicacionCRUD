@@ -18,17 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class BajaPelicula extends WindowAdapter implements ActionListener
+
+public class BajaDirector extends WindowAdapter implements ActionListener
 {
-	Frame ventana = new Frame("Películas - Baja");
+	Frame ventana = new Frame("Directores - Baja");
 
-	Label lblElec = new Label("¿Qué película desea eliminar?");
+	Label lblElec = new Label("¿Qué director desea eliminar?");
 	Choice lista = new Choice();
 	Button btnElim = new Button("Eliminar");
 
@@ -60,18 +57,7 @@ public class BajaPelicula extends WindowAdapter implements ActionListener
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 
-	String driver = "com.mysql.cj.jdbc.Driver";
-	String url = "jdbc:mysql://localhost:3306/p_cine";
-	String usuario = "studium";
-	String password = "Studium2025#";
-
-	String sentenciaSQL = "SELECT * FROM peliculas";
-
-	Connection connection = null;
-	Statement statement = null;
-	ResultSet rs = null;
-
-	public BajaPelicula()
+	public BajaDirector()
 	{
 		ventana.setFont(new Font("SansSerif", 0, 12));
 		ventana.setBackground(new Color(243, 70, 74));
@@ -189,16 +175,13 @@ public class BajaPelicula extends WindowAdapter implements ActionListener
 		try
 		{
 			lista.removeAll();
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			rs = statement.executeQuery(sentenciaSQL);
-			lista.add("Elige una película...");
-			while (rs.next())
+			BD.conectarBD();
+			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
+			lista.add("Elige un director...");
+			while (BD.rs.next())
 			{
-				lista.add(rs.getInt("idPelicula") + " | " + rs.getString("tituloPelicula") + " | "
-						+ rs.getString("generoPelicula") + " | "
-								+ rs.getString("fechaEstrenoPelicula") + " | " + rs.getInt("idDirectorFK"));
+				lista.add(BD.rs.getInt("idDirector") + " | " + BD.rs.getString("nombreDirector") + " | "
+						+ BD.rs.getString("apellidosDirector") + " | " + BD.rs.getString("nacionalidadDirector"));
 			}
 		} catch (ClassNotFoundException cnfe)
 		{
@@ -212,11 +195,7 @@ public class BajaPelicula extends WindowAdapter implements ActionListener
 		{
 			try
 			{
-				if (connection != null)
-				{
-
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException se)
 			{
 				diaFeedback.setBackground(new Color(243, 70, 74));
@@ -229,37 +208,31 @@ public class BajaPelicula extends WindowAdapter implements ActionListener
 	public void darBaja()
 	{
 
-		String sentencia = "DELETE from peliculas WHERE idPelicula = " + lista.getSelectedItem().split(" ")[0];
+		String sentenciaSQL = BD.eliminarSQLDirector + lista.getSelectedItem().split(" ")[0];
 
 		try
 		{
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			statement.executeUpdate(sentencia);
+			BD.conectarBD();
+			BD.statement.executeUpdate(sentenciaSQL);
 			diaFeedback.setBackground(new Color(180, 211, 178));
-			lblDiaFeedback.setText("Se ha eliminado la pelicula");
+			lblDiaFeedback.setText("Se ha eliminado al director");
 		} catch (ClassNotFoundException cnfe)
 		{
 			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error de driver " + cnfe);
+			lblDiaFeedback.setText("Error de driver");
 		} catch (SQLException se)
 		{
 			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error de conexión: url, usuario o clave " + se.getMessage());
+			lblDiaFeedback.setText("Error de conexión: url, usuario o clave" + se.getMessage());
 		} finally
 		{
 			try
 			{
-				if (connection != null)
-				{
-
-					connection.close();
-				}
-			} catch (SQLException se)
+				BD.desconectarBD();
+			} catch (SQLException e)
 			{
 				diaFeedback.setBackground(new Color(243, 70, 74));
-				lblDiaFeedback.setText("Error al cerrar conexión " + se);
+				lblDiaFeedback.setText("Error al cerrar conexión");
 			}
 
 		}
@@ -268,7 +241,7 @@ public class BajaPelicula extends WindowAdapter implements ActionListener
 
 	public static void main(String[] args)
 	{
-		new BajaPelicula();
+		new BajaDirector();
 	}
 
 	@Override

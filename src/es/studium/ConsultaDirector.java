@@ -18,11 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class ConsultaDirector extends WindowAdapter implements ActionListener {
 
@@ -51,15 +47,6 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 
 	Dialog diaFeedback = new Dialog(ventana, "", true);
 	Label lblDiaFeedback = new Label("");
-
-	String driver = "com.mysql.cj.jdbc.Driver";
-	String url = "jdbc:mysql://localhost:3306/p_cine";
-	String usuario = "studium";
-	String password = "Studium2025#";
-
-	Connection connection = null;
-	Statement statement = null;
-	ResultSet rs = null;
 
 	public ConsultaDirector() {
 		// Menú Directores
@@ -92,6 +79,8 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		mnuConsAct.addActionListener(this);
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
+		
+		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
 
 		ventana.setMenuBar(mnuBar);
 
@@ -135,19 +124,17 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 
 	}
 
-	public void consultar(String sentenciaSQL) {
+	public void consultar() {
 
 		try {
 
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			rs = statement.executeQuery(sentenciaSQL);
+			BD.conectarBD();
+			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
 			String columna = "%5s       |     %-15s    |     %-15s    |     %-15s    |\n -------------------------------------------------------------------------------------------------------- \n";
 			txtInfo.setText(String.format(columna, "ID", "NOMBRE", "APELLIDOS", "NACIONALIDAD"));
-			while (rs.next()) {
-				txtInfo.append(String.format(columna, rs.getString("idDirector"), rs.getString("nombreDirector"),
-						rs.getString("apellidosDirector"), rs.getString("nacionalidadDirector")));
+			while (BD.rs.next()) {
+				txtInfo.append(String.format(columna, BD.rs.getString("idDirector"), BD.rs.getString("nombreDirector"),
+						BD.rs.getString("apellidosDirector"), BD.rs.getString("nacionalidadDirector")));
 			}
 			diaFeedback.setTitle("Confirmación");
 			lblDiaFeedback.setText("La consulta se ha realizado con éxito");
@@ -162,10 +149,7 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 			diaFeedback.setBackground(new Color(243, 70, 74));
 		} finally {
 			try {
-				if (connection != null) {
-
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException se) {
 				diaFeedback.setTitle("Error");
 				lblDiaFeedback.setText("Error al cerrar conexión");
@@ -179,8 +163,7 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnConsulta) {
 			txtInfo.setText("");
-			String sentenciaSQL = "SELECT * FROM directores";
-			consultar(sentenciaSQL);
+			consultar();
 		}
 
 		if (e.getSource() == mnuAltDir) {

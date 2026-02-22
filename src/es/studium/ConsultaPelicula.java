@@ -18,15 +18,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class ConsultaActor extends WindowAdapter implements ActionListener {
 
-	Frame ventana = new Frame("Actores - Consultas");
+public class ConsultaPelicula extends WindowAdapter implements ActionListener {
+
+	Frame ventana = new Frame("Películas - Consultas");
 	TextArea txtInfo = new TextArea();
 	Button btnConsulta = new Button("Consultas");
 
@@ -52,16 +49,7 @@ public class ConsultaActor extends WindowAdapter implements ActionListener {
 	Dialog diaFeedback = new Dialog(ventana, "", true);
 	Label lblDiaFeedback = new Label("");
 
-	String driver = "com.mysql.cj.jdbc.Driver";
-	String url = "jdbc:mysql://localhost:3306/p_cine";
-	String usuario = "studium";
-	String password = "Studium2025#";
-
-	Connection connection = null;
-	Statement statement = null;
-	ResultSet rs = null;
-
-	public ConsultaActor() {
+	public ConsultaPelicula() {
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
 		mnuDirectores.add(mnuAltDir);
@@ -93,6 +81,8 @@ public class ConsultaActor extends WindowAdapter implements ActionListener {
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
 
+		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
+		
 		ventana.setMenuBar(mnuBar);
 
 		ventana.setLayout(gridbag);
@@ -131,23 +121,21 @@ public class ConsultaActor extends WindowAdapter implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		new ConsultaActor();
+		new ConsultaPelicula();
 
 	}
 
-	public void consultar(String sentenciaSQL) {
+	public void consultar() {
 
 		try {
 
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			rs = statement.executeQuery(sentenciaSQL);
-			String columna = "%5s       |     %-15s    |     %-15s    |     %-15s€    |\n -------------------------------------------------------------------------------------------------------- \n";
-			txtInfo.setText(String.format(columna, "ID", "NOMBRE", "APELLIDOS", "SALARIO"));
-			while (rs.next()) {
-				txtInfo.append(String.format(columna, rs.getString("idActor"), rs.getString("nombreActor"),
-						rs.getString("apellidosActor"), rs.getString("salarioActor")));
+			BD.conectarBD();
+			BD.rs = BD.statement.executeQuery(BD.consultaSQLPeliculas);
+			String columna = "%5s       |     %-15s    |     %-15s    |     %-15s    |     %-15s    |\n -------------------------------------------------------------------------------------------------------------------- \n";
+			txtInfo.setText(String.format(columna, "ID", "TITULO", "GENERO", "ESTRENO", "DIRECTOR"));
+			while (BD.rs.next()) {
+				txtInfo.append(String.format(columna, BD.rs.getString("idPelicula"), BD.rs.getString("tituloPelicula"),
+						BD.rs.getString("generoPelicula"), BD.rs.getString("fechaEstrenoPelicula"), BD.rs.getString("idDirectorFK")));
 			}
 			diaFeedback.setTitle("Confirmación");
 			lblDiaFeedback.setText("La consulta se ha realizado con éxito");
@@ -162,10 +150,7 @@ public class ConsultaActor extends WindowAdapter implements ActionListener {
 			diaFeedback.setBackground(new Color(243, 70, 74));
 		} finally {
 			try {
-				if (connection != null) {
-
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException se) {
 				diaFeedback.setTitle("Error");
 				lblDiaFeedback.setText("Error al cerrar conexión " + se);
@@ -179,8 +164,7 @@ public class ConsultaActor extends WindowAdapter implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnConsulta) {
 			txtInfo.setText("");
-			String sentenciaSQL = "SELECT * FROM actores";
-			consultar(sentenciaSQL);
+			consultar();
 		}
 
 		if (e.getSource() == mnuAltDir) {

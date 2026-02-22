@@ -19,27 +19,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class ModificacionDirector extends WindowAdapter implements ActionListener {
 
-	Frame ventana1 = new Frame("Directores - Modificación");
-	Choice choDirectores = new Choice();
+public class ModificacionActor extends WindowAdapter implements ActionListener {
+
+	Frame ventana1 = new Frame("Actores - Modificación");
+	Choice choActores = new Choice();
 	Button btnEditar = new Button("Editar");
 
-	Frame ventana2 = new Frame("Director - Modificación");
-	Label lblElec = new Label("¿Qué director desea modificar?");
+	Frame ventana2 = new Frame("Actor - Modificación");
+	Label lblElec = new Label("¿Qué actor desea modificar?");
 	Label lblElecc = new Label("");
 	Label lblNombre = new Label("Nombre");
 	TextField txtNombre = new TextField(30);
 	Label lblApellidos = new Label("Apellidos");
 	TextField txtApellidos = new TextField(30);
-	Label lblNacionalidad = new Label("Nacionalidad");
-	TextField txtNacionalidad = new TextField(30);
+	Label lblSalario = new Label("Salario (Números)");
+	TextField txtSalario = new TextField(30);
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 
@@ -83,19 +80,11 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
-	String driver = "com.mysql.cj.jdbc.Driver";
-	String url = "jdbc:mysql://localhost:3306/p_cine";
-	String usuario = "studium";
-	String password = "Studium2025#";
+	String sentenciaSQL = "";
+	
+	String idActor = "";
 
-	String sentenciaSQL = "SELECT * FROM directores";
-	String idDirector = "";
-
-	Connection connection = null;
-	Statement statement = null;
-	ResultSet rs = null;
-
-	public ModificacionDirector() {
+	public ModificacionActor() {
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -159,7 +148,12 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		mnuActores2.add(mnuConsAct2);
 		mnuBar2.add(mnuActores2);
 
+		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
+		
 		ventana1.setMenuBar(mnuBar);
+		
+		Usuario.permisosBasico(mnuDirectores2, mnuPeliculas2, mnuActores2, mnuBajaDir2, mnuModDir2, mnuConsDir2, mnuBajaPel2, mnuConsPel2, mnuBajaAct2,  mnuModAct2, mnuConsAct2);
+		
 		ventana2.setMenuBar(mnuBar2);
 
 		// Ventana 1
@@ -175,7 +169,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		ventana1.add(choDirectores, gbc);
+		ventana1.add(choActores, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -218,10 +212,10 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		ventana2.add(lblNacionalidad, gbc);
+		ventana2.add(lblSalario, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		ventana2.add(txtNacionalidad, gbc);
+		ventana2.add(txtSalario, gbc);
 
 		gbc.weightx = 1;
 		gbc.weighty = 1;
@@ -260,18 +254,16 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 	private void rellenarChoice() {
 		
-		choDirectores.removeAll();
+		choActores.removeAll();
 		try
 
 		{
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, usuario, password);
-			statement = connection.createStatement();
-			rs = statement.executeQuery(sentenciaSQL);
-			choDirectores.add("Seleccionar un director...");
-			while (rs.next()) {
-				choDirectores.add(rs.getInt("idDirector") + " | " + rs.getString("nombreDirector") + " | "
-						+ rs.getString("apellidosDirector") + " | " + rs.getString("nacionalidadDirector"));
+			BD.conectarBD();
+			BD.rs = BD.statement.executeQuery(BD.consultaSQLActores);
+			choActores.add("Seleccionar un actor...");
+			while (BD.rs.next()) {
+				choActores.add(BD.rs.getInt("idActor") + " | " + BD.rs.getString("nombreActor") + " | "
+						+ BD.rs.getString("apellidosActor") + " | " + BD.rs.getString("salarioActor"));
 			}
 		}
 
@@ -283,9 +275,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			lblDiaF.setText("Error " + se);
 		} finally {
 			try {
-				if (connection != null) {
-					connection.close();
-				}
+				BD.desconectarBD();
 			} catch (SQLException se) {
 				diaFeedback.setBackground(new Color(243, 70, 74));
 				lblDiaF.setText("Error " + se);
@@ -295,30 +285,28 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	}
 
 	public static void main(String[] args) {
-		new ModificacionDirector();
+		new ModificacionActor();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnEditar)) {
-			if (choDirectores.getSelectedIndex() != 0) {
-				lblElecc.setText("Estás editando : " + (choDirectores.getSelectedItem().split(" ")[2]) + " "
-						+ (choDirectores.getSelectedItem().split(" ")[4]));
-				idDirector = choDirectores.getSelectedItem().split(" ")[0];
-				sentenciaSQL = "SELECT * FROM directores WHERE idDirector = " + idDirector;
+			if (choActores.getSelectedIndex() != 0) {
+				lblElecc.setText("Estás editando : " + (choActores.getSelectedItem().split(" ")[2]) + " "
+						+ (choActores.getSelectedItem().split(" ")[4]));
+				idActor = choActores.getSelectedItem().split(" ")[0];
+				sentenciaSQL = BD.consultaSQLActores + "WHERE idActor = " + idActor;
 
 				try
 
 				{
-					Class.forName(driver);
-					connection = DriverManager.getConnection(url, usuario, password);
-					statement = connection.createStatement();
-					rs = statement.executeQuery(sentenciaSQL);
-					choDirectores.add("Seleccionar un director...");
-					rs.next();
-					txtNombre.setText(rs.getString("nombreDirector"));
-					txtApellidos.setText(rs.getString("apellidosDirector"));
-					txtNacionalidad.setText(rs.getString("nacionalidadDirector"));
+					BD.conectarBD();
+					BD.rs = BD.statement.executeQuery(sentenciaSQL);
+					choActores.add("Seleccionar un actor...");
+					BD.rs.next();
+					txtNombre.setText(BD.rs.getString("nombreActor"));
+					txtApellidos.setText(BD.rs.getString("apellidosActor"));
+					txtSalario.setText(BD.rs.getString("salarioActor"));
 				}
 
 				catch (ClassNotFoundException cnfe) {
@@ -329,9 +317,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 					lblDiaF.setText("Error " + se);
 				} finally {
 					try {
-						if (connection != null) {
-							connection.close();
-						}
+						BD.desconectarBD();
 					} catch (SQLException se) {
 						diaError.setBackground(new Color(243, 70, 74));
 						lblDiaF.setText("Error " + se);
@@ -341,24 +327,21 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 				ventana2.setVisible(true);
 
 			} else {
-				choDirectores.requestFocus();
+				choActores.requestFocus();
 			}
 		}
 
 		else if (e.getSource() == btnAceptar) {
 
 			// ¿Añadir  getText!=isEmpty()?
-			sentenciaSQL = "UPDATE directores SET nombreDirector = '" + txtNombre.getText() + "', apellidosDirector = '"
-					+ txtApellidos.getText() + "', nacionalidadDirector = '" + txtNacionalidad.getText()
-					+ "' WHERE idDirector = " + idDirector;
+			sentenciaSQL = "UPDATE actores SET nombreActor = '" + txtNombre.getText() + "', apellidosActor = '"
+					+ txtApellidos.getText() + "', salarioActor = '" + txtSalario.getText()
+					+ "' WHERE idActor = " + idActor;
 
 			try {
 
-				Class.forName(driver);
-				connection = DriverManager.getConnection(url, usuario, password);
-				System.out.println("Conexión establecida");
-				statement = connection.createStatement();
-				statement.executeUpdate(sentenciaSQL);
+				BD.conectarBD();
+				BD.statement.executeUpdate(sentenciaSQL);
 				diaFeedback.setBackground(new Color(180, 211, 178));
 				lblDiaF.setText("Se ha realizado correctamente la modificación");
 			} catch (ClassNotFoundException cnfe) {
@@ -369,9 +352,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 				lblDiaF.setText("Error " + se);
 			} finally {
 				try {
-					if (connection != null) {
-						connection.close();
-					}
+					BD.desconectarBD();
 				}
 
 				catch (SQLException se) {
@@ -387,7 +368,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		} else if (e.getSource() == btnLimpiar) {
 			txtNombre.setText("");
 			txtApellidos.setText("");
-			txtNacionalidad.setText("");
+			txtSalario.setText("");
 			txtNombre.requestFocus();
 		}
 		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2)) {
