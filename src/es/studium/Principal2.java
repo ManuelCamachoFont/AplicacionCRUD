@@ -2,6 +2,8 @@ package es.studium;
 
 import java.awt.Button;
 import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -19,37 +21,47 @@ public class Principal2 extends WindowAdapter implements ActionListener
 {
 
 	Frame ventana = new Frame("Menú principal");
-	
+
 	MenuBar mnuBar = new MenuBar();
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
+	Menu mnuPelAct = new Menu("Peliculas_Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
-	
+	MenuItem mnuAltPelAct = new MenuItem("Alta");
+	MenuItem mnuBajaPelAct = new MenuItem("Baja");
+	MenuItem mnuConsPelAct = new MenuItem("Modificación");
+	MenuItem mnuModPelAct = new MenuItem("Consulta");
+
 	Label lblInfo = new Label("Conexión establecida con la base de datos");
 	Button btnLogOut = new Button("Log Out");
-	
+
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
-	
-	
-	public Principal2() {
-		
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
+
+	public Principal2()
+	{
+
 		ventana.setLayout(gridbag);
 		ventana.setSize(400, 400);
 		ventana.setBackground(new Color(213, 255, 255));
 		ventana.setFont(new Font("SansSerif", 0, 12));
-		
+
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
 		mnuDirectores.add(mnuAltDir);
@@ -60,16 +72,18 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		mnuConsDir.addActionListener(this);
 		mnuDirectores.add(mnuConsDir);
 		mnuBar.add(mnuDirectores);
-		
+
 		// Menú Películas
 		mnuAltPel.addActionListener(this);
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
+		mnuModPel.addActionListener(this);
+		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
-		
+
 		// Menú Actores
 		mnuAltAct.addActionListener(this);
 		mnuActores.add(mnuAltAct);
@@ -80,89 +94,130 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		mnuConsAct.addActionListener(this);
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
-		
-		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
-		
+
+		// Menú Peliculas_Actores
+		mnuAltPelAct.addActionListener(this);
+		mnuPelAct.add(mnuAltPelAct);
+		mnuBajaPelAct.addActionListener(this);
+		mnuPelAct.add(mnuBajaPelAct);
+		mnuModPelAct.addActionListener(this);
+		mnuPelAct.add(mnuModPelAct);
+		mnuConsPelAct.addActionListener(this);
+		mnuPelAct.add(mnuConsPelAct);
+		mnuBar.add(mnuPelAct);
+
+		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
+		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
+		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
+		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
+
 		ventana.setMenuBar(mnuBar);
-			
+
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		ventana.add(lblInfo, gbc);
-		
+
 		gbc.gridy = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		btnLogOut.addActionListener(this);
 		ventana.add(btnLogOut, gbc);
-		
+
 		ventana.addWindowListener(this);
 		ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
+
+		// Dialogo tercer trimestre
+		diaDesarrollo.add(lblDesarrollo);
+		diaDesarrollo.addWindowListener(this);
+		diaDesarrollo.setLayout(new FlowLayout());
+		diaDesarrollo.setBackground(Color.YELLOW);
+		diaDesarrollo.setSize(300, 80);
+		diaDesarrollo.setResizable(false);
+		diaDesarrollo.setLocationRelativeTo(null);
+		diaDesarrollo.setVisible(false);
+
 	}
-	
+
 	public static void main(String[] args)
 	{
 		new Principal2();
 	}
-	
+
 	@Override
-	public void windowClosing(WindowEvent e) {
+	public void windowClosing(WindowEvent e)
+	{
+		if (e.getSource() == diaDesarrollo)
+		{
+			diaDesarrollo.setVisible(false);
+		}
+		else if (e.getSource() == ventana) {
 		System.exit(0);
+		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == mnuAltDir) {
+		if (e.getSource() == mnuAltDir)
+		{
 			new AltaDirector();
-		}
-		else if (e.getSource() == mnuBajaDir) {
+		} else if (e.getSource() == mnuBajaDir)
+		{
 			new BajaDirector();
-		}
-		else if (e.getSource() == mnuModDir) {
+		} else if (e.getSource() == mnuModDir)
+		{
 			new ModificacionDirector();
-		}
-		else if (e.getSource() == mnuConsDir) {
+		} else if (e.getSource() == mnuConsDir)
+		{
 			new ConsultaDirector();
-		}
-		else if (e.getSource() == mnuAltPel) {
+		} else if (e.getSource() == mnuAltPel)
+		{
 			new AltaPelicula();
-		}
-		else if (e.getSource() == mnuBajaPel) {
+		} else if (e.getSource() == mnuBajaPel)
+		{
 			new BajaPelicula();
-		}
-		else if (e.getSource() == mnuConsPel) {
+		} else if (e.getSource() == mnuConsPel)
+		{
 			new ConsultaPelicula();
-		}
-		else if (e.getSource() == mnuAltAct) {
+		} else if (e.getSource() == mnuAltAct)
+		{
 			new AltaActor();
-		}
-		else if (e.getSource() == mnuBajaAct) {
+		} else if (e.getSource() == mnuBajaAct)
+		{
 			new BajaActor();
-		}
-		else if (e.getSource() == mnuModAct) {
+		} else if (e.getSource() == mnuModAct)
+		{
 			new ModificacionActor();
-		}
-		else if (e.getSource() == mnuConsAct) {
+		} else if (e.getSource() == mnuConsAct)
+		{
 			new ConsultaActor();
+		} else if ((e.getSource() == mnuModPel) | (e.getSource() == mnuAltPelAct) | (e.getSource() == mnuBajaPelAct)
+				| (e.getSource() == mnuModPelAct) | (e.getSource() == mnuConsPelAct))
+		{
+			diaDesarrollo.setVisible(true);
 		}
-		
-		if (e.getSource() == btnLogOut) {
+
+		if (e.getSource() == btnLogOut)
+		{
 			Usuario.cerrarSesion();
 			new Principal();
 			java.awt.Window[] ventanas = java.awt.Window.getWindows();
-			for (java.awt.Window v : ventanas) {
-				if (v instanceof Frame) {
+			for (java.awt.Window v : ventanas)
+			{
+				if (v instanceof Frame)
+				{
 					Frame f = (Frame) v;
 
-					if (!f.getTitle().equals("Cinemateca")) {
+					if (!f.getTitle().equals("Cinemateca"))
+					{
 						f.dispose();
 					}
 				}
 			}
 		}
-		
+
 	}
 }

@@ -20,7 +20,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-
 public class BajaDirector extends WindowAdapter implements ActionListener
 {
 	Frame ventana = new Frame("Directores - Baja");
@@ -35,7 +34,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	Button btnDiaSi = new Button("Si");
 	Button btnDiaNo = new Button("No");
 
-	Dialog diaFeedback = new Dialog(dialogo, "Confirmación", true);
+	Dialog diaFeedback = new Dialog(ventana, "Confirmación", true);
 	Label lblDiaFeedback = new Label("");
 
 	GridBagLayout gridbag = new GridBagLayout();
@@ -45,17 +44,29 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
+	Menu mnuPelAct = new Menu("Peliculas_Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
+	MenuItem mnuAltPelAct = new MenuItem("Alta");
+	MenuItem mnuBajaPelAct = new MenuItem("Baja");
+	MenuItem mnuConsPelAct = new MenuItem("Modificación");
+	MenuItem mnuModPelAct = new MenuItem("Consulta");
+	
+	String directorSeleccionado = "";
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
 	public BajaDirector()
 	{
@@ -78,6 +89,8 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
+		mnuModPel.addActionListener(this);
+		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
@@ -93,8 +106,24 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
 
+		// Menú Peliculas_Actores
+		mnuAltPelAct.addActionListener(this);
+		mnuPelAct.add(mnuAltPelAct);
+		mnuBajaPelAct.addActionListener(this);
+		mnuPelAct.add(mnuBajaPelAct);
+		mnuModPelAct.addActionListener(this);
+		mnuPelAct.add(mnuModPelAct);
+		mnuConsPelAct.addActionListener(this);
+		mnuPelAct.add(mnuConsPelAct);
+		mnuBar.add(mnuPelAct);
+
+		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
+		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
+		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
+		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
+
 		ventana.setMenuBar(mnuBar);
-		
+
 		ventana.setLayout(gridbag);
 
 		datos();
@@ -113,7 +142,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		btnElim.addActionListener(this);
 		ventana.add(btnElim, gbc);
 
-		ventana.setSize(340, 220);
+		ventana.setSize(500, 220);
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
@@ -126,7 +155,6 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		dialogo.setLayout(gridbag);
 		dialogo.setBackground(new Color(255, 165, 0));
 		dialogo.setFont(new Font("SanSerif", 2, 12));
-		
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -153,19 +181,29 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		btnDiaNo.setBackground(new Color(243, 70, 74));
 		dialogo.add(btnDiaNo, gbc);
-		
+
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setResizable(false);
 		dialogo.setVisible(false);
 
 		// Dialogo FeedBack
 		diaFeedback.setLayout(new FlowLayout());
-		diaFeedback.add(lblDiaFeedback, gbc);
+		diaFeedback.add(lblDiaFeedback);
 		diaFeedback.setSize(300, 80);
 		diaFeedback.addWindowListener(this);
 		diaFeedback.setLocationRelativeTo(null);
 		dialogo.setResizable(false);
 		diaFeedback.setVisible(false);
+
+		// Dialogo tercer trimestre
+		diaDesarrollo.add(lblDesarrollo);
+		diaDesarrollo.addWindowListener(this);
+		diaDesarrollo.setLayout(new FlowLayout());
+		diaDesarrollo.setBackground(Color.YELLOW);
+		diaDesarrollo.setSize(300, 80);
+		diaDesarrollo.setResizable(false);
+		diaDesarrollo.setLocationRelativeTo(null);
+		diaDesarrollo.setVisible(false);
 
 	}
 
@@ -176,7 +214,8 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		{
 			lista.removeAll();
 			BD.conectarBD();
-			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLDirectores);
+			BD.rs = BD.ps.executeQuery();
 			lista.add("Elige un director...");
 			while (BD.rs.next())
 			{
@@ -185,12 +224,10 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 			}
 		} catch (ClassNotFoundException cnfe)
 		{
-			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error " + cnfe.getMessage());
+			dialogoComprobacion(cnfe, "");
 		} catch (SQLException se)
 		{
-			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error " + se.getMessage());
+			dialogoComprobacion(se, "");
 		} finally
 		{
 			try
@@ -198,8 +235,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 				BD.desconectarBD();
 			} catch (SQLException se)
 			{
-				diaFeedback.setBackground(new Color(243, 70, 74));
-				lblDiaFeedback.setText("Error " + se.getMessage());
+				dialogoComprobacion(se, "");
 			}
 		}
 
@@ -208,35 +244,58 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	public void darBaja()
 	{
 
-		String sentenciaSQL = BD.eliminarSQLDirector + lista.getSelectedItem().split(" ")[0];
+		String idDirector = lista.getSelectedItem().split(" ")[0].trim();
 
 		try
 		{
 			BD.conectarBD();
-			BD.statement.executeUpdate(sentenciaSQL);
-			diaFeedback.setBackground(new Color(180, 211, 178));
-			lblDiaFeedback.setText("Se ha eliminado al director");
+			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLDirector);
+			BD.ps.setString(1, idDirector);
+			BD.ps.executeUpdate();
+			dialogoComprobacion(null, directorSeleccionado);
 		} catch (ClassNotFoundException cnfe)
 		{
-			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error de driver");
+			dialogoComprobacion(cnfe, "");
 		} catch (SQLException se)
 		{
-			diaFeedback.setBackground(new Color(243, 70, 74));
-			lblDiaFeedback.setText("Error de conexión: url, usuario o clave" + se.getMessage());
+			dialogoComprobacion(se, "");
 		} finally
 		{
 			try
 			{
 				BD.desconectarBD();
-			} catch (SQLException e)
+			} catch (SQLException se)
 			{
-				diaFeedback.setBackground(new Color(243, 70, 74));
-				lblDiaFeedback.setText("Error al cerrar conexión");
+				dialogoComprobacion(se, "");
 			}
 
 		}
+	}
+	
+	public void dialogoComprobacion(Exception e, String director) {
+		if (e == null) {
+			diaFeedback.setTitle("Enhorabuena");
+			diaFeedback.setBackground(new Color(180, 211, 178));
+			lblDiaFeedback.setText("Se ha eliminado correctamente a [" + director + "]");
+		} else {
+			diaFeedback.setTitle("Error");
+			diaFeedback.setBackground(new Color(243, 70, 74));
+
+			switch (e.getClass().getSimpleName()) {
+
+			case "ClassNotFoundException":
+				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
+				break;
+			case "SQLException":
+				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				break;
+			default:
+				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
+			}
+		}
+		diaFeedback.pack();
 		diaFeedback.setVisible(true);
+
 	}
 
 	public static void main(String[] args)
@@ -251,7 +310,8 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		{
 			if (lista.getSelectedIndex() != 0)
 			{
-				lblDia.setText("Se va a eliminar a \"" + lista.getSelectedItem() + "\"");
+				directorSeleccionado = lista.getSelectedItem();
+				lblDia.setText("Se va a eliminar a \"" + directorSeleccionado + "\"");
 				dialogo.setVisible(true);
 			}
 		}
@@ -259,7 +319,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 		if (e.getSource() == btnDiaSi)
 		{
 			darBaja();
-			dialogo.setVisible(false);
+			dialogo.dispose();
 			datos();
 
 		} else if (e.getSource() == btnDiaNo)
@@ -267,39 +327,44 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 			dialogo.setVisible(false);
 
 		}
-		
-		if (e.getSource() == mnuAltDir) {
+
+		if (e.getSource() == mnuAltDir)
+		{
 			new AltaDirector();
-		}
-		else if (e.getSource() == mnuBajaDir) {
+		} else if (e.getSource() == mnuBajaDir)
+		{
 			new BajaDirector();
-		}
-		else if (e.getSource() == mnuModDir) {
+		} else if (e.getSource() == mnuModDir)
+		{
 			new ModificacionDirector();
-		}
-		else if (e.getSource() == mnuConsDir) {
+		} else if (e.getSource() == mnuConsDir)
+		{
 			new ConsultaDirector();
-		}
-		else if (e.getSource() == mnuAltPel) {
+		} else if (e.getSource() == mnuAltPel)
+		{
 			new AltaPelicula();
-		}
-		else if (e.getSource() == mnuBajaPel) {
+		} else if (e.getSource() == mnuBajaPel)
+		{
 			new BajaPelicula();
-		}
-		else if (e.getSource() == mnuConsPel) {
+		} else if (e.getSource() == mnuConsPel)
+		{
 			new ConsultaPelicula();
-		}
-		else if (e.getSource() == mnuAltAct) {
+		} else if (e.getSource() == mnuAltAct)
+		{
 			new AltaActor();
-		}
-		else if (e.getSource() == mnuBajaAct) {
+		} else if (e.getSource() == mnuBajaAct)
+		{
 			new BajaActor();
-		}
-		else if (e.getSource() == mnuModAct) {
+		} else if (e.getSource() == mnuModAct)
+		{
 			new ModificacionActor();
-		}
-		else if (e.getSource() == mnuConsAct) {
+		} else if (e.getSource() == mnuConsAct)
+		{
 			new ConsultaActor();
+		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
+				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct))
+		{
+			diaDesarrollo.setVisible(true);
 		}
 
 	}
@@ -309,11 +374,14 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	{
 		if (e.getSource() == dialogo)
 		{
-			dialogo.setVisible(false);
-			
+			dialogo.dispose();
+
 		} else if (e.getSource() == diaFeedback)
 		{
-			diaFeedback.setVisible(false);
+			diaFeedback.dispose();
+		} else if (e.getSource() == diaDesarrollo)
+		{
+			diaDesarrollo.dispose();
 		} else
 		{
 			ventana.dispose();

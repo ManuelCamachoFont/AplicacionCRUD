@@ -20,7 +20,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
 public class AltaDirector extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Directores - Alta");
@@ -42,17 +41,27 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
+	Menu mnuPelAct = new Menu("Peliculas_Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
+	MenuItem mnuAltPelAct = new MenuItem("Alta");
+	MenuItem mnuBajaPelAct = new MenuItem("Baja");
+	MenuItem mnuConsPelAct = new MenuItem("Modificación");
+	MenuItem mnuModPelAct = new MenuItem("Consulta");
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
 	public AltaDirector() {
 
@@ -76,6 +85,8 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
+		mnuModPel.addActionListener(this);
+		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
@@ -91,8 +102,21 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
 
-		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel,
-				mnuConsPel, mnuBajaAct, mnuModAct, mnuConsAct);
+		// Menú Peliculas_Actores
+		mnuAltPelAct.addActionListener(this);
+		mnuPelAct.add(mnuAltPelAct);
+		mnuBajaPelAct.addActionListener(this);
+		mnuPelAct.add(mnuBajaPelAct);
+		mnuModPelAct.addActionListener(this);
+		mnuPelAct.add(mnuModPelAct);
+		mnuConsPelAct.addActionListener(this);
+		mnuPelAct.add(mnuConsPelAct);
+		mnuBar.add(mnuPelAct);
+
+		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
+		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
+		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
+		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
 
 		ventana.setMenuBar(mnuBar);
 
@@ -161,6 +185,16 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		dialogo.setResizable(false);
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setVisible(false);
+
+		// Dialogo tercer trimestre
+		diaDesarrollo.add(lblDesarrollo);
+		diaDesarrollo.addWindowListener(this);
+		diaDesarrollo.setLayout(new FlowLayout());
+		diaDesarrollo.setBackground(Color.YELLOW);
+		diaDesarrollo.setSize(300, 80);
+		diaDesarrollo.setResizable(false);
+		diaDesarrollo.setLocationRelativeTo(null);
+		diaDesarrollo.setVisible(false);
 	}
 
 	public void darAlta() {
@@ -168,35 +202,56 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		String nombre = txtNombre.getText();
 		String apellidos = txtApellidos.getText();
 		String nacionalidad = txtNacionalidad.getText();
-		String sentencia = "INSERT INTO directores VALUES (null, \"" + nombre + "\", \"" + apellidos + "\", \""
-				+ nacionalidad + "\")";
+		String sentenciaSQL = "INSERT INTO directores (idDirector, nombreDirector, apellidosDirector, nacionalidadDirector) VALUES (null, ?, ?, ?)";
 
 		try {
 			BD.conectarBD();
-			BD.statement.executeUpdate(sentencia);
-			dialogo.setTitle("Enhorabuena");
-			dialogo.setBackground(new Color(180, 211, 178));
-			dialogo.setSize(300, 80);
-			lblDia.setText("El alta se ha realizado con éxito");
+			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+			BD.ps.setString(1, nombre);
+			BD.ps.setString(2, apellidos);
+			BD.ps.setString(3, nacionalidad);
+			BD.ps.executeUpdate();
+			dialogoComprobacion(null);
 
 		} catch (ClassNotFoundException cnfe) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error en el Alta" + cnfe);
+			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error en el Alta" + se);
+			dialogoComprobacion(se);
 		} finally {
 			try {
 				BD.desconectarBD();
-			} catch (SQLException e) {
-				dialogo.setTitle("Error");
-				dialogo.setBackground(new Color(243, 70, 74));
-				lblDia.setText("Error al cerrar conexión");
+			} catch (SQLException se) {
+				dialogoComprobacion(se);
 			}
 		}
+
+	}
+
+	public void dialogoComprobacion(Exception e) {
+		if (e == null) {
+			dialogo.setTitle("Enhorabuena");
+			dialogo.setBackground(new Color(180, 211, 178));
+			lblDia.setText("El alta se ha realizado con éxito");
+		} else {
+			dialogo.setTitle("Error");
+			dialogo.setBackground(new Color(243, 70, 74));
+
+			switch (e.getClass().getSimpleName()) {
+
+			case "ClassNotFoundException":
+				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				break;
+			case "SQLException":
+				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				break;
+
+			default:
+				lblDia.setText("Error. [" + e.getMessage() + "]");
+			}
+		}
+		dialogo.pack();
 		dialogo.setVisible(true);
+
 	}
 
 	public static void main(String[] args) {
@@ -213,7 +268,12 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		}
 
 		if (e.getSource() == btnAceptar) {
-			darAlta();
+			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
+					|| (txtNacionalidad.getText().trim().isEmpty())) {
+				dialogoComprobacion(new Exception("Rellene todos los campos"));
+			} else {
+				darAlta();
+			}
 		}
 
 		if (e.getSource() == mnuAltDir) {
@@ -238,13 +298,20 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 			new ModificacionActor();
 		} else if (e.getSource() == mnuConsAct) {
 			new ConsultaActor();
+		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
+				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
+			diaDesarrollo.setVisible(true);
 		}
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
-			dialogo.setVisible(false);
+			dialogo.dispose();
+		}
+
+		else if (e.getSource() == diaDesarrollo) {
+			diaDesarrollo.dispose();
 		}
 
 		else if (e.getSource() == ventana) {

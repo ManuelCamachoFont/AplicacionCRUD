@@ -114,7 +114,7 @@ public class Login extends WindowAdapter implements ActionListener {
 			String usuarioEscrito = txtUsuario.getText();
 			String claveEscrita = txtClave.getText();
 
-			if (Usuario.validar(usuarioEscrito, claveEscrita)) {
+			if (Usuario.validar(usuarioEscrito, claveEscrita) == true) {
 				accederBD();
 			} else {
 				dlgError.setVisible(true);

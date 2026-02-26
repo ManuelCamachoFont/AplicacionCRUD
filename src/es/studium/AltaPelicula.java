@@ -21,7 +21,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
 public class AltaPelicula extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Peliculas - Alta");
@@ -30,8 +29,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	TextField txtGenero = new TextField(25);
 	TextField txtEstreno = new TextField(25);
 	Label lblTitulo = new Label("Título");
-	Label lblApellidos = new Label("Género");
-	Label lblEstreno = new Label("Fecha de Estreno (AA/MM/DD)");
+	Label lblGenero = new Label("Género");
+	Label lblEstreno = new Label("Fecha de Estreno (AAAA-MM-DD)");
 	Label lblDirector = new Label("Director");
 	Choice choDirector = new Choice();
 	Button btnAceptar = new Button("Aceptar");
@@ -45,17 +44,27 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
+	Menu mnuPelAct = new Menu("Peliculas_Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
+	MenuItem mnuAltPelAct = new MenuItem("Alta");
+	MenuItem mnuBajaPelAct = new MenuItem("Baja");
+	MenuItem mnuConsPelAct = new MenuItem("Modificación");
+	MenuItem mnuModPelAct = new MenuItem("Consulta");
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
 	public AltaPelicula() {
 
@@ -80,6 +89,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
+		mnuModPel.addActionListener(this);
+		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
@@ -94,8 +105,22 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		mnuConsAct.addActionListener(this);
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
-		
-		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
+
+		// Menú Peliculas_Actores
+		mnuAltPelAct.addActionListener(this);
+		mnuPelAct.add(mnuAltPelAct);
+		mnuBajaPelAct.addActionListener(this);
+		mnuPelAct.add(mnuBajaPelAct);
+		mnuModPelAct.addActionListener(this);
+		mnuPelAct.add(mnuModPelAct);
+		mnuConsPelAct.addActionListener(this);
+		mnuPelAct.add(mnuConsPelAct);
+		mnuBar.add(mnuPelAct);
+
+		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
+		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
+		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
+		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
 
 		ventana.setMenuBar(mnuBar);
 
@@ -120,7 +145,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		ventana.add(lblApellidos, gbc);
+		ventana.add(lblGenero, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
@@ -159,7 +184,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(500, 320);
+		ventana.setSize(600, 320);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -171,6 +196,16 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		dialogo.setResizable(true);
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setVisible(false);
+
+		// Dialogo tercer trimestre
+		diaDesarrollo.add(lblDesarrollo);
+		diaDesarrollo.addWindowListener(this);
+		diaDesarrollo.setLayout(new FlowLayout());
+		diaDesarrollo.setBackground(Color.YELLOW);
+		diaDesarrollo.setSize(300, 80);
+		diaDesarrollo.setResizable(false);
+		diaDesarrollo.setLocationRelativeTo(null);
+		diaDesarrollo.setVisible(false);
 	}
 
 	public void darAlta(String director) {
@@ -178,34 +213,30 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		String titulo = txtTitulo.getText();
 		String genero = txtGenero.getText();
 		String estreno = txtEstreno.getText();
-		String sentencia = "INSERT INTO peliculas VALUES (null, \"" + titulo + "\", \"" + genero + "\", \"" + estreno + "\", \""+ director + "\")";
+		String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, estrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
 
 		try {
 			BD.conectarBD();
-			BD.statement.executeUpdate(sentencia);
-			dialogo.setTitle("Enhorabuena");
-			dialogo.setBackground(new Color(180, 211, 178));
-			dialogo.setSize(300, 80);
-			lblDia.setText("El alta se ha realizado con éxito");
+			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+			BD.ps.setString(1, titulo);
+			BD.ps.setString(2, genero);
+			BD.ps.setString(3, estreno);
+			BD.ps.setString(4, director);
+			BD.ps.executeUpdate();
+			dialogoComprobacion(null);
 
 		} catch (ClassNotFoundException cnfe) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error de driver" + cnfe);
+			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error de conexión: url, usuario o clave" + se);
+			dialogoComprobacion(se);
 		} finally {
 			try {
 				BD.desconectarBD();
-			} catch (SQLException e) {
-				dialogo.setTitle("Error");
-				dialogo.setBackground(new Color(243, 70, 74));
-				lblDia.setText("Error al cerrar conexión");
+			} catch (SQLException se) {
+				dialogoComprobacion(se);
 			}
 		}
-		dialogo.setVisible(true);
+
 	}
 
 	private void rellenarChoice() {
@@ -214,35 +245,58 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		{
 			BD.conectarBD();
-			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLDirectores);
+			BD.rs = BD.ps.executeQuery();
 			choDirector.add("Seleccionar un director...");
 			while (BD.rs.next()) {
 				choDirector.add(BD.rs.getInt("idDirector") +
 
-						" " + BD.rs.getString("nombreDirector") +
+						" | " + BD.rs.getString("nombreDirector") +
 
-						" " + BD.rs.getString("apellidosDirector"));
+						" | " + BD.rs.getString("apellidosDirector"));
 			}
 		}
 
 		catch (ClassNotFoundException cnfe) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error de driver" + cnfe);
+			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
-			lblDia.setText("Error de conexión: url, usuario o clave" + se);
+			dialogoComprobacion(se);
 		} finally {
 			try {
 				BD.desconectarBD();
-			} catch (SQLException e) {
-				dialogo.setTitle("Error");
-				dialogo.setBackground(new Color(243, 70, 74));
-				lblDia.setText("Error al cerrar conexión");
-
+			} catch (SQLException se) {
+				dialogoComprobacion(se);
 			}
 		}
+	}
+
+	public void dialogoComprobacion(Exception e) {
+		if (e == null) {
+			dialogo.setTitle("Enhorabuena");
+			dialogo.setBackground(new Color(180, 211, 178));
+			lblDia.setText("El alta se ha realizado con éxito");
+		} else {
+			dialogo.setTitle("Error");
+			dialogo.setBackground(new Color(243, 70, 74));
+
+			switch (e.getClass().getSimpleName()) {
+
+			case "ClassNotFoundException":
+				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				break;
+			case "SQLException":
+				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				break;
+			case "DateTimeParseException":
+				lblDia.setText("Formato de fecha incorrecto. [" + e.getMessage() + "]");
+				break;
+			default:
+				lblDia.setText("Error. [" + e.getMessage() + "]");
+			}
+		}
+		dialogo.pack();
+		dialogo.setVisible(true);
+		
 	}
 
 	public static void main(String[] args) {
@@ -259,10 +313,20 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		}
 
 		if (e.getSource() == btnAceptar) {
-			if (choDirector.getSelectedIndex() != 0) {
-				String director = choDirector.getSelectedItem().split(" ")[0];
-				darAlta(director);
-				rellenarChoice();
+			if ((choDirector.getSelectedIndex() == 0) || (txtTitulo.getText().trim().isEmpty())
+					|| (txtGenero.getText().trim().isEmpty()) || (txtEstreno.getText().trim().isEmpty())) {
+				dialogoComprobacion(new Exception("Rellene todos los campos"));
+			}
+			else {
+				try {
+					java.time.LocalDate.parse(txtEstreno.getText());
+					String director = choDirector.getSelectedItem().split("\\|")[0].trim();
+					darAlta(director);
+					rellenarChoice();
+				} catch (java.time.format.DateTimeParseException dte) {
+					dialogoComprobacion(dte);
+				}
+				
 			}
 		}
 
@@ -288,6 +352,9 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			new ModificacionActor();
 		} else if (e.getSource() == mnuConsAct) {
 			new ConsultaActor();
+		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
+				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
+			diaDesarrollo.setVisible(true);
 		}
 	}
 
@@ -295,6 +362,10 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
 			dialogo.setVisible(false);
+		}
+
+		else if (e.getSource() == diaDesarrollo) {
+			diaDesarrollo.setVisible(false);
 		}
 
 		else if (e.getSource() == ventana) {

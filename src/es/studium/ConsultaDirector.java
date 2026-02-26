@@ -25,28 +25,39 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Directores - Consultas");
 	TextArea txtInfo = new TextArea();
 	Button btnConsulta = new Button("Consultas");
+	Button btnPdf = new Button("Exportar a PDF");
 
 	MenuBar mnuBar = new MenuBar();
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
+	Menu mnuPelAct = new Menu("Peliculas_Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
 	MenuItem mnuModAct = new MenuItem("Modificación");
 	MenuItem mnuConsAct = new MenuItem("Consulta");
+	MenuItem mnuAltPelAct = new MenuItem("Alta");
+	MenuItem mnuBajaPelAct = new MenuItem("Baja");
+	MenuItem mnuConsPelAct = new MenuItem("Modificación");
+	MenuItem mnuModPelAct = new MenuItem("Consulta");
 
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	Dialog diaFeedback = new Dialog(ventana, "", true);
 	Label lblDiaFeedback = new Label("");
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
 	public ConsultaDirector() {
 		// Menú Directores
@@ -65,6 +76,8 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
+		mnuModPel.addActionListener(this);
+		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
@@ -79,8 +92,22 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		mnuConsAct.addActionListener(this);
 		mnuActores.add(mnuConsAct);
 		mnuBar.add(mnuActores);
-		
-		Usuario.permisosBasico(mnuDirectores, mnuPeliculas, mnuActores, mnuBajaDir, mnuModDir, mnuConsDir, mnuBajaPel, mnuConsPel, mnuBajaAct,  mnuModAct, mnuConsAct);
+
+		// Menú Peliculas_Actores
+		mnuAltPelAct.addActionListener(this);
+		mnuPelAct.add(mnuAltPelAct);
+		mnuBajaPelAct.addActionListener(this);
+		mnuPelAct.add(mnuBajaPelAct);
+		mnuModPelAct.addActionListener(this);
+		mnuPelAct.add(mnuModPelAct);
+		mnuConsPelAct.addActionListener(this);
+		mnuPelAct.add(mnuConsPelAct);
+		mnuBar.add(mnuPelAct);
+
+		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
+		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
+		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
+		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
 
 		ventana.setMenuBar(mnuBar);
 
@@ -104,6 +131,13 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		btnConsulta.addActionListener(this);
 		ventana.add(btnConsulta, gbc);
 
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		btnPdf.addActionListener(this);
+		ventana.add(btnPdf, gbc);
+
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
 		ventana.setSize(800, 400);
@@ -117,6 +151,16 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		diaFeedback.setSize(320, 80);
 		diaFeedback.setResizable(false);
 		diaFeedback.setVisible(false);
+
+		// Dialogo tercer trimestre
+		diaDesarrollo.add(lblDesarrollo);
+		diaDesarrollo.addWindowListener(this);
+		diaDesarrollo.setLayout(new FlowLayout());
+		diaDesarrollo.setBackground(Color.YELLOW);
+		diaDesarrollo.setSize(300, 80);
+		diaDesarrollo.setResizable(false);
+		diaDesarrollo.setLocationRelativeTo(null);
+		diaDesarrollo.setVisible(false);
 	}
 
 	public static void main(String[] args) {
@@ -129,34 +173,54 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 		try {
 
 			BD.conectarBD();
-			BD.rs = BD.statement.executeQuery(BD.consultaSQLDirectores);
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLDirectores);
+			BD.rs = BD.ps.executeQuery();
 			String columna = "%5s       |     %-15s    |     %-15s    |     %-15s    |\n -------------------------------------------------------------------------------------------------------- \n";
 			txtInfo.setText(String.format(columna, "ID", "NOMBRE", "APELLIDOS", "NACIONALIDAD"));
 			while (BD.rs.next()) {
 				txtInfo.append(String.format(columna, BD.rs.getString("idDirector"), BD.rs.getString("nombreDirector"),
 						BD.rs.getString("apellidosDirector"), BD.rs.getString("nacionalidadDirector")));
 			}
-			diaFeedback.setTitle("Confirmación");
-			lblDiaFeedback.setText("La consulta se ha realizado con éxito");
-			diaFeedback.setBackground(new Color(180, 211, 178));
+			dialogoComprobacion(null);
 		} catch (ClassNotFoundException cnfe) {
-			diaFeedback.setTitle("Error");
-			lblDiaFeedback.setText("Error de driver");
-			diaFeedback.setBackground(new Color(243, 70, 74));
+			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
-			diaFeedback.setTitle("Error");
-			lblDiaFeedback.setText("Error de conexión: url, usuario o clave" + se.getMessage());
-			diaFeedback.setBackground(new Color(243, 70, 74));
+			dialogoComprobacion(se);
 		} finally {
 			try {
 				BD.desconectarBD();
 			} catch (SQLException se) {
-				diaFeedback.setTitle("Error");
-				lblDiaFeedback.setText("Error al cerrar conexión");
-				diaFeedback.setBackground(new Color(243, 70, 74));
+				dialogoComprobacion(se);
 			}
 		}
+
+	}
+
+	public void dialogoComprobacion(Exception e) {
+		if (e == null) {
+			diaFeedback.setTitle("Enhorabuena");
+			diaFeedback.setBackground(new Color(180, 211, 178));
+			lblDiaFeedback.setText("La consulta se ha realizado con éxito");
+		} else {
+			diaFeedback.setTitle("Error");
+			diaFeedback.setBackground(new Color(243, 70, 74));
+
+			switch (e.getClass().getSimpleName()) {
+
+			case "ClassNotFoundException":
+				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
+				break;
+			case "SQLException":
+				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				break;
+
+			default:
+				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
+			}
+		}
+		diaFeedback.pack();
 		diaFeedback.setVisible(true);
+
 	}
 
 	@Override
@@ -188,6 +252,9 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 			new ModificacionActor();
 		} else if (e.getSource() == mnuConsAct) {
 			new ConsultaActor();
+		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
+				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
+			diaDesarrollo.setVisible(true);
 		}
 
 	}
@@ -195,7 +262,9 @@ public class ConsultaDirector extends WindowAdapter implements ActionListener {
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == diaFeedback) {
-			diaFeedback.setVisible(false);
+			diaFeedback.dispose();
+		} else if (e.getSource() == diaDesarrollo) {
+			diaDesarrollo.dispose();
 		} else if (e.getSource() == ventana) {
 			ventana.dispose();
 		}

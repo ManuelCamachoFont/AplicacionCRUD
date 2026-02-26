@@ -2,6 +2,7 @@ package es.studium;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,9 +16,9 @@ public class BD {
 	
 	public static String consultaSQLUsuarios = "SELECT * FROM usuarios";
 	
-	public static String eliminarSQLDirector = "DELETE from directores WHERE idDirector = ";
-	public static String eliminarSQLPelicula =  "DELETE from peliculas WHERE idPelicula = ";
-	public static String eliminarSQLActor =  "DELETE from actores WHERE idActor = ";
+	public static String eliminarSQLDirector = "DELETE from directores WHERE idDirector = ?";
+	public static String eliminarSQLPelicula =  "DELETE from peliculas WHERE idPelicula = ?";
+	public static String eliminarSQLActor =  "DELETE from actores WHERE idActor = ?";
 	
 	
 	public static String consultaSQLDirectores = "SELECT * FROM directores";
@@ -27,6 +28,7 @@ public class BD {
 	public static Connection connection = null;
 	public static Statement statement = null;
 	public static ResultSet rs = null;
+	public static PreparedStatement ps = null;
 
 	public static void conectarBD() throws ClassNotFoundException, SQLException {
 		Class.forName(driver);
