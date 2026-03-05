@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="42cm" height="28cm" viewBox="146 229 825 545" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffc0cb" x="720" y="323" width="97.3" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="720" y="323" width="97.3" height="36"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="768.65" y="345">Peliculas</text>
+  </g>
+  <g>
+    <rect style="fill: #add8e6" x="352" y="322" width="105" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="352" y="322" width="105" height="36"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="404.5" y="344">Directores</text>
+  </g>
+  <g>
+    <rect style="fill: #ceb064" x="730" y="643" width="81.9" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="730" y="643" width="81.9" height="36"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="770.95" y="665">Actores</text>
+  </g>
+  <g>
+    <polygon style="fill: #ffffff" points="542,341.17 588.95,313 635.9,341.17 588.95,369.34 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="542,341.17 588.95,313 635.9,341.17 588.95,369.34 "/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:end;font-family:monospace;font-style:normal;font-weight:normal" x="536" y="335.17">1:1</text>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="641.9" y="335.17">1:N</text>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="588.95" y="345.17">Dirigen</text>
+  </g>
+  <g>
+    <polygon style="fill: #ffffff" points="708,511.41 770.35,474 832.7,511.41 770.35,548.82 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="708,511.41 770.35,474 832.7,511.41 770.35,548.82 "/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="774.35" y="468">1:N</text>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="774.35" y="570.82">1:M</text>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="770.35" y="515.41">Intervienen</text>
+  </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="458.003" y1="340.339" x2="541.014" y2="340.866"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="719.063" y1="341.064" x2="635.9" y2="341.17"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="768.839" y1="359.992" x2="769.967" y2="472.999"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="770.874" y1="642" x2="770.504" y2="549.757"/>
+  <g>
+    <ellipse style="fill: #add8e6" cx="232.45" cy="406" rx="85.45" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="232.45" cy="406" rx="85.45" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="232.45" y="410">apellidosDirector</text>
+  </g>
+  <g>
+    <ellipse style="fill: #add8e6" cx="272.5" cy="257" rx="58.5" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="272.5" cy="257" rx="58.5" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="272.5" y="261">idDirector</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="234" y1="265" x2="311" y2="265"/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffc0cb" cx="676.5" cy="421" rx="58.5" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="676.5" cy="421" rx="58.5" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="676.5" y="425">idPelicula</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="638" y1="429" x2="715" y2="429"/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffc0cb" cx="678" cy="249" rx="97" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="678" cy="249" rx="97" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="678" y="253">fechaEstrenoPelicula</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ceb064" cx="660.35" cy="747" rx="62.35" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="660.35" cy="747" rx="62.35" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="660.35" y="751">nombreActor</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ceb064" cx="608.9" cy="591" rx="73.9" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="608.9" cy="591" rx="73.9" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="608.9" y="595">apellidosActor</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ceb064" cx="891.95" cy="591" rx="46.95" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="891.95" cy="591" rx="46.95" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="891.95" y="595">idActor</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="865" y1="599" x2="918.9" y2="599"/>
+  </g>
+  <g>
+    <ellipse style="fill: #ceb064" cx="876.2" cy="756" rx="66.2" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="876.2" cy="756" rx="66.2" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="876.2" y="760">salarioActor</text>
+  </g>
+  <g>
+    <ellipse style="fill: #add8e6" cx="465.9" cy="258" rx="73.9" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="465.9" cy="258" rx="73.9" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="465.9" y="262">nombreDirector</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffc0cb" cx="882.9" cy="423" rx="73.9" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="882.9" cy="423" rx="73.9" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="882.9" y="427">generoPelicula</text>
+  </g>
+  <g>
+    <ellipse style="fill: #add8e6" cx="452" cy="438" rx="97" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="452" cy="438" rx="97" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="452" y="442">nacionalidadDirector</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffc0cb" cx="895.9" cy="261" rx="73.9" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="895.9" cy="261" rx="73.9" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="895.9" y="265">tituloPelicula</text>
+  </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="299.063" y1="273.702" x2="374.304" y2="321.013"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="274.507" y1="389.867" x2="355.019" y2="358.981"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="442.879" y1="419.182" x2="413.711" y2="359.003"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="452.042" y1="276.508" x2="418.726" y2="321.001"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="696.153" y1="267.424" x2="749.949" y2="322.021"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="861.959" y1="277.537" x2="768.65" y2="323"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="696.798" y1="403.378" x2="746.771" y2="359.994"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="858.34" y1="405.373" x2="795.121" y2="359.999"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="646.109" y1="607.073" x2="729.003" y2="642.88"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="865.149" y1="606.505" x2="803.681" y2="642.064"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="682.829" y1="729.521" x2="746.527" y2="679.991"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="856.414" y1="738.141" x2="791.969" y2="679.972"/>
+  <g>
+    <rect style="fill: #ffff00" x="325" y="623" width="89.6" height="36"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="325" y="623" width="89.6" height="36"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="369.8" y="645">Usuarios</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffff00" cx="434.65" cy="557" rx="54.65" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="434.65" cy="557" rx="54.65" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="434.65" y="561">idUsuario</text>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="400" y1="565" x2="469.3" y2="565"/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffff00" cx="441.05" cy="718" rx="70.05" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="441.05" cy="718" rx="70.05" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="441.05" y="722">nombreUsuario</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffff00" cx="238.2" cy="586" rx="66.2" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="238.2" cy="586" rx="66.2" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="238.2" y="590">claveUsuario</text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffff00" cx="246.35" cy="716" rx="62.35" ry="18"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" cx="246.35" cy="716" rx="62.35" ry="18"/>
+    <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:monospace;font-style:normal;font-weight:normal" x="246.35" y="720">tipoUsuario</text>
+  </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="273.965" y1="699.223" x2="338.546" y2="659.988"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="275.221" y1="601.472" x2="324.434" y2="622.04"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="420.575" y1="575.231" x2="384.469" y2="622"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="424.168" y1="699.756" x2="387.378" y2="659.996"/>
+</svg>

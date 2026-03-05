@@ -21,7 +21,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-public class ModificacionActor extends WindowAdapter implements ActionListener {
+public class ModificacionActor extends WindowAdapter implements ActionListener
+{
 
 	Frame ventana1 = new Frame("Actores - Modificación");
 	Choice choActores = new Choice();
@@ -104,7 +105,8 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 	String actorSeleccionado = "";
 	String actorNuevo = "";
 
-	public ModificacionActor() {
+	public ModificacionActor()
+	{
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -324,7 +326,8 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 
 	}
 
-	private void rellenarChoice() {
+	private void rellenarChoice()
+	{
 		try
 
 		{
@@ -333,44 +336,56 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 			BD.ps = BD.connection.prepareStatement(BD.consultaSQLActores);
 			BD.rs = BD.ps.executeQuery();
 			choActores.add("Seleccionar un actor...");
-			while (BD.rs.next()) {
+			while (BD.rs.next())
+			{
 				choActores.add(BD.rs.getInt("idActor") + " | " + BD.rs.getString("nombreActor") + " | "
 						+ BD.rs.getString("apellidosActor") + " | " + BD.rs.getString("salarioActor"));
 			}
 		}
 
-		catch (ClassNotFoundException cnfe) {
+		catch (ClassNotFoundException cnfe)
+		{
 			dialogoComprobacion(cnfe, "", "");
-		} catch (SQLException se) {
+		} catch (SQLException se)
+		{
 			dialogoComprobacion(se, "", "");
-		} finally {
-			try {
+		} finally
+		{
+			try
+			{
 				BD.desconectarBD();
-			} catch (SQLException se) {
+			} catch (SQLException se)
+			{
 				dialogoComprobacion(se, "", "");
 
 			}
 		}
 	}
 
-	public void dialogoComprobacion(Exception e, String actorS, String actorN) {
-		if (e == null) {
+	public void dialogoComprobacion(Exception e, String actorS, String actorN)
+	{
+		if (e == null)
+		{
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
-			lblDiaF.setText("Se ha modificado a \"" + actorS + "\", ahora es \"" + actorN +"\".");
-		} else {
+			lblDiaF.setText("Se ha modificado a \"" + actorS + "\", ahora es \"" + actorN + "\".");
+		} else
+		{
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
 
-			switch (e.getClass().getSimpleName()) {
+			switch (e.getClass().getSimpleName())
+			{
 
 			case "ClassNotFoundException":
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				if (e.getMessage().contains("Incorrect decimal value")) {
+				if (e.getMessage().contains("Incorrect decimal value"))
+				{
 					lblDiaF.setText("El formato no es válido. Escriba un número. [" + e.getMessage() + "]");
-				} else {
+				} else
+				{
 					lblDiaF.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				}
 				break;
@@ -387,15 +402,20 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		new ModificacionActor();
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(btnEditar)) {
-			if (choActores.getSelectedIndex() != 0) {
-				actorSeleccionado = (choActores.getSelectedItem().split("\\|")[1].trim() + " " + choActores.getSelectedItem().split("\\|")[2].trim());
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource().equals(btnEditar))
+		{
+			if (choActores.getSelectedIndex() != 0)
+			{
+				actorSeleccionado = (choActores.getSelectedItem().split("\\|")[1].trim() + " "
+						+ choActores.getSelectedItem().split("\\|")[2].trim());
 				lblElecc.setText("Estás editando : " + (choActores.getSelectedItem().split("\\|")[1]).trim() + " "
 						+ (choActores.getSelectedItem().split("\\|")[2]).trim());
 				idActor = choActores.getSelectedItem().split("\\|")[0];
@@ -414,119 +434,166 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 					txtSalario.setText(BD.rs.getString("salarioActor"));
 				}
 
-				catch (ClassNotFoundException cnfe) {
+				catch (ClassNotFoundException cnfe)
+				{
 					dialogoComprobacion(cnfe, "", "");
-				} catch (SQLException se) {
+				} catch (SQLException se)
+				{
 					dialogoComprobacion(se, "", "");
-				} finally {
-					try {
+				} finally
+				{
+					try
+					{
 						BD.desconectarBD();
-					} catch (SQLException se) {
+					} catch (SQLException se)
+					{
 						dialogoComprobacion(se, "", "");
 
 					}
 				}
 				ventana2.setVisible(true);
 
-			} else {
+			} else
+			{
 				choActores.requestFocus();
 			}
 		}
 
-		else if (e.getSource() == btnAceptar) {
+		else if (e.getSource() == btnAceptar)
+		{
 
-			String nombre = txtNombre.getText();
-			String apellidos = txtApellidos.getText();
-			Float salario = Float.parseFloat(txtSalario.getText());
-			String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
-			
-			actorNuevo = nombre + " " + apellidos; 
-			boolean salarioValido = false;
-			
-			try {
-
-				if (salario < 0) {
-					dialogoComprobacion(new Exception("El salario no puede ser negativo"), "", "");
-				} else {
-					salarioValido = true;
-				}
-				if (salarioValido) {
-				BD.conectarBD();
-				BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-				BD.ps.setString(1, nombre);
-				BD.ps.setString(2, apellidos);
-				BD.ps.setFloat(3, salario);
-				BD.ps.setString(4, idActor);
-				BD.ps.executeUpdate();
-				dialogoComprobacion(null, actorSeleccionado, actorNuevo);
-				actorSeleccionado = actorNuevo;
-				lblElecc.setText("Estás editando : " + actorNuevo);}
-			} catch (NumberFormatException nfe) {
-				dialogoComprobacion(nfe, "", "");
-			
-			} catch (ClassNotFoundException cnfe) {
-				dialogoComprobacion(cnfe, "", "");
-			} catch (SQLException se) {
-				dialogoComprobacion(se, "", "");
-			} finally {
-				try {
-					BD.desconectarBD();
-				}
-
-				catch (SQLException se) {
-					dialogoComprobacion(se, "", "");
-				}
-
+			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
+					|| (txtSalario.getText().trim().isEmpty()))
+			{
+				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
 			}
 
-			rellenarChoice();
+			else
+			{
 
-		} else if (e.getSource() == btnLimpiar) {
+				String nombre = txtNombre.getText();
+				String apellidos = txtApellidos.getText();
+				Float salario = Float.parseFloat(txtSalario.getText());
+				String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
+
+				actorNuevo = nombre + " " + apellidos;
+				boolean salarioValido = false;
+
+				try
+				{
+
+					if (salario < 0)
+					{
+						dialogoComprobacion(new Exception("El salario no puede ser negativo"), "", "");
+					} else
+					{
+						salarioValido = true;
+					}
+					if (salarioValido)
+					{
+						BD.conectarBD();
+						BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+						BD.ps.setString(1, nombre);
+						BD.ps.setString(2, apellidos);
+						BD.ps.setFloat(3, salario);
+						BD.ps.setString(4, idActor);
+						BD.ps.executeUpdate();
+						dialogoComprobacion(null, actorSeleccionado, actorNuevo);
+						actorSeleccionado = actorNuevo;
+						lblElecc.setText("Estás editando : " + actorNuevo);
+						ventana2.validate();
+					}
+				} catch (NumberFormatException nfe)
+				{
+					dialogoComprobacion(nfe, "", "");
+
+				} catch (ClassNotFoundException cnfe)
+				{
+					dialogoComprobacion(cnfe, "", "");
+				} catch (SQLException se)
+				{
+					dialogoComprobacion(se, "", "");
+				} finally
+				{
+					try
+					{
+						BD.desconectarBD();
+					}
+
+					catch (SQLException se)
+					{
+						dialogoComprobacion(se, "", "");
+					}
+
+				}
+
+				rellenarChoice();
+			}
+
+		} else if (e.getSource() == btnLimpiar)
+		{
 			txtNombre.setText("");
 			txtApellidos.setText("");
 			txtSalario.setText("");
 			txtNombre.requestFocus();
 		}
-		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2)) {
+		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2))
+		{
 			new AltaDirector();
-		} else if ((e.getSource() == mnuBajaDir) || (e.getSource() == mnuBajaDir2)) {
+		} else if ((e.getSource() == mnuBajaDir) || (e.getSource() == mnuBajaDir2))
+		{
 			new BajaDirector();
-		} else if ((e.getSource() == mnuModDir) || (e.getSource() == mnuModDir2)) {
+		} else if ((e.getSource() == mnuModDir) || (e.getSource() == mnuModDir2))
+		{
 			new ModificacionDirector();
-		} else if ((e.getSource() == mnuConsDir) || (e.getSource() == mnuConsDir2)) {
+		} else if ((e.getSource() == mnuConsDir) || (e.getSource() == mnuConsDir2))
+		{
 			new ConsultaDirector();
-		} else if ((e.getSource() == mnuAltPel) || (e.getSource() == mnuAltPel2)) {
+		} else if ((e.getSource() == mnuAltPel) || (e.getSource() == mnuAltPel2))
+		{
 			new AltaPelicula();
-		} else if ((e.getSource() == mnuBajaPel) || (e.getSource() == mnuBajaPel2)) {
+		} else if ((e.getSource() == mnuBajaPel) || (e.getSource() == mnuBajaPel2))
+		{
 			new BajaPelicula();
-		} else if ((e.getSource() == mnuConsPel) || (e.getSource() == mnuConsPel2)) {
+		} else if ((e.getSource() == mnuConsPel) || (e.getSource() == mnuConsPel2))
+		{
 			new ConsultaPelicula();
-		} else if ((e.getSource() == mnuAltAct) || (e.getSource() == mnuAltAct2)) {
+		} else if ((e.getSource() == mnuAltAct) || (e.getSource() == mnuAltAct2))
+		{
 			new AltaActor();
-		} else if ((e.getSource() == mnuBajaAct) || (e.getSource() == mnuBajaAct2)) {
+		} else if ((e.getSource() == mnuBajaAct) || (e.getSource() == mnuBajaAct2))
+		{
 			new BajaActor();
-		} else if ((e.getSource() == mnuModAct) || (e.getSource() == mnuModAct2)) {
+		} else if ((e.getSource() == mnuModAct) || (e.getSource() == mnuModAct2))
+		{
 			new ModificacionActor();
-		} else if ((e.getSource() == mnuConsAct) || (e.getSource() == mnuConsAct2)) {
+		} else if ((e.getSource() == mnuConsAct) || (e.getSource() == mnuConsAct2))
+		{
 			new ConsultaActor();
 		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
+				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct))
+		{
 			diaDesarrollo.setVisible(true);
 		}
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) {
+	public void windowClosing(WindowEvent e)
+	{
 
-		if (e.getSource() == diaFeedback) {
+		if (e.getSource() == diaFeedback)
+		{
 			diaFeedback.dispose();
-		} else if (e.getSource() == diaDesarrollo) {
+		} else if (e.getSource() == diaDesarrollo)
+		{
 			diaDesarrollo.dispose();
 		}
 
-		if (e.getSource() == ventana2) {
+		if (e.getSource() == ventana2)
+		{
 			ventana2.dispose();
-		} else if (e.getSource() == ventana1) {
+		} else if (e.getSource() == ventana1)
+		{
 			ventana1.dispose();
 		}
 

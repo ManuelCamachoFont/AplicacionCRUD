@@ -1,7 +1,6 @@
 package es.studium;
 
 import java.awt.Button;
-import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
@@ -14,31 +13,19 @@ import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.TextField;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-// ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
-public class AltaPelicula extends WindowAdapter implements ActionListener {
-	Frame ventana = new Frame("Peliculas - Alta");
-	Label lblPelicula = new Label("Introduzca una nueva Película");
-	TextField txtTitulo = new TextField(25);
-	TextField txtGenero = new TextField(25);
-	TextField txtEstreno = new TextField(25);
-	Label lblTitulo = new Label("Título");
-	Label lblGenero = new Label("Género");
-	Label lblEstreno = new Label("Fecha de Estreno (AAAA-MM-DD)");
-	Label lblDirector = new Label("Director");
-	Choice choDirector = new Choice();
-	Button btnAceptar = new Button("Aceptar");
-	Button btnLimpiar = new Button("Limpiar");
-	Dialog dialogo = new Dialog(ventana, "Comprobación", true);
-	Label lblDia = new Label();
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints gbc = new GridBagConstraints();
+public class ConsultaPelicula extends WindowAdapter implements ActionListener {
+
+	Frame ventana = new Frame("Películas - Consultas");
+	TextArea txtInfo = new TextArea();
+	Button btnConsulta = new Button("Consultas");
+	Button btnPdf = new Button("Exportar a PDF");
 
 	MenuBar mnuBar = new MenuBar();
 	Menu mnuDirectores = new Menu("Directores");
@@ -62,17 +49,17 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	MenuItem mnuConsPelAct = new MenuItem("Modificación");
 	MenuItem mnuModPelAct = new MenuItem("Consulta");
 
+	GridBagLayout gridbag = new GridBagLayout();
+	GridBagConstraints gbc = new GridBagConstraints();
+
+	Dialog diaFeedback = new Dialog(ventana, "", true);
+	Label lblDiaFeedback = new Label("");
+
 	// Dialogo para la parte del tercer trimestre
 	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
 	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
-	public AltaPelicula() {
-
-		ventana.setLayout(gridbag);
-		ventana.setBackground(new Color(180, 211, 178));
-		ventana.setFont(new Font("SanSerif", 0, 12));
-		rellenarChoice();
-
+	public ConsultaPelicula() {
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
 		mnuDirectores.add(mnuAltDir);
@@ -124,78 +111,46 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		ventana.setMenuBar(mnuBar);
 
-		// Ventana Alta
-		gbc.insets = new Insets(10, 10, 10, 10);
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
-		lblPelicula.setFont(new Font("Serif", 1, 20));
-		ventana.add(lblPelicula, gbc);
-		gbc.gridwidth = 1;
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		ventana.add(lblTitulo, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		ventana.add(txtTitulo, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		ventana.add(lblGenero, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		ventana.add(txtGenero, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		ventana.add(lblEstreno, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		ventana.add(txtEstreno, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		ventana.add(lblDirector, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		ventana.add(choDirector, gbc);
-
+		ventana.setLayout(gridbag);
+		ventana.setBackground(new Color(213, 255, 255));
+		ventana.setFont(new Font("SanSerif", 0, 12));
+		txtInfo.setFont(new Font("Monospaced", 1, 12));
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		gbc.fill = GridBagConstraints.SOUTHWEST;
-		gbc.anchor = GridBagConstraints.SOUTHWEST;
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		btnAceptar.addActionListener(this);
-		ventana.add(btnAceptar, gbc);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-		gbc.fill = GridBagConstraints.SOUTHEAST;
-		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		gbc.gridx = 1;
-		gbc.gridy = 5;
-		btnLimpiar.addActionListener(this);
-		ventana.add(btnLimpiar, gbc);
+		gbc.gridy = 0;
+		txtInfo.setEditable(false);
+		ventana.add(txtInfo, gbc);
+
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.CENTER;
+		btnConsulta.addActionListener(this);
+		ventana.add(btnConsulta, gbc);
+
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		btnPdf.addActionListener(this);
+		ventana.add(btnPdf, gbc);
 
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(600, 320);
+		ventana.setSize(800, 400);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
-		// Dialogo Confirmación
-		dialogo.add(lblDia);
-		dialogo.addWindowListener(this);
-		dialogo.setLayout(new FlowLayout());
-		dialogo.setSize(300, 80);
-		dialogo.setResizable(true);
-		dialogo.setLocationRelativeTo(null);
-		dialogo.setVisible(false);
+		diaFeedback.setLayout(new FlowLayout());
+		diaFeedback.add(lblDiaFeedback);
+		diaFeedback.addWindowListener(this);
+		diaFeedback.setLocationRelativeTo(null);
+		diaFeedback.setSize(320, 80);
+		diaFeedback.setResizable(false);
+		diaFeedback.setVisible(false);
 
 		// Dialogo tercer trimestre
 		diaDesarrollo.add(lblDesarrollo);
@@ -208,56 +163,27 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		diaDesarrollo.setVisible(false);
 	}
 
-	public void darAlta(String director) {
-
-		String titulo = txtTitulo.getText();
-		String genero = txtGenero.getText();
-		String estreno = txtEstreno.getText();
-		String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, estrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
-
-		try {
-			BD.conectarBD();
-			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-			BD.ps.setString(1, titulo);
-			BD.ps.setString(2, genero);
-			BD.ps.setString(3, estreno);
-			BD.ps.setString(4, director);
-			BD.ps.executeUpdate();
-			dialogoComprobacion(null);
-
-		} catch (ClassNotFoundException cnfe) {
-			dialogoComprobacion(cnfe);
-		} catch (SQLException se) {
-			dialogoComprobacion(se);
-		} finally {
-			try {
-				BD.desconectarBD();
-			} catch (SQLException se) {
-				dialogoComprobacion(se);
-			}
-		}
+	public static void main(String[] args) {
+		new ConsultaPelicula();
 
 	}
 
-	private void rellenarChoice() {
-		choDirector.removeAll();
-		try
+	public void consultar() {
 
-		{
+		try {
+
 			BD.conectarBD();
-			BD.ps = BD.connection.prepareStatement(BD.consultaSQLDirectores);
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLPeliculas);
 			BD.rs = BD.ps.executeQuery();
-			choDirector.add("Seleccionar un director...");
+			String columna = "%5s       |     %-15s    |     %-15s    |     %-15s    |     %-15s    |\n -------------------------------------------------------------------------------------------------------------------- \n";
+			txtInfo.setText(String.format(columna, "ID", "TITULO", "GENERO", "ESTRENO", "DIRECTOR"));
 			while (BD.rs.next()) {
-				choDirector.add(BD.rs.getInt("idDirector") +
-
-						" | " + BD.rs.getString("nombreDirector") +
-
-						" | " + BD.rs.getString("apellidosDirector"));
+				txtInfo.append(String.format(columna, BD.rs.getString("idPelicula"), BD.rs.getString("tituloPelicula"),
+						BD.rs.getString("generoPelicula"), BD.rs.getString("fechaEstrenoPelicula"),
+						BD.rs.getString("idDirectorFK")));
 			}
-		}
-
-		catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(null);
+		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
 			dialogoComprobacion(se);
@@ -272,62 +198,36 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 	public void dialogoComprobacion(Exception e) {
 		if (e == null) {
-			dialogo.setTitle("Enhorabuena");
-			dialogo.setBackground(new Color(180, 211, 178));
-			lblDia.setText("El alta se ha realizado con éxito");
+			diaFeedback.setTitle("Enhorabuena");
+			diaFeedback.setBackground(new Color(180, 211, 178));
+			lblDiaFeedback.setText("La consulta se ha realizado con éxito");
 		} else {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
+			diaFeedback.setTitle("Error");
+			diaFeedback.setBackground(new Color(243, 70, 74));
 
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
-				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
-			case "DateTimeParseException":
-				lblDia.setText("Formato de fecha incorrecto. [" + e.getMessage() + "]");
-				break;
+
 			default:
-				lblDia.setText("Error. [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
-		dialogo.pack();
-		dialogo.setVisible(true);
-		
-	}
-
-	public static void main(String[] args) {
-		new AltaPelicula();
+		diaFeedback.pack();
+		diaFeedback.setVisible(true);
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnLimpiar) {
-			txtTitulo.setText("");
-			txtGenero.setText("");
-			txtEstreno.setText("");
-		}
-
-		if (e.getSource() == btnAceptar) {
-			if ((choDirector.getSelectedIndex() == 0) || (txtTitulo.getText().trim().isEmpty())
-					|| (txtGenero.getText().trim().isEmpty()) || (txtEstreno.getText().trim().isEmpty())) {
-				dialogoComprobacion(new Exception("Rellene todos los campos"));
-			}
-			else {
-				try {
-					java.time.LocalDate.parse(txtEstreno.getText());
-					String director = choDirector.getSelectedItem().split("\\|")[0].trim();
-					darAlta(director);
-					rellenarChoice();
-				} catch (java.time.format.DateTimeParseException dte) {
-					dialogoComprobacion(dte);
-				}
-				
-			}
+		if (e.getSource() == btnConsulta) {
+			txtInfo.setText("");
+			consultar();
 		}
 
 		if (e.getSource() == mnuAltDir) {
@@ -356,21 +256,18 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
 			diaDesarrollo.setVisible(true);
 		}
+
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		if (e.getSource() == dialogo) {
-			dialogo.setVisible(false);
-		}
-
-		else if (e.getSource() == diaDesarrollo) {
-			diaDesarrollo.setVisible(false);
-		}
-
-		else if (e.getSource() == ventana) {
+		if (e.getSource() == diaFeedback) {
+			diaFeedback.dispose();
+		} else if (e.getSource() == diaDesarrollo) {
+			diaDesarrollo.dispose();
+		} else if (e.getSource() == ventana) {
 			ventana.dispose();
 		}
-
 	}
+
 }

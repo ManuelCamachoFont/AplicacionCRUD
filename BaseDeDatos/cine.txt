@@ -1,0 +1,5 @@
+directores(#idDirector, nombreDirector, apellidosDirector, nacionalidadDirector);
+peliculas(#idPelicula, tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK);
+actores(#idActor, nombreActor, apellidosActor,salarioActor);
+peliculas_actores(#idPeliculasActores, idPeliculaFK, idActorFK);
+usuarios(#idUsuario, nombreUsuario, claveUsuario, tipoUsuario);

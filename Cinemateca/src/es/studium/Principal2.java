@@ -21,6 +21,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 {
 
 	Frame ventana = new Frame("Menú principal");
+	Label lblTitulo = new Label("¡Bienvenido!");
 
 	MenuBar mnuBar = new MenuBar();
 	Menu mnuDirectores = new Menu("Directores");
@@ -61,6 +62,13 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		ventana.setSize(400, 400);
 		ventana.setBackground(new Color(213, 255, 255));
 		ventana.setFont(new Font("SansSerif", 0, 12));
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		lblTitulo.setFont(new Font("Serif", 1, 42));
+		ventana.add(lblTitulo, gbc);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -113,13 +121,11 @@ public class Principal2 extends WindowAdapter implements ActionListener
 
 		ventana.setMenuBar(mnuBar);
 
-		gbc.gridx = 1;
-		gbc.gridy = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
 		ventana.add(lblInfo, gbc);
 
-		gbc.gridy = 1;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
+		gbc.gridy = 2;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		btnLogOut.addActionListener(this);
 		ventana.add(btnLogOut, gbc);

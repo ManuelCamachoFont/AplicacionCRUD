@@ -56,7 +56,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	MenuItem mnuConsDir = new MenuItem("Consulta");
 	MenuItem mnuAltPel = new MenuItem("Alta");
 	MenuItem mnuBajaPel = new MenuItem("Baja");
-	MenuItem mnuModPel = new MenuItem ("Modificación");
+	MenuItem mnuModPel = new MenuItem("Modificación");
 	MenuItem mnuConsPel = new MenuItem("Consulta");
 	MenuItem mnuAltAct = new MenuItem("Alta");
 	MenuItem mnuBajaAct = new MenuItem("Baja");
@@ -78,7 +78,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	MenuItem mnuConsDir2 = new MenuItem("Consulta");
 	MenuItem mnuAltPel2 = new MenuItem("Alta");
 	MenuItem mnuBajaPel2 = new MenuItem("Baja");
-	MenuItem mnuModPel2 = new MenuItem ("Modificación");
+	MenuItem mnuModPel2 = new MenuItem("Modificación");
 	MenuItem mnuConsPel2 = new MenuItem("Consulta");
 	MenuItem mnuAltAct2 = new MenuItem("Alta");
 	MenuItem mnuBajaAct2 = new MenuItem("Baja");
@@ -88,22 +88,22 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	MenuItem mnuBajaPelAct2 = new MenuItem("Baja");
 	MenuItem mnuConsPelAct2 = new MenuItem("Modificación");
 	MenuItem mnuModPelAct2 = new MenuItem("Consulta");
-	
+
 	// Dialogo para la parte del tercer trimestre
-		Dialog diaDesarrollo = new Dialog(ventana1, "Acceso Denegado", true);
-		Label lblDesarrollo = new Label("Esta parte esta en desarrollo");
-		
-		// Dialogo para la parte del tercer trimestre
-		Dialog diaDesarrollo2 = new Dialog(ventana2, "Acceso Denegado", true);
-		Label lblDesarrollo2 = new Label("Esta parte está en desarrollo");
+	Dialog diaDesarrollo = new Dialog(ventana1, "Acceso Denegado", true);
+	Label lblDesarrollo = new Label("Esta parte esta en desarrollo");
+
+	// Dialogo para la parte del tercer trimestre
+	Dialog diaDesarrollo2 = new Dialog(ventana2, "Acceso Denegado", true);
+	Label lblDesarrollo2 = new Label("Esta parte está en desarrollo");
 
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	String sentenciaSQL = "";
-	
+
 	String idDirector = "";
-	
+
 	String directorSeleccionado = "";
 	String directorNuevo = "";
 
@@ -209,7 +209,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		Usuario.permisosBasico(mnuPeliculas2, mnuBajaPel2, mnuModPel2, mnuConsPel2);
 		Usuario.permisosBasico(mnuActores2, mnuBajaAct2, mnuModAct2, mnuConsAct2);
 		Usuario.permisosBasico(mnuPelAct2, mnuBajaPelAct2, mnuModPelAct2, mnuConsPelAct2);
-		
+
 		ventana2.setMenuBar(mnuBar2);
 
 		// Ventana 1
@@ -344,17 +344,21 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			}
 		}
 	}
-	
-	public void dialogoComprobacion(Exception e, String directorS, String directorN) {
-		if (e == null) {
+
+	public void dialogoComprobacion(Exception e, String directorS, String directorN)
+	{
+		if (e == null)
+		{
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
-			lblDiaF.setText("Se ha modificado a \"" + directorS + "\", ahora es \"" + directorN +"\".");
-		} else {
+			lblDiaF.setText("Se ha modificado a \"" + directorS + "\", ahora es \"" + directorN + "\".");
+		} else
+		{
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
 
-			switch (e.getClass().getSimpleName()) {
+			switch (e.getClass().getSimpleName())
+			{
 
 			case "ClassNotFoundException":
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
@@ -382,9 +386,12 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	{
 		if (e.getSource().equals(btnEditar))
 		{
-			if (choDirectores.getSelectedIndex() != 0){
-				directorSeleccionado = (choDirectores.getSelectedItem().split("\\|")[1].trim() + " " + choDirectores.getSelectedItem().split("\\|")[2].trim());
-				lblElecc.setText("Estás editando : " + (choDirectores.getSelectedItem().split("\\|")[1]).trim() + " " + (choDirectores.getSelectedItem().split("\\|")[2]).trim());
+			if (choDirectores.getSelectedIndex() != 0)
+			{
+				directorSeleccionado = (choDirectores.getSelectedItem().split("\\|")[1].trim() + " "
+						+ choDirectores.getSelectedItem().split("\\|")[2].trim());
+				lblElecc.setText("Estás editando : " + (choDirectores.getSelectedItem().split("\\|")[1]).trim() + " "
+						+ (choDirectores.getSelectedItem().split("\\|")[2]).trim());
 				idDirector = choDirectores.getSelectedItem().split("\\|")[0];
 				sentenciaSQL = BD.consultaSQLDirectores + " WHERE idDirector = ?";
 
@@ -429,46 +436,56 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		else if (e.getSource() == btnAceptar)
 		{
 
-			String nombre = txtNombre.getText();
-			String apellidos = txtApellidos.getText();
-			String nacionalidad = txtNacionalidad.getText();
-			String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, nacionalidadDirector = ? WHERE idDirector = ?";
-			
-			directorNuevo = nombre + " " + apellidos;
+			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
+					|| (txtNacionalidad.getText().trim().isEmpty()))
+			{
+				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
+			}
 
-			try
+			else
 			{
-				BD.conectarBD();
-				BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-				BD.ps.setString(1, nombre);
-				BD.ps.setString(2, apellidos);
-				BD.ps.setString(3, nacionalidad);
-				BD.ps.setString(4, idDirector);
-				BD.ps.executeUpdate();
-				dialogoComprobacion(null, directorSeleccionado, directorNuevo);
-				directorSeleccionado = directorNuevo;
-				lblElecc.setText("Estás editando : " + directorNuevo);
-			} catch (ClassNotFoundException cnfe)
-			{
-				dialogoComprobacion(cnfe, "", "");
-			} catch (SQLException se)
-			{
-				dialogoComprobacion(se, "", "");
-			} finally
-			{
+				String nombre = txtNombre.getText();
+				String apellidos = txtApellidos.getText();
+				String nacionalidad = txtNacionalidad.getText();
+				String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, nacionalidadDirector = ? WHERE idDirector = ?";
+
+				directorNuevo = nombre + " " + apellidos;
+
 				try
 				{
-					BD.desconectarBD();
-				}
-
-				catch (SQLException se)
+					BD.conectarBD();
+					BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+					BD.ps.setString(1, nombre);
+					BD.ps.setString(2, apellidos);
+					BD.ps.setString(3, nacionalidad);
+					BD.ps.setString(4, idDirector);
+					BD.ps.executeUpdate();
+					dialogoComprobacion(null, directorSeleccionado, directorNuevo);
+					directorSeleccionado = directorNuevo;
+					lblElecc.setText("Estás editando : " + directorNuevo);
+					ventana2.validate();
+				} catch (ClassNotFoundException cnfe)
+				{
+					dialogoComprobacion(cnfe, "", "");
+				} catch (SQLException se)
 				{
 					dialogoComprobacion(se, "", "");
+				} finally
+				{
+					try
+					{
+						BD.desconectarBD();
+					}
+
+					catch (SQLException se)
+					{
+						dialogoComprobacion(se, "", "");
+					}
+
 				}
 
+				rellenarChoice();
 			}
-			
-			rellenarChoice();
 
 		} else if (e.getSource() == btnLimpiar)
 		{
@@ -524,7 +541,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		if (e.getSource() == diaFeedback)
 		{
 			diaFeedback.dispose();
-		}else if (e.getSource() == diaDesarrollo)
+		} else if (e.getSource() == diaDesarrollo)
 		{
 			diaDesarrollo.dispose();
 		}

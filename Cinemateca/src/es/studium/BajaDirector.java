@@ -61,7 +61,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
 	MenuItem mnuConsPelAct = new MenuItem("Modificación");
 	MenuItem mnuModPelAct = new MenuItem("Consulta");
-	
+
 	String directorSeleccionado = "";
 
 	// Dialogo para la parte del tercer trimestre
@@ -271,24 +271,35 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 
 		}
 	}
-	
-	public void dialogoComprobacion(Exception e, String director) {
-		if (e == null) {
+
+	public void dialogoComprobacion(Exception e, String director)
+	{
+		if (e == null)
+		{
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaFeedback.setText("Se ha eliminado correctamente a [" + director + "]");
-		} else {
+		} else
+		{
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
 
-			switch (e.getClass().getSimpleName()) {
+			switch (e.getClass().getSimpleName())
+			{
 
 			case "ClassNotFoundException":
 				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
-				break;
+				if (e.getMessage().contains("foreign"))
+				{
+					lblDiaFeedback.setText("Está operación no está permitida, existen relaciones entre los registros. ["
+							+ e.getMessage() + "]");
+				} else
+				{
+					lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+					break;
+				}
 			default:
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
