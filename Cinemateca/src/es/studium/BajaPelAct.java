@@ -2,6 +2,7 @@ package es.studium;
 
 import java.awt.Button;
 import java.awt.Canvas;
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
@@ -16,29 +17,33 @@ import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
 
-// ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
-public class AltaActor extends WindowAdapter implements ActionListener {
-	Frame ventana = new Frame("Actores - Alta");
+
+public class BajaPelAct extends WindowAdapter implements ActionListener {
+	Frame ventana = new Frame("Películas Actores - Baja");
+
 	CanvasImagen canvas = new CanvasImagen();
-	Label lblActor = new Label("Introduzca un nuevo Actor", Label.CENTER);
-	TextField txtNombre = new TextField(25);
-	TextField txtApellidos = new TextField(25);
-	TextField txtSalario = new TextField(25);
-	Label lblNombre = new Label("Nombre");
-	Label lblApellidos = new Label("Apellidos");
-	Label lblSalario = new Label("Salario (Euros)");
-	Button btnAceptar = new Button("Aceptar");
-	Button btnLimpiar = new Button("Limpiar");
-	Dialog dialogo = new Dialog(ventana, "Comprobación", true);
-	Label lblDia = new Label();
+	
+	Label lblElec = new Label("¿Qué relación desea eliminar?", Label.CENTER);
+	Choice lista = new Choice();
+	Button btnElim = new Button("Eliminar");
+
+	Dialog dialogo = new Dialog(ventana, "¿Segur@?", true);
+	Label lblDia = new Label("", Label.CENTER);
+	Label lblDia2 = new Label("¿Estás seguro de eliminarlo?", Label.CENTER);
+	Button btnDiaSi = new Button("Si");
+	Button btnDiaNo = new Button("No");
+
+	Dialog diaFeedback = new Dialog(ventana, "Confirmación", true);
+	Label lblDiaFeedback = new Label("");
+
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
@@ -63,12 +68,14 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
+	
+	String pelActSeleccionado = "";
+	
+	HashMap<String,Integer>mapaPelAct = new HashMap();
 
-	public AltaActor() {
-
-		ventana.setLayout(gridbag);
-		ventana.setBackground(new Color(120, 175, 169));
-		ventana.setFont(new Font("SanSerif", 0, 12));
+	public BajaPelAct() {
+		ventana.setFont(new Font("SansSerif", 0, 12));
+		ventana.setBackground(new Color(255, 165, 0));
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -86,8 +93,6 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		mnuPeliculas.add(mnuAltPel);
 		mnuBajaPel.addActionListener(this);
 		mnuPeliculas.add(mnuBajaPel);
-		mnuModPel.addActionListener(this);
-		mnuPeliculas.add(mnuModPel);
 		mnuConsPel.addActionListener(this);
 		mnuPeliculas.add(mnuConsPel);
 		mnuBar.add(mnuPeliculas);
@@ -114,7 +119,6 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		mnuPelAct.add(mnuConsPelAct);
 		mnuBar.add(mnuPelAct);
 
-
 		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
 		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
@@ -122,193 +126,210 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 
 		ventana.setMenuBar(mnuBar);
 
-		// Ventana Alta
+		ventana.setLayout(gridbag);
+
+		datos();
 		gbc.insets = new Insets(10, 10, 10, 10);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridheight = 4;
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0.3;
+		gbc.weightx = 0.1;
 		gbc.weighty = 1;
 		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
 		ventana.add(canvas, gbc);
 		gbc.gridheight = 1;
-
+		
+		gbc.weightx = 0.3;
+		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbc.gridwidth = 2;
+		lblElec.setFont(new Font("SanSerif", 3, 20));
+		ventana.add(lblElec, gbc);
+
+		gbc.gridy = 3;
+		ventana.add(lista, gbc);
+
+		gbc.gridy = 4;
 		gbc.anchor = GridBagConstraints.CENTER;
-		lblActor.setFont(new Font("Serif", 1, 20));
-		ventana.add(lblActor, gbc);
-		gbc.gridwidth = 1;
+		btnElim.addActionListener(this);
+		ventana.add(btnElim, gbc);
 
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		ventana.add(lblNombre, gbc);
-
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		ventana.add(txtNombre, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		ventana.add(lblApellidos, gbc);
-
-		gbc.gridx = 2;
-		gbc.gridy = 2;
-		ventana.add(txtApellidos, gbc);
-
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		ventana.add(lblSalario, gbc);
-
-		gbc.gridx = 2;
-		gbc.gridy = 3;
-		ventana.add(txtSalario, gbc);
-
-		gbc.fill = GridBagConstraints.SOUTHWEST;
-		gbc.anchor = GridBagConstraints.SOUTHWEST;
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		btnAceptar.addActionListener(this);
-		ventana.add(btnAceptar, gbc);
-
-		gbc.fill = GridBagConstraints.SOUTHEAST;
-		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		gbc.gridx = 2;
-		gbc.gridy = 4;
-		btnLimpiar.addActionListener(this);
-		ventana.add(btnLimpiar, gbc);
-
+		ventana.setSize(700, 300);
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(600, 300);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
-		// Dialogo Confirmación
-		dialogo.add(lblDia);
+		// Dialogo de confirmación
+
+		dialogo.setSize(450, 198);
 		dialogo.addWindowListener(this);
-		dialogo.setLayout(new FlowLayout());
-		dialogo.setSize(300, 80);
-		dialogo.setResizable(false);
+		dialogo.setLayout(gridbag);
+		dialogo.setBackground(new Color(255, 165, 0));
+		dialogo.setFont(new Font("SanSerif", 2, 12));
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.gridwidth = 4;
+		gbc.anchor = GridBagConstraints.CENTER;
+		dialogo.add(lblDia, gbc);
+
+		gbc.gridy = 1;
+		dialogo.add(lblDia2, gbc);
+		gbc.gridwidth = 1;
+
+		btnDiaSi.addActionListener(this);
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.SOUTHWEST;
+		btnDiaSi.setBackground(new Color(180, 211, 178));
+		dialogo.add(btnDiaSi, gbc);
+
+		btnDiaNo.addActionListener(this);
+		gbc.gridx = 3;
+		gbc.gridy = 2;
+		gbc.anchor = GridBagConstraints.SOUTHEAST;
+		btnDiaNo.setBackground(new Color(243, 70, 74));
+		dialogo.add(btnDiaNo, gbc);
+
 		dialogo.setLocationRelativeTo(null);
+		dialogo.setResizable(false);
 		dialogo.setVisible(false);
+
+		// Dialogo FeedBack
+		diaFeedback.setLayout(new FlowLayout());
+		diaFeedback.add(lblDiaFeedback);
+		diaFeedback.setSize(300, 80);
+		diaFeedback.addWindowListener(this);
+		diaFeedback.setLocationRelativeTo(null);
+		dialogo.setResizable(false);
+		diaFeedback.setVisible(false);
 
 	}
 	
 	public class CanvasImagen extends Canvas {
 	    public void paint(Graphics g) {
-	        Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\altAct.jpg");
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\pelact\\bajaPelAct.png");
 	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 	    }
 	}
 
-	public void darAlta() {
+	public void datos() {
 
-		String nombre = txtNombre.getText();
-		String apellidos = txtApellidos.getText();
-		String salario = txtSalario.getText();
-		String sentenciaSQL = "INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)";
-
+		lista.removeAll();
+		mapaPelAct.clear();
+		
 		try {
+			
 			BD.conectarBD();
-			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-			BD.ps.setString(1, nombre);
-			BD.ps.setString(2, apellidos);
-			BD.ps.setString(3, salario);
-			BD.ps.executeUpdate();
-			dialogoComprobacion(null);
-
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLPelAct);
+			BD.rs = BD.ps.executeQuery();
+			lista.add("Elige una relación...");
+			while (BD.rs.next()) {
+				int id = BD.rs.getInt("idPeliculaActor");
+				String pelicula = BD.rs.getString("pelicula");
+				String actor = BD.rs.getString("actor");
+				String pelAct = pelicula + " - " + actor;
+				mapaPelAct.put(pelAct, id);
+				lista.add(pelAct);
+			}
 		} catch (ClassNotFoundException cnfe) {
-			dialogoComprobacion(cnfe);
+			dialogoComprobacion(cnfe, "");
 		} catch (SQLException se) {
-			dialogoComprobacion(se);
+			dialogoComprobacion(se, "");
 		} finally {
 			try {
 				BD.desconectarBD();
 			} catch (SQLException se) {
-				dialogoComprobacion(se);
+				dialogoComprobacion(se, "");
 			}
 		}
 
 	}
 
-	public void dialogoComprobacion(Exception e) {
+	public void darBaja(Choice choPelAct) {
+
+		String pelAct = choPelAct.getSelectedItem();
+		int idPelAct = mapaPelAct.get(pelAct);
+
+		try {
+			BD.conectarBD();
+			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLPelAct);
+			BD.ps.setInt(1, idPelAct);
+			BD.ps.executeUpdate();
+			dialogoComprobacion(null, pelActSeleccionado);
+		} catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe, "");
+		} catch (SQLException se) {
+			dialogoComprobacion(se, "");
+		} finally {
+			try {
+				BD.desconectarBD();
+			} catch (SQLException se) {
+				dialogoComprobacion(se, "");
+			}
+
+		}
+
+	}
+
+	public void dialogoComprobacion(Exception e, String PelAct) {
 		if (e == null) {
-			dialogo.setTitle("Enhorabuena");
-			dialogo.setBackground(new Color(180, 211, 178));
-			lblDia.setText("El alta se ha realizado con éxito");
+			diaFeedback.setTitle("Enhorabuena");
+			diaFeedback.setBackground(new Color(180, 211, 178));
+			lblDiaFeedback.setText("Se ha eliminado correctamente a [" + PelAct + "]");
 			lblDia.setBackground(dialogo.getBackground());
 		} else {
-			dialogo.setTitle("Error");
-			dialogo.setBackground(new Color(243, 70, 74));
+			diaFeedback.setTitle("Error");
+			diaFeedback.setBackground(new Color(243, 70, 74));
 			lblDia.setBackground(dialogo.getBackground());
 
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
-				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				if (e.getMessage().contains("Incorrect decimal value")) {
-					lblDia.setText("El formato no es válido. Escriba un número. [" + e.getMessage() + "]");
-				} else {
-					lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
-				}
-				break;
-			case "NumberFormatException":
-				lblDia.setText("El salario contiene carácteres no válidos. Escriba un número [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			default:
-				lblDia.setText("Error. [" + e.getMessage() + "]");
+				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
-		dialogo.pack();
-		dialogo.setVisible(true);
+		diaFeedback.pack();
+		diaFeedback.setVisible(true);
 
 	}
 
 	public static void main(String[] args) {
-		new AltaActor();
-
+		new BajaPelAct();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnLimpiar) {
-			txtNombre.setText("");
-			txtApellidos.setText("");
-			txtSalario.setText("");
-		}
-
-		else if (e.getSource() == btnAceptar) {
-			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
-					|| (txtSalario.getText().trim().isEmpty())) {
-				dialogoComprobacion(new Exception("Rellene todos los campos"));
-			}
-
-			else {
-				boolean salarioValido = false;
-				try {
-					float salario = Float.parseFloat(txtSalario.getText());
-
-					if (salario < 0) {
-						dialogoComprobacion(new Exception("El salario no puede ser negativo"));
-					} else {
-						salarioValido = true;
-					}
-					if (salarioValido) {
-						darAlta();
-					}
-				} catch (NumberFormatException nfe) {
-					dialogoComprobacion(nfe);
-				}
+		if (e.getSource() == btnElim) {
+			if (lista.getSelectedIndex() != 0) {
+				pelActSeleccionado = lista.getSelectedItem();
+				lblDia.setText("Se va a eliminar a \"" + pelActSeleccionado + "\"");
+				dialogo.setVisible(true);
 			}
 		}
 
-		else if (e.getSource() == mnuAltDir) {
+		if (e.getSource() == btnDiaSi) {
+			darBaja(lista);
+			dialogo.dispose();
+			datos();
+
+		} else if (e.getSource() == btnDiaNo) {
+			dialogo.setVisible(false);
+
+		}
+
+		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
 		} else if (e.getSource() == mnuBajaDir)
 		{
@@ -357,17 +378,18 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		{
 			new ConsultaPelAct();
 		}
+
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
 			dialogo.dispose();
-		}
 
-		else if (e.getSource() == ventana) {
+		} else if (e.getSource() == diaFeedback) {
+			diaFeedback.dispose();
+		}else {
 			ventana.dispose();
 		}
-
 	}
 }

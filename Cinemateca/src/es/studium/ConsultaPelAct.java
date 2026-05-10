@@ -26,18 +26,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 
-public class ConsultaPelicula extends WindowAdapter implements ActionListener {
+public class ConsultaPelAct extends WindowAdapter implements ActionListener
+{
 
-	Frame ventana = new Frame("Películas - Consultas");
+	Frame ventana = new Frame("Películas Actores - Consultas");
 	CanvasImagen canvas = new CanvasImagen();
 	Panel tabla = new Panel();
 	ScrollPane scroll = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
 	Button btnConsulta = new Button("Consultas");
 	Panel panelBotones = new Panel();
-	Button btnOrdenTitulo = new Button("Ordenar por título");
-	Button btnOrdenGenero = new Button("Ordenar por género");
-	Button btnOrdenFecha = new Button("Ordenar por fecha");
-	Button btnOrdenDirector = new Button("Ordenador por director");
+	Button btnOrdenActores = new Button("Ordenar por actores");
+	Button btnOrdenPeliculas = new Button("Ordenar por películas");
 	Button btnPdf = new Button("Exportar a PDF");
 
 	MenuBar mnuBar = new MenuBar();
@@ -61,16 +60,17 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
-
+	
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	Dialog diaFeedback = new Dialog(ventana, "", true);
 	Label lblDiaFeedback = new Label("");
-	
-	String consultaRealizada = "";
 
-	public ConsultaPelicula() {
+	
+
+	public ConsultaPelAct()
+	{
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
 		mnuDirectores.add(mnuAltDir);
@@ -125,23 +125,23 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
 		ventana.setFont(new Font("SanSerif", 0, 12));
-
+	
 		gbc.insets = new Insets(5, 5, 5, 5);
 
 		gbc.fill = GridBagConstraints.BOTH;
-
+		
 		gbc.gridy = 0;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		tabla.setBackground(new Color(120, 175, 169));
-		tabla.setLayout(null);
+		tabla.setBackground(Color.BLACK);
+		tabla.setLayout(new GridLayout(0, 3, 1, 1));
 		scroll.add(tabla);
 		scroll.setVisible(false);
 		ventana.add(scroll, gbc);
 
 		ventana.add(canvas, gbc);
-
+		
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.gridy = 1;
@@ -149,20 +149,17 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 		btnConsulta.addActionListener(this);
 		ventana.add(btnConsulta, gbc);
 
-		panelBotones.setLayout(new GridLayout(1, 4, 5, 5));
-		btnOrdenTitulo.addActionListener(this);
-		panelBotones.add(btnOrdenTitulo);
-		btnOrdenGenero.addActionListener(this);
-		panelBotones.add(btnOrdenGenero);
-		btnOrdenFecha.addActionListener(this);
-		panelBotones.add(btnOrdenFecha);
-		btnOrdenDirector.addActionListener(this);
-		panelBotones.add(btnOrdenDirector);
+		
+		panelBotones.setLayout(new GridLayout(1, 2, 5, 5));
+		btnOrdenPeliculas.addActionListener(this);
+		panelBotones.add(btnOrdenPeliculas);
+		btnOrdenActores.addActionListener(this);
+		panelBotones.add(btnOrdenActores);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		ventana.add(panelBotones, gbc);
-
+		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -172,7 +169,7 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(1200, 645);
+		ventana.setSize(800, 645);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -186,106 +183,93 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 
 	}
 
-	public static void main(String[] args) {
-		new ConsultaPelicula();
+	public static void main(String[] args)
+	{
+		new ConsultaPelAct();
 
 	}
-
+	
 	class CanvasImagen extends Canvas {
-		public void paint(Graphics g) {
-			Image img = Toolkit.getDefaultToolkit().getImage("img\\peliculas\\consPel.png");
-			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
-		}
+	    public void paint(Graphics g) {
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\pelact\\consPelAct.jpg");
+	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
+	    }
 	}
 
-	public void consultar(Panel tabla, String consulta) {
+	public void consultar(Panel tabla, String consulta)
+	{
 		tabla.removeAll();
-		
-		canvas.setVisible(false);
-		scroll.setVisible(true);
-		ventana.validate();
-		
-		int anchoScroll = scroll.getViewportSize().width;
-		int anchoId = (int) (anchoScroll * 0.10);
-		int anchoTitulo = (int) (anchoScroll * 0.30);
-		int anchoGenero = (int) (anchoScroll * 0.15);
-		int anchoFecha = (int) (anchoScroll * 0.15);
-		int anchoDirector = (int) (anchoScroll * 0.30);
-		
-		agregarCelda(tabla, "ID", true, 0, 0, anchoId);
-		agregarCelda(tabla, "TÍTULO", true, 0, anchoId, anchoTitulo);
-		agregarCelda(tabla, "GÉNERO", true, 0, anchoId + anchoTitulo, anchoGenero);
-		agregarCelda(tabla, "ESTRENO", true, 0, anchoId + anchoTitulo + anchoGenero, anchoFecha);
-		agregarCelda(tabla, "DIRECTOR", true, 0, anchoId + anchoTitulo + anchoGenero + anchoFecha, anchoDirector);
-		try {
+		agregarCelda(tabla, "ID", true, 0);
+		agregarCelda(tabla, "PELICULA", true, 0);
+		agregarCelda(tabla, "ACTOR", true, 0);
+
+		try
+		{
 			BD.conectarBD();
-<<<<<<< HEAD:Cinemateca/src/es/studium/ConsultaPelicula.java
-			BD.ps = BD.connection.prepareStatement(BD.consultaSQLPeliculas);
-=======
 			BD.ps = BD.connection.prepareStatement(consulta);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ConsultaPelicula.java
 			BD.rs = BD.ps.executeQuery();
-
-			int filas = 0;
-			while (BD.rs.next()) {
+			
+			int filas = 1;
+			while (BD.rs.next())
+			{
 				filas++;
-				String id = String.valueOf(BD.rs.getInt("idPelicula"));
-				String titulo = BD.rs.getString("tituloPelicula");
-				String genero = BD.rs.getString("generoPelicula");
-				String fecha = BD.rs.getString("fechaEstrenoPelicula");
-				String nombreCompleto = BD.rs.getString("nombreCompletoDirector");
-
-				agregarCelda(tabla, id, false, filas, 0, anchoId);
-				agregarCelda(tabla, titulo, false, filas, anchoId, anchoTitulo);
-				agregarCelda(tabla, genero, false, filas, anchoId + anchoTitulo, anchoGenero);
-				agregarCelda(tabla, fecha, false, filas, anchoId + anchoTitulo + anchoGenero, anchoFecha);
-				agregarCelda(tabla, nombreCompleto, false, filas, anchoId + anchoTitulo + anchoGenero + anchoFecha, anchoDirector);
-
+				String id = String.valueOf(BD.rs.getInt("idPeliculaActor"));
+				String pelicula = BD.rs.getString("pelicula");
+				String actor = BD.rs.getString("actor");
+				
+				agregarCelda(tabla, id, false, filas);
+				agregarCelda(tabla, pelicula, false, filas);
+				agregarCelda(tabla, actor, false, filas);
+				
 			}
-			
-			
-			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas * 30));
-			tabla.setSize(anchoScroll, filas * 30);
+			canvas.setVisible(false);
+			scroll.setVisible(true);
+			int anchoScroll = scroll.getViewportSize().width;
+			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas* 30));
+			tabla.setSize(anchoScroll, filas* 30);
 			tabla.revalidate();
 			tabla.repaint();
-
 			dialogoComprobacion(null);
-		} catch (ClassNotFoundException cnfe) {
+		} catch (ClassNotFoundException cnfe)
+		{
 			dialogoComprobacion(cnfe);
-		} catch (SQLException se) {
+		} catch (SQLException se)
+		{
 			dialogoComprobacion(se);
-		} finally {
-			try {
+		} finally
+		{
+			try
+			{
 				BD.desconectarBD();
-			} catch (SQLException se) {
+			} catch (SQLException se)
+			{
 				dialogoComprobacion(se);
 			}
 		}
-
+		
 	}
-
-	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila, int x, int ancho) {
-		Label celda = new Label(texto);
-		celda.setBackground(Color.WHITE);
-		celda.setBounds(x, fila * 30, ancho, 30);
-		celda.setAlignment(Label.CENTER);
-
-		if (encabezado) {
-			celda.setFont(new Font("Arial", Font.BOLD, 14));
-			celda.setBackground(new Color(19, 38, 92));
-			celda.setForeground(Color.WHITE);
-		} else {
-			celda.setFont(new Font("Monospaced", Font.PLAIN, 13));
-			if (fila % 2 == 0) {
-				celda.setBackground(new Color(173, 216, 230));
-			} else {
-				celda.setBackground(Color.WHITE);
-			}
-		}
-
-		tabla.add(celda);
-	}
-
+	
+	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila) {
+        Label celda = new Label(texto);
+        celda.setBackground(Color.WHITE);
+        celda.setAlignment(Label.CENTER);
+        
+        if (encabezado) {
+            celda.setFont(new Font("Arial", Font.BOLD, 14));
+            celda.setBackground(new Color(19, 38, 92));
+            celda.setForeground(Color.WHITE);
+        } else {
+            celda.setFont(new Font("Monospaced", Font.PLAIN, 13));
+            if (fila % 2 == 0) {
+            	celda.setBackground(new Color(173, 216, 230));
+            } else {
+            	celda.setBackground(Color.WHITE);
+            }
+        }
+        
+        tabla.add(celda);
+    }
+	
 	public void dialogoComprobacion(Exception e) {
 		if (e == null) {
 			diaFeedback.setTitle("Enhorabuena");
@@ -305,7 +289,7 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			case "SQLException":
 				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
-
+			
 			default:
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
@@ -316,22 +300,25 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(btnConsulta)) {
-			consultar(tabla, BD.consultaSQLPeliculas);
-		} else if (e.getSource().equals(btnOrdenTitulo)) {
-			consultar(tabla, BD.consultaSQLPeliculasT);
-		} else if (e.getSource().equals(btnOrdenGenero)) {
-			consultar(tabla, BD.consultaSQLPeliculasG);
-		} else if (e.getSource().equals(btnOrdenFecha)) {
-			consultar(tabla, BD.consultaSQLPeliculasF);
-		} else if (e.getSource().equals(btnOrdenDirector)) {
-			consultar(tabla, BD.consultaSQLPeliculasD);
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource().equals(btnConsulta))
+		{
+			consultar(tabla, BD.consultaSQLPelAct);
+		}
+		else if (e.getSource().equals(btnOrdenPeliculas))
+		{
+			consultar(tabla, BD.consultaSQLPelAct);
+		}
+		else if (e.getSource().equals(btnOrdenActores))
+		{
+			consultar(tabla, BD.consultaSQLPelAct);
 		}
 
-		if (e.getSource() == mnuAltDir) {
+		if (e.getSource() == mnuAltDir)
+		{
 			new AltaDirector();
-		}  else if (e.getSource() == mnuBajaDir)
+		} else if (e.getSource() == mnuBajaDir)
 		{
 			new BajaDirector();
 		} else if (e.getSource() == mnuModDir)
@@ -382,10 +369,13 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) {
-		if (e.getSource() == diaFeedback) {
+	public void windowClosing(WindowEvent e)
+	{
+		if (e.getSource() == diaFeedback)
+		{
 			diaFeedback.dispose();
-		} else if (e.getSource() == ventana) {
+		} else if (e.getSource() == ventana)
+		{
 			ventana.dispose();
 		}
 	}

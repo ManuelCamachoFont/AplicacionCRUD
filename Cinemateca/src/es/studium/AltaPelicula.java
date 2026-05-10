@@ -1,36 +1,44 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
 public class AltaPelicula extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Peliculas - Alta");
-	Label lblPelicula = new Label("Introduzca una nueva Película");
+	CanvasImagen canvas = new CanvasImagen();
+	Label lblPelicula = new Label("Introduzca una nueva Película", Label.CENTER);
 	TextField txtTitulo = new TextField(25);
 	TextField txtGenero = new TextField(25);
 	TextField txtEstreno = new TextField(25);
 	Label lblTitulo = new Label("Título");
 	Label lblGenero = new Label("Género");
-	Label lblEstreno = new Label("Fecha de Estreno (AAAA-MM-DD)");
+	Label lblEstreno = new Label("Fecha de Estreno (DD-MM-AAAA)");
 	Label lblDirector = new Label("Director");
 	Choice choDirector = new Choice();
 	Button btnAceptar = new Button("Aceptar");
@@ -44,7 +52,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -59,17 +67,15 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
+	MenuItem mnuModPelAct = new MenuItem("Modificación");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
+	
+	HashMap<String, Integer> mapaDirectores = new HashMap<>();
 
 	public AltaPelicula() {
 
 		ventana.setLayout(gridbag);
-		ventana.setBackground(new Color(180, 211, 178));
+		ventana.setBackground(new Color(120, 175, 169));
 		ventana.setFont(new Font("SanSerif", 0, 12));
 		rellenarChoice();
 
@@ -126,8 +132,18 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		// Ventana Alta
 		gbc.insets = new Insets(10, 10, 10, 10);
-
+		
 		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridheight = 5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.3;
+		gbc.weighty = 1;
+		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
+		ventana.add(canvas, gbc);
+		gbc.gridheight = 1;
+
+		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -135,39 +151,37 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		ventana.add(lblPelicula, gbc);
 		gbc.gridwidth = 1;
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 1;
 		ventana.add(lblTitulo, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 1;
 		ventana.add(txtTitulo, gbc);
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 2;
 		ventana.add(lblGenero, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 2;
 		ventana.add(txtGenero, gbc);
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 3;
 		ventana.add(lblEstreno, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 3;
 		ventana.add(txtEstreno, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		ventana.add(lblDirector, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 4;
+		ventana.add(lblDirector, gbc);
+		gbc.gridx = 2;
+		gbc.gridy = 4;
 		ventana.add(choDirector, gbc);
-
-		gbc.weightx = 1;
-		gbc.weighty = 1;
+ 
 		gbc.fill = GridBagConstraints.SOUTHWEST;
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
 		gbc.gridx = 0;
@@ -177,14 +191,14 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		gbc.fill = GridBagConstraints.SOUTHEAST;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 5;
 		btnLimpiar.addActionListener(this);
 		ventana.add(btnLimpiar, gbc);
 
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(600, 320);
+		ventana.setSize(800, 320);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -197,22 +211,30 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setVisible(false);
 
-		// Dialogo tercer trimestre
-		diaDesarrollo.add(lblDesarrollo);
-		diaDesarrollo.addWindowListener(this);
-		diaDesarrollo.setLayout(new FlowLayout());
-		diaDesarrollo.setBackground(Color.YELLOW);
-		diaDesarrollo.setSize(300, 80);
-		diaDesarrollo.setResizable(false);
-		diaDesarrollo.setLocationRelativeTo(null);
-		diaDesarrollo.setVisible(false);
+	}
+	
+	public class CanvasImagen extends Canvas {
+	    public void paint(Graphics g) {
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\peliculas\\altPel.png");
+	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
+	    }
 	}
 
-	public void darAlta(String director) {
+	public void darAlta(Choice choDirectores) {
 
 		String titulo = txtTitulo.getText();
 		String genero = txtGenero.getText();
+<<<<<<< HEAD:Cinemateca/src/es/studium/AltaPelicula.java
 		String estreno = txtEstreno.getText();
+=======
+		String estreno = txtEstreno.getText().trim().replaceAll("[./ ]", "-");
+		DateTimeFormatter formatoEntrada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate fecha = LocalDate.parse(estreno, formatoEntrada);
+		DateTimeFormatter formatoSalida = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String fechaFormateada = fecha.format(formatoSalida);
+		String director = choDirectores.getSelectedItem();
+		int idDirector = mapaDirectores.get(director);
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/AltaPelicula.java
 		String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
 
 		try {
@@ -220,8 +242,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
 			BD.ps.setString(1, titulo);
 			BD.ps.setString(2, genero);
-			BD.ps.setString(3, estreno);
-			BD.ps.setString(4, director);
+			BD.ps.setString(3, fechaFormateada);
+			BD.ps.setInt(4, idDirector);
 			BD.ps.executeUpdate();
 			dialogoComprobacion(null);
 
@@ -241,6 +263,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 	private void rellenarChoice() {
 		choDirector.removeAll();
+		mapaDirectores.clear();
 		try
 
 		{
@@ -249,11 +272,14 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			BD.rs = BD.ps.executeQuery();
 			choDirector.add("Seleccionar un director...");
 			while (BD.rs.next()) {
-				choDirector.add(BD.rs.getInt("idDirector") +
-
-						" | " + BD.rs.getString("nombreDirector") +
-
-						" | " + BD.rs.getString("apellidosDirector"));
+				int id = BD.rs.getInt("idDirector");
+				String nombre = BD.rs.getString("nombreDirector");
+				String apellidos = BD.rs.getString("apellidosDirector");
+				String nacionalidad = BD.rs.getString("nacionalidadDirector");
+				String director = nombre + " " + apellidos + " (" + nacionalidad + ")";
+				mapaDirectores.put(director, id);
+				choDirector.add(director);
+				
 			}
 		}
 
@@ -275,9 +301,11 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			dialogo.setTitle("Enhorabuena");
 			dialogo.setBackground(new Color(180, 211, 178));
 			lblDia.setText("El alta se ha realizado con éxito");
+			lblDia.setBackground(dialogo.getBackground());
 		} else {
 			dialogo.setTitle("Error");
 			dialogo.setBackground(new Color(243, 70, 74));
+			lblDia.setBackground(dialogo.getBackground());
 
 			switch (e.getClass().getSimpleName()) {
 
@@ -317,44 +345,63 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 					|| (txtGenero.getText().trim().isEmpty()) || (txtEstreno.getText().trim().isEmpty())) {
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
 			}
+			else if(!txtEstreno.getText().matches("^\\d{2}[-/]\\d{2}[-/]\\d{4}$")){
+				dialogoComprobacion(new Exception("Formato de fecha incorrecto"));
+			}
 			else {
-				try {
-					java.time.LocalDate.parse(txtEstreno.getText());
-					String director = choDirector.getSelectedItem().split("\\|")[0].trim();
-					darAlta(director);
+					darAlta(choDirector);
 					rellenarChoice();
-				} catch (java.time.format.DateTimeParseException dte) {
-					dialogoComprobacion(dte);
-				}
-				
 			}
 		}
 
 		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
-		} else if (e.getSource() == mnuBajaDir) {
+		} else if (e.getSource() == mnuBajaDir)
+		{
 			new BajaDirector();
-		} else if (e.getSource() == mnuModDir) {
+		} else if (e.getSource() == mnuModDir)
+		{
 			new ModificacionDirector();
-		} else if (e.getSource() == mnuConsDir) {
+		} else if (e.getSource() == mnuConsDir)
+		{
 			new ConsultaDirector();
-		} else if (e.getSource() == mnuAltPel) {
+		} else if (e.getSource() == mnuAltPel)
+		{
 			new AltaPelicula();
-		} else if (e.getSource() == mnuBajaPel) {
+		} else if (e.getSource() == mnuBajaPel)
+		{
 			new BajaPelicula();
-		} else if (e.getSource() == mnuConsPel) {
+		} else if (e.getSource() == mnuConsPel)
+		{
 			new ConsultaPelicula();
-		} else if (e.getSource() == mnuAltAct) {
+		} else if (e.getSource() == mnuModPel){
+			new ModificacionPelicula();
+		}
+		else if (e.getSource() == mnuAltAct)
+		{
 			new AltaActor();
-		} else if (e.getSource() == mnuBajaAct) {
+		} else if (e.getSource() == mnuBajaAct)
+		{
 			new BajaActor();
-		} else if (e.getSource() == mnuModAct) {
+		} else if (e.getSource() == mnuModAct)
+		{
 			new ModificacionActor();
-		} else if (e.getSource() == mnuConsAct) {
+		} else if (e.getSource() == mnuConsAct)
+		{
 			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
-			diaDesarrollo.setVisible(true);
+		}
+		else if (e.getSource() == mnuAltPelAct)
+		{
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct)
+		{
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct)
+		{
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct)
+		{
+			new ConsultaPelAct();
 		}
 	}
 
@@ -362,10 +409,6 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
 			dialogo.setVisible(false);
-		}
-
-		else if (e.getSource() == diaDesarrollo) {
-			diaDesarrollo.setVisible(false);
 		}
 
 		else if (e.getSource() == ventana) {

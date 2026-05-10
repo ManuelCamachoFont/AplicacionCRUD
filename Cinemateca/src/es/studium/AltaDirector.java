@@ -1,19 +1,23 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -23,6 +27,7 @@ import java.sql.SQLException;
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
 public class AltaDirector extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Directores - Alta");
+	CanvasImagen canvas = new CanvasImagen();
 	Label lblDirector = new Label("Introduzca un nuevo Director");
 	TextField txtNombre = new TextField(25);
 	TextField txtApellidos = new TextField(25);
@@ -41,7 +46,7 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -56,17 +61,13 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
+	MenuItem mnuModPelAct = new MenuItem("Modificación");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 
 	public AltaDirector() {
 
 		ventana.setLayout(gridbag);
-		ventana.setBackground(new Color(180, 211, 178));
+		ventana.setBackground(new Color(120, 175, 169));
 		ventana.setFont(new Font("SanSerif", 0, 12));
 
 		// Menú Directores
@@ -122,8 +123,18 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 
 		// Ventana Alta
 		gbc.insets = new Insets(10, 10, 10, 10);
-
+		
 		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridheight = 4;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.3;
+		gbc.weighty = 1;
+		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
+		ventana.add(canvas, gbc);
+		gbc.gridheight = 1;
+
+		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -131,32 +142,30 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		ventana.add(lblDirector, gbc);
 		gbc.gridwidth = 1;
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 1;
 		ventana.add(lblNombre, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 1;
 		ventana.add(txtNombre, gbc);
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 2;
 		ventana.add(lblApellidos, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 2;
 		ventana.add(txtApellidos, gbc);
 
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridy = 3;
 		ventana.add(lblNacionalidad, gbc);
 
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 3;
 		ventana.add(txtNacionalidad, gbc);
 
-		gbc.weightx = 1;
-		gbc.weighty = 1;
 		gbc.fill = GridBagConstraints.SOUTHWEST;
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
 		gbc.gridx = 0;
@@ -166,14 +175,14 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 
 		gbc.fill = GridBagConstraints.SOUTHEAST;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		gbc.gridy = 4;
 		btnLimpiar.addActionListener(this);
 		ventana.add(btnLimpiar, gbc);
 
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
-		ventana.setSize(400, 280);
+		ventana.setSize(600, 300);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -186,15 +195,13 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setVisible(false);
 
-		// Dialogo tercer trimestre
-		diaDesarrollo.add(lblDesarrollo);
-		diaDesarrollo.addWindowListener(this);
-		diaDesarrollo.setLayout(new FlowLayout());
-		diaDesarrollo.setBackground(Color.YELLOW);
-		diaDesarrollo.setSize(300, 80);
-		diaDesarrollo.setResizable(false);
-		diaDesarrollo.setLocationRelativeTo(null);
-		diaDesarrollo.setVisible(false);
+	}
+	
+	public class CanvasImagen extends Canvas {
+	    public void paint(Graphics g) {
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\directores\\altDir.png");
+	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
+	    }
 	}
 
 	public void darAlta() {
@@ -232,9 +239,11 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 			dialogo.setTitle("Enhorabuena");
 			dialogo.setBackground(new Color(180, 211, 178));
 			lblDia.setText("El alta se ha realizado con éxito");
+			lblDia.setBackground(dialogo.getBackground());
 		} else {
 			dialogo.setTitle("Error");
 			dialogo.setBackground(new Color(243, 70, 74));
+			lblDia.setBackground(dialogo.getBackground());
 
 			switch (e.getClass().getSimpleName()) {
 
@@ -271,36 +280,63 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
 					|| (txtNacionalidad.getText().trim().isEmpty())) {
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
-			} else {
+			} else if (!txtNombre.getText().matches("^[\\p{L} .'-]+$") || !txtApellidos.getText().matches("^[\\p{L} .'-]+$") || !txtNacionalidad.getText().matches("^[\\p{L} .'-]+$")) {
+				dialogoComprobacion(new Exception("Alguno de los campos contiene carácteres no válidos"));
+			}
+			
+			else{
 				darAlta();
 			}
 		}
 
 		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
-		} else if (e.getSource() == mnuBajaDir) {
+		} else if (e.getSource() == mnuBajaDir)
+		{
 			new BajaDirector();
-		} else if (e.getSource() == mnuModDir) {
+		} else if (e.getSource() == mnuModDir)
+		{
 			new ModificacionDirector();
-		} else if (e.getSource() == mnuConsDir) {
+		} else if (e.getSource() == mnuConsDir)
+		{
 			new ConsultaDirector();
-		} else if (e.getSource() == mnuAltPel) {
+		} else if (e.getSource() == mnuAltPel)
+		{
 			new AltaPelicula();
-		} else if (e.getSource() == mnuBajaPel) {
+		} else if (e.getSource() == mnuBajaPel)
+		{
 			new BajaPelicula();
-		} else if (e.getSource() == mnuConsPel) {
+		} else if (e.getSource() == mnuConsPel)
+		{
 			new ConsultaPelicula();
-		} else if (e.getSource() == mnuAltAct) {
+		} else if (e.getSource() == mnuModPel){
+			new ModificacionPelicula();
+		}
+		else if (e.getSource() == mnuAltAct)
+		{
 			new AltaActor();
-		} else if (e.getSource() == mnuBajaAct) {
+		} else if (e.getSource() == mnuBajaAct)
+		{
 			new BajaActor();
-		} else if (e.getSource() == mnuModAct) {
+		} else if (e.getSource() == mnuModAct)
+		{
 			new ModificacionActor();
-		} else if (e.getSource() == mnuConsAct) {
+		} else if (e.getSource() == mnuConsAct)
+		{
 			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
-			diaDesarrollo.setVisible(true);
+		}
+		else if (e.getSource() == mnuAltPelAct)
+		{
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct)
+		{
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct)
+		{
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct)
+		{
+			new ConsultaPelAct();
 		}
 	}
 
@@ -308,10 +344,6 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
 			dialogo.dispose();
-		}
-
-		else if (e.getSource() == diaDesarrollo) {
-			diaDesarrollo.dispose();
 		}
 
 		else if (e.getSource() == ventana) {

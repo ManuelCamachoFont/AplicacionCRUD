@@ -27,7 +27,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -50,10 +50,6 @@ public class Principal2 extends WindowAdapter implements ActionListener
 
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
 
 	public Principal2()
 	{
@@ -135,16 +131,6 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 
-		// Dialogo tercer trimestre
-		diaDesarrollo.add(lblDesarrollo);
-		diaDesarrollo.addWindowListener(this);
-		diaDesarrollo.setLayout(new FlowLayout());
-		diaDesarrollo.setBackground(Color.YELLOW);
-		diaDesarrollo.setSize(300, 80);
-		diaDesarrollo.setResizable(false);
-		diaDesarrollo.setLocationRelativeTo(null);
-		diaDesarrollo.setVisible(false);
-
 	}
 
 	public static void main(String[] args)
@@ -155,11 +141,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 	@Override
 	public void windowClosing(WindowEvent e)
 	{
-		if (e.getSource() == diaDesarrollo)
-		{
-			diaDesarrollo.setVisible(false);
-		}
-		else if (e.getSource() == ventana) {
+		if (e.getSource() == ventana) {
 		System.exit(0);
 		}
 	}
@@ -188,7 +170,10 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		} else if (e.getSource() == mnuConsPel)
 		{
 			new ConsultaPelicula();
-		} else if (e.getSource() == mnuAltAct)
+		} else if (e.getSource() == mnuModPel){
+			new ModificacionPelicula();
+		}
+		else if (e.getSource() == mnuAltAct)
 		{
 			new AltaActor();
 		} else if (e.getSource() == mnuBajaAct)
@@ -200,10 +185,19 @@ public class Principal2 extends WindowAdapter implements ActionListener
 		} else if (e.getSource() == mnuConsAct)
 		{
 			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) | (e.getSource() == mnuAltPelAct) | (e.getSource() == mnuBajaPelAct)
-				| (e.getSource() == mnuModPelAct) | (e.getSource() == mnuConsPelAct))
+		}
+		else if (e.getSource() == mnuAltPelAct)
 		{
-			diaDesarrollo.setVisible(true);
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct)
+		{
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct)
+		{
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct)
+		{
+			new ConsultaPelAct();
 		}
 
 		if (e.getSource() == btnLogOut)

@@ -1,36 +1,44 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class ModificacionDirector extends WindowAdapter implements ActionListener
 {
 
 	Frame ventana1 = new Frame("Directores - Modificación");
+	
+	CanvasImagen canvas = new CanvasImagen();
+	
 	Choice choDirectores = new Choice();
 	Button btnEditar = new Button("Editar");
 
-	Frame ventana2 = new Frame("Director - Modificación");
-	Label lblElec = new Label("¿Qué director desea modificar?");
-	Label lblElecc = new Label("");
+	Frame ventana2 = new Frame("Editando Director...");
+	Label lblElec = new Label("¿Qué director desea modificar?", Label.CENTER);
+	Label lblElecc = new Label("", Label.CENTER);
 	Label lblNombre = new Label("Nombre");
 	TextField txtNombre = new TextField(30);
 	Label lblApellidos = new Label("Apellidos");
@@ -49,7 +57,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -64,9 +72,10 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
+	MenuItem mnuModPelAct = new MenuItem("Modificación");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 	MenuBar mnuBar2 = new MenuBar();
 	Menu mnuDirectores2 = new Menu("Directores");
 	Menu mnuPeliculas2 = new Menu("Películas");
@@ -97,14 +106,25 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	Dialog diaDesarrollo2 = new Dialog(ventana2, "Acceso Denegado", true);
 	Label lblDesarrollo2 = new Label("Esta parte está en desarrollo");
 
+=======
+	HashMap<String, Integer> mapaDirectores = new HashMap();
+	
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	String sentenciaSQL = "";
 
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 	String idDirector = "";
 
 	String directorSeleccionado = "";
+=======
+	int idDirectorSeleccionado;
+	
+	String directorSeleccionado;
+
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 	String directorNuevo = "";
 
 	public ModificacionDirector()
@@ -154,50 +174,6 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		mnuPelAct.add(mnuConsPelAct);
 		mnuBar.add(mnuPelAct);
 
-		// Menú Directores
-		mnuAltDir2.addActionListener(this);
-		mnuDirectores2.add(mnuAltDir2);
-		mnuBajaDir2.addActionListener(this);
-		mnuDirectores2.add(mnuBajaDir2);
-		mnuModDir2.addActionListener(this);
-		mnuDirectores2.add(mnuModDir2);
-		mnuConsDir2.addActionListener(this);
-		mnuDirectores2.add(mnuConsDir2);
-		mnuBar2.add(mnuDirectores2);
-
-		// Menú Películas
-		mnuAltPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuAltPel2);
-		mnuBajaPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuBajaPel2);
-		mnuModPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuModPel2);
-		mnuConsPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuConsPel2);
-		mnuBar2.add(mnuPeliculas2);
-
-		// Menú Actores
-		mnuAltAct2.addActionListener(this);
-		mnuActores2.add(mnuAltAct2);
-		mnuBajaAct2.addActionListener(this);
-		mnuActores2.add(mnuBajaAct2);
-		mnuModAct2.addActionListener(this);
-		mnuActores2.add(mnuModAct2);
-		mnuConsAct2.addActionListener(this);
-		mnuActores2.add(mnuConsAct2);
-		mnuBar2.add(mnuActores2);
-
-		// Menú Peliculas_Actores
-		mnuAltPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuAltPelAct2);
-		mnuBajaPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuBajaPelAct2);
-		mnuModPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuModPelAct2);
-		mnuConsPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuConsPelAct2);
-		mnuBar2.add(mnuPelAct2);
-
 		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
 		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
@@ -205,6 +181,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		ventana1.setMenuBar(mnuBar);
 
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 		Usuario.permisosBasico(mnuDirectores2, mnuBajaDir2, mnuModDir2, mnuConsDir2);
 		Usuario.permisosBasico(mnuPeliculas2, mnuBajaPel2, mnuModPel2, mnuConsPel2);
 		Usuario.permisosBasico(mnuActores2, mnuBajaAct2, mnuModAct2, mnuConsAct2);
@@ -212,27 +189,38 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		ventana2.setMenuBar(mnuBar2);
 
+=======
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		// Ventana 1
 		ventana1.setLayout(gridbag);
-		ventana1.setBackground(new Color(213, 255, 255));
+		ventana1.setBackground(new Color(120, 175, 169));
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoice();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridheight = 4;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.1;
+		gbc.weighty = 1;
+		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
+		ventana1.add(canvas, gbc);
+		gbc.gridheight = 1;
+
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
 		lblElec.setFont(new Font("SansSerif", 3, 20));
 		ventana1.add(lblElec, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 3;
 		ventana1.add(choDirectores, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = 4;
 		btnEditar.addActionListener(this);
 		ventana1.add(btnEditar, gbc);
 
-		ventana1.setSize(500, 220);
+		ventana1.setSize(600, 300);
 		ventana1.addWindowListener(this);
 		ventana1.setResizable(false);
 		ventana1.setLocationRelativeTo(null);
@@ -240,7 +228,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		// Ventana 2
 		ventana2.setLayout(gridbag);
-		ventana2.setBackground(new Color(213, 255, 255));
+		ventana2.setBackground(new Color(120, 175, 169));
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -307,22 +295,34 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		diaFeedback.setVisible(false);
 
 	}
+	
+	public class CanvasImagen extends Canvas {
+		public void paint(Graphics g) {
+			Image img = Toolkit.getDefaultToolkit().getImage("img\\directores\\modDir.png");
+			g.drawImage(img, 0, 0,this.getWidth(), this.getHeight(), this);
+		}
+	}
 
 	private void rellenarChoice()
 	{
 
 		choDirectores.removeAll();
+		mapaDirectores.clear();
 		try
 
 		{
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.consultaSQLDirectores);
 			BD.rs = BD.ps.executeQuery();
-			choDirectores.add("Seleccionar un director...");
-			while (BD.rs.next())
-			{
-				choDirectores.add(BD.rs.getInt("idDirector") + " | " + BD.rs.getString("nombreDirector") + " | "
-						+ BD.rs.getString("apellidosDirector") + " | " + BD.rs.getString("nacionalidadDirector"));
+			choDirectores.add("Elige un director...");
+			while (BD.rs.next()) {
+				int id = BD.rs.getInt("idDirector");
+				String nombre = BD.rs.getString("nombreDirector");
+				String apellidos = BD.rs.getString("apellidosDirector");
+				String nacionalidad = BD.rs.getString("nacionalidadDirector");
+				String director = nombre + " " + apellidos + " (" + nacionalidad + ")";
+				mapaDirectores.put(director, id);
+				choDirectores.add(director);
 			}
 		}
 
@@ -344,6 +344,91 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			}
 		}
 	}
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
+=======
+	
+	public void obtenerDatosDirector(Choice choDirectores) {
+		String director = choDirectores.getSelectedItem();
+		idDirectorSeleccionado = mapaDirectores.get(director);
+		sentenciaSQL = BD.consultaSQLDirectores + " WHERE idDirector = ?";
+		try
+
+		{
+			BD.conectarBD();
+			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+			BD.ps.setInt(1, idDirectorSeleccionado);
+			BD.rs = BD.ps.executeQuery();
+			BD.rs.next();
+			String nombre = BD.rs.getString("nombreDirector");
+			txtNombre.setText(nombre);
+			String apellidos = (BD.rs.getString("apellidosDirector"));
+			txtApellidos.setText(apellidos);
+			String nacionalidad = (BD.rs.getString("nacionalidadDirector"));
+			txtNacionalidad.setText(nacionalidad);
+			directorSeleccionado = nombre + " " + apellidos + " (" + nacionalidad + ")";
+			lblElecc.setText("Estas editando a: " + directorSeleccionado);
+		}
+
+		catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe, "", "");
+		} catch (SQLException se) {
+			dialogoComprobacion(se, "", "");
+		} finally {
+			try {
+				BD.desconectarBD();
+			} catch (SQLException se) {
+				dialogoComprobacion(se, "", "");
+
+			}
+		}
+
+	}
+	
+	public void modificarDirector(TextField nombreText, TextField apellidosText, TextField nacionalidadText) {
+		
+		String nombre = nombreText.getText().trim();
+		String apellidos = apellidosText.getText().trim();
+		String nacionalidad = nacionalidadText.getText().trim();
+		
+		String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, salarioDirector = ? WHERE idDirector = ?";
+
+		directorNuevo = nombre + " " + apellidos + " (" + nacionalidad + ")";
+		
+		try {
+			
+				BD.conectarBD();
+				BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+				BD.ps.setString(1, nombre);
+				BD.ps.setString(2, apellidos);
+				BD.ps.setString(3, nacionalidad);
+				BD.ps.setInt(4, idDirectorSeleccionado);
+				BD.ps.executeUpdate();
+				dialogoComprobacion(null, directorSeleccionado, directorNuevo);
+				directorSeleccionado = directorNuevo;
+				lblElecc.setText("Estás editando : " + directorSeleccionado);
+				ventana2.validate();
+			
+		} catch (NumberFormatException nfe) {
+			dialogoComprobacion(nfe, "", "");
+
+		} catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe, "", "");
+		} catch (SQLException se) {
+			dialogoComprobacion(se, "", "");
+		} finally {
+			try {
+				BD.desconectarBD();
+			}
+
+			catch (SQLException se) {
+				dialogoComprobacion(se, "", "");
+			}
+
+		}
+
+		rellenarChoice();
+	}
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 
 	public void dialogoComprobacion(Exception e, String directorS, String directorN)
 	{
@@ -352,10 +437,15 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaF.setText("Se ha modificado a \"" + directorS + "\", ahora es \"" + directorN + "\".");
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
+=======
+			lblDiaF.setBackground(diaFeedback.getBackground());
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		} else
 		{
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
+			lblDiaF.setBackground(diaFeedback.getBackground());
 
 			switch (e.getClass().getSimpleName())
 			{
@@ -388,6 +478,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		{
 			if (choDirectores.getSelectedIndex() != 0)
 			{
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 				directorSeleccionado = (choDirectores.getSelectedItem().split("\\|")[1].trim() + " "
 						+ choDirectores.getSelectedItem().split("\\|")[2].trim());
 				lblElecc.setText("Estás editando : " + (choDirectores.getSelectedItem().split("\\|")[1]).trim() + " "
@@ -425,6 +516,9 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 					}
 				}
+=======
+				obtenerDatosDirector(choDirectores);
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 				ventana2.setVisible(true);
 
 			} else
@@ -444,6 +538,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 			else
 			{
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 				String nombre = txtNombre.getText();
 				String apellidos = txtApellidos.getText();
 				String nacionalidad = txtNacionalidad.getText();
@@ -485,6 +580,9 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 				}
 
 				rellenarChoice();
+=======
+				modificarDirector(txtNombre, txtApellidos, txtNacionalidad);
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 			}
 
 		} else if (e.getSource() == btnLimpiar)
@@ -494,43 +592,55 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			txtNacionalidad.setText("");
 			txtNombre.requestFocus();
 		}
-		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2))
+		if (e.getSource() == mnuAltDir)
 		{
 			new AltaDirector();
-		} else if ((e.getSource() == mnuBajaDir) || (e.getSource() == mnuBajaDir2))
+		} else if (e.getSource() == mnuBajaDir)
 		{
 			new BajaDirector();
-		} else if ((e.getSource() == mnuModDir) || (e.getSource() == mnuModDir2))
+		} else if (e.getSource() == mnuModDir)
 		{
 			new ModificacionDirector();
-		} else if ((e.getSource() == mnuConsDir) || (e.getSource() == mnuConsDir2))
+		} else if (e.getSource() == mnuConsDir)
 		{
 			new ConsultaDirector();
-		} else if ((e.getSource() == mnuAltPel) || (e.getSource() == mnuAltPel2))
+		} else if (e.getSource() == mnuAltPel)
 		{
 			new AltaPelicula();
-		} else if ((e.getSource() == mnuBajaPel) || (e.getSource() == mnuBajaPel2))
+		} else if (e.getSource() == mnuBajaPel)
 		{
 			new BajaPelicula();
-		} else if ((e.getSource() == mnuConsPel) || (e.getSource() == mnuConsPel2))
+		} else if (e.getSource() == mnuConsPel)
 		{
 			new ConsultaPelicula();
-		} else if ((e.getSource() == mnuAltAct) || (e.getSource() == mnuAltAct2))
+		} else if (e.getSource() == mnuModPel){
+			new ModificacionPelicula();
+		}
+		else if (e.getSource() == mnuAltAct)
 		{
 			new AltaActor();
-		} else if ((e.getSource() == mnuBajaAct) || (e.getSource() == mnuBajaAct2))
+		} else if (e.getSource() == mnuBajaAct)
 		{
 			new BajaActor();
-		} else if ((e.getSource() == mnuModAct) || (e.getSource() == mnuModAct2))
+		} else if (e.getSource() == mnuModAct)
 		{
 			new ModificacionActor();
-		} else if ((e.getSource() == mnuConsAct) || (e.getSource() == mnuConsAct2))
+		} else if (e.getSource() == mnuConsAct)
 		{
 			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct))
+		}
+		else if (e.getSource() == mnuAltPelAct)
 		{
-			diaDesarrollo.setVisible(true);
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct)
+		{
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct)
+		{
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct)
+		{
+			new ConsultaPelAct();
 		}
 	}
 
@@ -541,9 +651,12 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		if (e.getSource() == diaFeedback)
 		{
 			diaFeedback.dispose();
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
 		} else if (e.getSource() == diaDesarrollo)
 		{
 			diaDesarrollo.dispose();
+=======
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		}
 
 		if (e.getSource() == ventana2)

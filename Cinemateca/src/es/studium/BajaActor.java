@@ -1,35 +1,43 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
+
 
 public class BajaActor extends WindowAdapter implements ActionListener {
 	Frame ventana = new Frame("Actores - Baja");
 
-	Label lblElec = new Label("¿Qué actor desea eliminar?");
+	CanvasImagen canvas = new CanvasImagen();
+	
+	Label lblElec = new Label("¿Qué actor desea eliminar?", Label.CENTER);
 	Choice lista = new Choice();
 	Button btnElim = new Button("Eliminar");
 
 	Dialog dialogo = new Dialog(ventana, "¿Segur@?", true);
-	Label lblDia = new Label("");
-	Label lblDia2 = new Label("¿Estás seguro de eliminarlo?");
+	Label lblDia = new Label("", Label.CENTER);
+	Label lblDia2 = new Label("¿Estás seguro de eliminarlo?", Label.CENTER);
 	Button btnDiaSi = new Button("Si");
 	Button btnDiaNo = new Button("No");
 
@@ -43,7 +51,7 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -58,18 +66,16 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
+	MenuItem mnuModPelAct = new MenuItem("Modificación");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 	
 	String actorSeleccionado = "";
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte está en desarrollo");
+	
+	HashMap<String,Integer>mapaActores = new HashMap();
 
 	public BajaActor() {
 		ventana.setFont(new Font("SansSerif", 0, 12));
-		ventana.setBackground(new Color(243, 70, 74));
+		ventana.setBackground(new Color(255, 165, 0));
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -127,18 +133,30 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridheight = 4;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.1;
+		gbc.weighty = 1;
+		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
+		ventana.add(canvas, gbc);
+		gbc.gridheight = 1;
+		
+		gbc.weightx = 0.3;
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
 		lblElec.setFont(new Font("SanSerif", 3, 20));
 		ventana.add(lblElec, gbc);
 
-		gbc.gridy = 1;
+		gbc.gridy = 3;
 		ventana.add(lista, gbc);
 
-		gbc.gridy = 2;
+		gbc.gridy = 4;
 		gbc.anchor = GridBagConstraints.CENTER;
 		btnElim.addActionListener(this);
 		ventana.add(btnElim, gbc);
 
-		ventana.setSize(500, 220);
+		ventana.setSize(600, 300);
 		ventana.addWindowListener(this);
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
@@ -191,29 +209,33 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 		dialogo.setResizable(false);
 		diaFeedback.setVisible(false);
 
-		// Dialogo tercer trimestre
-		diaDesarrollo.add(lblDesarrollo);
-		diaDesarrollo.addWindowListener(this);
-		diaDesarrollo.setLayout(new FlowLayout());
-		diaDesarrollo.setBackground(Color.YELLOW);
-		diaDesarrollo.setSize(300, 80);
-		diaDesarrollo.setResizable(false);
-		diaDesarrollo.setLocationRelativeTo(null);
-		diaDesarrollo.setVisible(false);
-
+	}
+	
+	public class CanvasImagen extends Canvas {
+	    public void paint(Graphics g) {
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\bajaAct.jpg");
+	        g.drawImage(img, 0, 0, this);
+	    }
 	}
 
 	public void datos() {
 
+		lista.removeAll();
+		mapaActores.clear();
+		
 		try {
-			lista.removeAll();
+			
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.consultaSQLActores);
 			BD.rs = BD.ps.executeQuery();
 			lista.add("Elige un actor...");
 			while (BD.rs.next()) {
-				lista.add(BD.rs.getInt("idActor") + " | " + BD.rs.getString("nombreActor") + " | "
-						+ BD.rs.getString("apellidosActor") + " | " + BD.rs.getString("salarioActor"));
+				int id = BD.rs.getInt("idActor");
+				String nombre = BD.rs.getString("nombreActor");
+				String apellidos = BD.rs.getString("apellidosActor");
+				String actor = nombre + " " + apellidos;
+				mapaActores.put(actor, id);
+				lista.add(actor);
 			}
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "");
@@ -229,14 +251,15 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 
 	}
 
-	public void darBaja() {
+	public void darBaja(Choice choActores) {
 
-		String idActor = lista.getSelectedItem().split(" ")[0].trim();
+		String actor = choActores.getSelectedItem();
+		int idActor = mapaActores.get(actor);
 
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLActor);
-			BD.ps.setString(1, idActor);
+			BD.ps.setInt(1, idActor);
 			BD.ps.executeUpdate();
 			dialogoComprobacion(null, actorSeleccionado);
 		} catch (ClassNotFoundException cnfe) {
@@ -259,9 +282,11 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaFeedback.setText("Se ha eliminado correctamente a [" + actor + "]");
+			lblDia.setBackground(dialogo.getBackground());
 		} else {
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
+			lblDia.setBackground(dialogo.getBackground());
 
 			switch (e.getClass().getSimpleName()) {
 
@@ -295,7 +320,7 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 		}
 
 		if (e.getSource() == btnDiaSi) {
-			darBaja();
+			darBaja(lista);
 			dialogo.dispose();
 			datos();
 
@@ -306,29 +331,52 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 
 		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
-		} else if (e.getSource() == mnuBajaDir) {
+		} else if (e.getSource() == mnuBajaDir)
+		{
 			new BajaDirector();
-		} else if (e.getSource() == mnuModDir) {
+		} else if (e.getSource() == mnuModDir)
+		{
 			new ModificacionDirector();
-		} else if (e.getSource() == mnuConsDir) {
+		} else if (e.getSource() == mnuConsDir)
+		{
 			new ConsultaDirector();
-		} else if (e.getSource() == mnuAltPel) {
+		} else if (e.getSource() == mnuAltPel)
+		{
 			new AltaPelicula();
-		} else if (e.getSource() == mnuBajaPel) {
+		} else if (e.getSource() == mnuBajaPel)
+		{
 			new BajaPelicula();
-		} else if (e.getSource() == mnuConsPel) {
+		} else if (e.getSource() == mnuConsPel)
+		{
 			new ConsultaPelicula();
-		} else if (e.getSource() == mnuAltAct) {
+		} else if (e.getSource() == mnuModPel){
+			new ModificacionPelicula();
+		}
+		else if (e.getSource() == mnuAltAct)
+		{
 			new AltaActor();
-		} else if (e.getSource() == mnuBajaAct) {
+		} else if (e.getSource() == mnuBajaAct)
+		{
 			new BajaActor();
-		} else if (e.getSource() == mnuModAct) {
+		} else if (e.getSource() == mnuModAct)
+		{
 			new ModificacionActor();
-		} else if (e.getSource() == mnuConsAct) {
+		} else if (e.getSource() == mnuConsAct)
+		{
 			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct)) {
-			diaDesarrollo.setVisible(true);
+		}
+		else if (e.getSource() == mnuAltPelAct)
+		{
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct)
+		{
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct)
+		{
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct)
+		{
+			new ConsultaPelAct();
 		}
 
 	}
@@ -340,9 +388,7 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 
 		} else if (e.getSource() == diaFeedback) {
 			diaFeedback.dispose();
-		} else if (e.getSource() == diaDesarrollo) {
-			diaDesarrollo.dispose();
-		} else {
+		}else {
 			ventana.dispose();
 		}
 	}

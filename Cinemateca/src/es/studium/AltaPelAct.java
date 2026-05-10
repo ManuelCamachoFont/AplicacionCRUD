@@ -2,6 +2,7 @@ package es.studium;
 
 import java.awt.Button;
 import java.awt.Canvas;
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
@@ -16,25 +17,24 @@ import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
 
-// ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
-public class AltaActor extends WindowAdapter implements ActionListener {
-	Frame ventana = new Frame("Actores - Alta");
+
+public class AltaPelAct extends WindowAdapter implements ActionListener {
+	Frame ventana = new Frame("Películas Actores - Alta");
 	CanvasImagen canvas = new CanvasImagen();
-	Label lblActor = new Label("Introduzca un nuevo Actor", Label.CENTER);
-	TextField txtNombre = new TextField(25);
-	TextField txtApellidos = new TextField(25);
-	TextField txtSalario = new TextField(25);
-	Label lblNombre = new Label("Nombre");
-	Label lblApellidos = new Label("Apellidos");
-	Label lblSalario = new Label("Salario (Euros)");
+	Label lblTitulo = new Label("Introduzca una nueva relación", Label.CENTER);
+	Label lblTitulo2 = new Label("entre Películas y Actores", Label.CENTER);
+	Label lblPelicula = new Label("Película");
+	Label lblActor = new Label("Actor");
+	Choice choPeliculas = new Choice();
+	Choice choActores = new Choice();
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
 	Dialog dialogo = new Dialog(ventana, "Comprobación", true);
@@ -63,12 +63,17 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
+	
+	HashMap<String, Integer> mapaPeliculas = new HashMap<>();
+	HashMap<String, Integer> mapaActores = new HashMap<>();
 
-	public AltaActor() {
+	public AltaPelAct() {
 
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
 		ventana.setFont(new Font("SanSerif", 0, 12));
+		rellenarPeliculas();
+		rellenarActores();
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -114,7 +119,6 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		mnuPelAct.add(mnuConsPelAct);
 		mnuBar.add(mnuPelAct);
 
-
 		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
 		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
@@ -139,33 +143,32 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
-		lblActor.setFont(new Font("Serif", 1, 20));
-		ventana.add(lblActor, gbc);
+		lblTitulo.setFont(new Font("Serif", 1, 20));
+		ventana.add(lblTitulo, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		lblTitulo2.setFont(new Font("Serif", 1, 20));
+		ventana.add(lblTitulo2, gbc);
 		gbc.gridwidth = 1;
 
 		gbc.gridx = 1;
-		gbc.gridy = 1;
-		ventana.add(lblNombre, gbc);
-
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		ventana.add(txtNombre, gbc);
-
-		gbc.gridx = 1;
 		gbc.gridy = 2;
-		ventana.add(lblApellidos, gbc);
+		ventana.add(lblPelicula, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 2;
-		ventana.add(txtApellidos, gbc);
+		ventana.add(choPeliculas, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		ventana.add(lblSalario, gbc);
+		ventana.add(lblActor, gbc);
 
 		gbc.gridx = 2;
 		gbc.gridy = 3;
-		ventana.add(txtSalario, gbc);
+		ventana.add(choActores, gbc);
 
 		gbc.fill = GridBagConstraints.SOUTHWEST;
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
@@ -187,37 +190,37 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
-		// Dialogo Confirmación
+		
 		dialogo.add(lblDia);
 		dialogo.addWindowListener(this);
 		dialogo.setLayout(new FlowLayout());
 		dialogo.setSize(300, 80);
-		dialogo.setResizable(false);
+		dialogo.setResizable(true);
 		dialogo.setLocationRelativeTo(null);
 		dialogo.setVisible(false);
-
+		
 	}
 	
 	public class CanvasImagen extends Canvas {
 	    public void paint(Graphics g) {
-	        Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\altAct.jpg");
+	        Image img = Toolkit.getDefaultToolkit().getImage("img\\pelact\\altPelAct.png");
 	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 	    }
 	}
 
-	public void darAlta() {
+	public void darAltaPelAct(Choice choPeliculas, Choice choActores) {
 
-		String nombre = txtNombre.getText();
-		String apellidos = txtApellidos.getText();
-		String salario = txtSalario.getText();
-		String sentenciaSQL = "INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)";
+		String pelicula = choPeliculas.getSelectedItem();
+		int idPelicula = mapaPeliculas.get(pelicula);
+		String actor = choActores.getSelectedItem();
+		int idActor = mapaActores.get(actor);
+		String sentenciaSQL = "INSERT INTO peliculas_actores (idPeliculaFK, idActorFK) VALUES (?, ?)";
 
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-			BD.ps.setString(1, nombre);
-			BD.ps.setString(2, apellidos);
-			BD.ps.setString(3, salario);
+			BD.ps.setInt(1, idPelicula);
+			BD.ps.setInt(2, idActor);
 			BD.ps.executeUpdate();
 			dialogoComprobacion(null);
 
@@ -233,6 +236,72 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 			}
 		}
 
+	}
+
+	private void rellenarPeliculas() {
+		choPeliculas.removeAll();
+		mapaPeliculas.clear();
+		
+		try
+
+		{
+			BD.conectarBD();
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLPel);
+			BD.rs = BD.ps.executeQuery();
+			choPeliculas.add("Seleccionar una película...");
+			while (BD.rs.next()) {
+				int id = BD.rs.getInt("idPelicula");
+				String titulo = BD.rs.getString("tituloPelicula");
+				java.time.LocalDate fecha = BD.rs.getObject("fechaEstrenoPelicula", java.time.LocalDate.class);
+				int anio = fecha.getYear();
+				String pelicula = titulo + " (" + anio +")";
+				mapaPeliculas.put(pelicula, id);
+				choPeliculas.add(pelicula);
+			}
+		}
+
+		catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe);
+		} catch (SQLException se) {
+			dialogoComprobacion(se);
+		} finally {
+			try {
+				BD.desconectarBD();
+			} catch (SQLException se) {
+				dialogoComprobacion(se);
+			}
+		}
+	}
+	
+	private void rellenarActores() {
+		choActores.removeAll();
+		mapaActores.clear();
+		try
+
+		{
+			BD.conectarBD();
+			BD.ps = BD.connection.prepareStatement(BD.consultaSQLActores);
+			BD.rs = BD.ps.executeQuery();
+			choActores.add("Seleccionar un actor...");
+			while (BD.rs.next()) {
+				int id = BD.rs.getInt("idActor");
+				String nombreCompleto = BD.rs.getString("nombreActor") + " " + BD.rs.getString("apellidosActor");
+				mapaActores.put(nombreCompleto, id);
+				choActores.add(nombreCompleto);
+			}
+		}
+
+		catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe);
+		} catch (SQLException se) {
+			dialogoComprobacion(se);
+		} finally {
+			try {
+				BD.desconectarBD();
+			} catch (SQLException se) {
+				dialogoComprobacion(se);
+			}
+		}
 	}
 
 	public void dialogoComprobacion(Exception e) {
@@ -252,14 +321,10 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				if (e.getMessage().contains("Incorrect decimal value")) {
-					lblDia.setText("El formato no es válido. Escriba un número. [" + e.getMessage() + "]");
-				} else {
-					lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
-				}
+				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
-			case "NumberFormatException":
-				lblDia.setText("El salario contiene carácteres no válidos. Escriba un número [" + e.getMessage() + "]");
+			case "DateTimeParseException":
+				lblDia.setText("Formato de fecha incorrecto. [" + e.getMessage() + "]");
 				break;
 			default:
 				lblDia.setText("Error. [" + e.getMessage() + "]");
@@ -267,48 +332,33 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		}
 		dialogo.pack();
 		dialogo.setVisible(true);
-
+		
 	}
 
 	public static void main(String[] args) {
-		new AltaActor();
+		new AltaPelAct();
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnLimpiar) {
-			txtNombre.setText("");
-			txtApellidos.setText("");
-			txtSalario.setText("");
+			choPeliculas.select(0);
+			choActores.select(0);	
 		}
 
-		else if (e.getSource() == btnAceptar) {
-			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
-					|| (txtSalario.getText().trim().isEmpty())) {
+		if (e.getSource() == btnAceptar) {
+			if ((choPeliculas.getSelectedIndex() == 0) || choActores.getSelectedIndex() == 0) {
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
 			}
-
 			else {
-				boolean salarioValido = false;
-				try {
-					float salario = Float.parseFloat(txtSalario.getText());
-
-					if (salario < 0) {
-						dialogoComprobacion(new Exception("El salario no puede ser negativo"));
-					} else {
-						salarioValido = true;
-					}
-					if (salarioValido) {
-						darAlta();
-					}
-				} catch (NumberFormatException nfe) {
-					dialogoComprobacion(nfe);
-				}
+					darAltaPelAct(choPeliculas, choActores);
+					rellenarPeliculas();
+					rellenarActores();
 			}
 		}
 
-		else if (e.getSource() == mnuAltDir) {
+		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
 		} else if (e.getSource() == mnuBajaDir)
 		{
@@ -362,9 +412,8 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 	@Override
 	public void windowClosing(WindowEvent e) {
 		if (e.getSource() == dialogo) {
-			dialogo.dispose();
+			dialogo.setVisible(false);
 		}
-
 		else if (e.getSource() == ventana) {
 			ventana.dispose();
 		}

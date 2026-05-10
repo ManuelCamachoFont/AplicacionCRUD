@@ -1,41 +1,50 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
 import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.HashMap;
+
 
 public class ModificacionActor extends WindowAdapter implements ActionListener
 {
 
 	Frame ventana1 = new Frame("Actores - Modificación");
+
+	CanvasImagen canvas = new CanvasImagen();
+
 	Choice choActores = new Choice();
 	Button btnEditar = new Button("Editar");
 
-	Frame ventana2 = new Frame("Actor - Modificación");
-	Label lblElec = new Label("¿Qué actor desea modificar?");
-	Label lblElecc = new Label("");
+	Frame ventana2 = new Frame("Editando Actor...");
+	Label lblElec = new Label("¿Qué actor desea modificar?", Label.CENTER);
+	Label lblElecc = new Label("", Label.CENTER);
 	Label lblNombre = new Label("Nombre");
 	TextField txtNombre = new TextField(30);
 	Label lblApellidos = new Label("Apellidos");
 	TextField txtApellidos = new TextField(30);
-	Label lblSalario = new Label("Salario (Números)");
+	Label lblSalario = new Label("Salario (Euros)");
 	TextField txtSalario = new TextField(30);
 	Button btnAceptar = new Button("Aceptar");
 	Button btnLimpiar = new Button("Limpiar");
@@ -47,7 +56,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas_Actores");
+	Menu mnuPelAct = new Menu("Peliculas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -62,47 +71,20 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
+	MenuItem mnuModPelAct = new MenuItem("Modificación");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 
-	MenuBar mnuBar2 = new MenuBar();
-	Menu mnuDirectores2 = new Menu("Directores");
-	Menu mnuPeliculas2 = new Menu("Películas");
-	Menu mnuActores2 = new Menu("Actores");
-	Menu mnuPelAct2 = new Menu("Peliculas_Actores");
-	MenuItem mnuAltDir2 = new MenuItem("Alta");
-	MenuItem mnuBajaDir2 = new MenuItem("Baja");
-	MenuItem mnuModDir2 = new MenuItem("Modificación");
-	MenuItem mnuConsDir2 = new MenuItem("Consulta");
-	MenuItem mnuAltPel2 = new MenuItem("Alta");
-	MenuItem mnuBajaPel2 = new MenuItem("Baja");
-	MenuItem mnuModPel2 = new MenuItem("Modificación");
-	MenuItem mnuConsPel2 = new MenuItem("Consulta");
-	MenuItem mnuAltAct2 = new MenuItem("Alta");
-	MenuItem mnuBajaAct2 = new MenuItem("Baja");
-	MenuItem mnuModAct2 = new MenuItem("Modificación");
-	MenuItem mnuConsAct2 = new MenuItem("Consulta");
-	MenuItem mnuAltPelAct2 = new MenuItem("Alta");
-	MenuItem mnuBajaPelAct2 = new MenuItem("Baja");
-	MenuItem mnuConsPelAct2 = new MenuItem("Modificación");
-	MenuItem mnuModPelAct2 = new MenuItem("Consulta");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana1, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte esta en desarrollo");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo2 = new Dialog(ventana2, "Acceso Denegado", true);
-	Label lblDesarrollo2 = new Label("Esta parte está en desarrollo");
+	HashMap<String, Integer> mapaActores = new HashMap();
 
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	String sentenciaSQL = "";
 
-	String idActor = "";
+	int idActorSeleccionado;
+	
+	String actorSeleccionado;
 
-	String actorSeleccionado = "";
 	String actorNuevo = "";
 
 	public ModificacionActor()
@@ -147,54 +129,11 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		mnuBajaPelAct.addActionListener(this);
 		mnuPelAct.add(mnuBajaPelAct);
 		mnuModPelAct.addActionListener(this);
-		mnuPelAct.add(mnuModPelAct2);
+		mnuPelAct.add(mnuModPelAct);
 		mnuConsPelAct.addActionListener(this);
 		mnuPelAct.add(mnuConsPelAct);
 		mnuBar.add(mnuPelAct);
 
-		// Menú Directores
-		mnuAltDir2.addActionListener(this);
-		mnuDirectores2.add(mnuAltDir2);
-		mnuBajaDir2.addActionListener(this);
-		mnuDirectores2.add(mnuBajaDir2);
-		mnuModDir2.addActionListener(this);
-		mnuDirectores2.add(mnuModDir2);
-		mnuConsDir2.addActionListener(this);
-		mnuDirectores2.add(mnuConsDir2);
-		mnuBar2.add(mnuDirectores2);
-
-		// Menú Películas
-		mnuAltPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuAltPel2);
-		mnuBajaPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuBajaPel2);
-		mnuModPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuModPel2);
-		mnuConsPel2.addActionListener(this);
-		mnuPeliculas2.add(mnuConsPel2);
-		mnuBar2.add(mnuPeliculas2);
-
-		// Menú Actores
-		mnuAltAct2.addActionListener(this);
-		mnuActores2.add(mnuAltAct2);
-		mnuBajaAct2.addActionListener(this);
-		mnuActores2.add(mnuBajaAct2);
-		mnuModAct2.addActionListener(this);
-		mnuActores2.add(mnuModAct2);
-		mnuConsAct2.addActionListener(this);
-		mnuActores2.add(mnuConsAct2);
-		mnuBar2.add(mnuActores2);
-
-		// Menú Peliculas_Actores
-		mnuAltPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuAltPelAct2);
-		mnuBajaPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuBajaPelAct2);
-		mnuModPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuModPelAct2);
-		mnuConsPelAct2.addActionListener(this);
-		mnuPelAct2.add(mnuConsPelAct2);
-		mnuBar2.add(mnuPelAct2);
 
 		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
@@ -203,34 +142,35 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 		ventana1.setMenuBar(mnuBar);
 
-		Usuario.permisosBasico(mnuDirectores2, mnuBajaDir2, mnuModDir2, mnuConsDir2);
-		Usuario.permisosBasico(mnuPeliculas2, mnuBajaPel2, mnuModPel2, mnuConsPel2);
-		Usuario.permisosBasico(mnuActores2, mnuBajaAct2, mnuModAct2, mnuConsAct2);
-		Usuario.permisosBasico(mnuPelAct2, mnuBajaPelAct2, mnuModPelAct2, mnuConsPelAct2);
-
-		ventana2.setMenuBar(mnuBar2);
-
 		// Ventana 1
 		ventana1.setLayout(gridbag);
-		ventana1.setBackground(new Color(213, 255, 255));
+		ventana1.setBackground(new Color(120, 175, 169));
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoice();
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridheight = 4;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.1;
+		gbc.weighty = 1;
+		canvas.setPreferredSize(new java.awt.Dimension(150, 280));
+		ventana1.add(canvas, gbc);
+		gbc.gridheight = 1;
+
+		gbc.gridx = 1;
+		gbc.gridy = 0;
 		lblElec.setFont(new Font("SansSerif", 3, 20));
 		ventana1.add(lblElec, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 3;
 		ventana1.add(choActores, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridy = 4;
 		btnEditar.addActionListener(this);
 		ventana1.add(btnEditar, gbc);
 
-		ventana1.setSize(500, 220);
+		ventana1.setSize(600, 330);
 		ventana1.addWindowListener(this);
 		ventana1.setResizable(false);
 		ventana1.setLocationRelativeTo(null);
@@ -238,7 +178,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 		// Ventana 2
 		ventana2.setLayout(gridbag);
-		ventana2.setBackground(new Color(213, 255, 255));
+		ventana2.setBackground(new Color(120, 175, 169));
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -304,43 +244,79 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setVisible(false);
 
-		// Dialogo tercer trimestre
-		diaDesarrollo.add(lblDesarrollo);
-		diaDesarrollo.addWindowListener(this);
-		diaDesarrollo.setLayout(new FlowLayout());
-		diaDesarrollo.setBackground(Color.YELLOW);
-		diaDesarrollo.setSize(300, 80);
-		diaDesarrollo.setResizable(false);
-		diaDesarrollo.setLocationRelativeTo(null);
-		diaDesarrollo.setVisible(false);
-
-		// Dialogo tercer trimestre
-		diaDesarrollo2.add(lblDesarrollo);
-		diaDesarrollo2.addWindowListener(this);
-		diaDesarrollo2.setLayout(new FlowLayout());
-		diaDesarrollo2.setBackground(Color.YELLOW);
-		diaDesarrollo2.setSize(300, 80);
-		diaDesarrollo2.setResizable(false);
-		diaDesarrollo2.setLocationRelativeTo(null);
-		diaDesarrollo2.setVisible(false);
-
 	}
 
+	public class CanvasImagen extends Canvas {
+		public void paint(Graphics g) {
+			Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\modAct.jpg");
+			g.drawImage(img, 0, 0,this.getWidth(), this.getHeight(), this);
+		}
+	}
+
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 	private void rellenarChoice()
 	{
 		try
+=======
+	private void rellenarChoice() {
+		choActores.removeAll();
+		mapaActores.clear();
+		try {
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 
-		{
-			choActores.removeAll();
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.consultaSQLActores);
 			BD.rs = BD.ps.executeQuery();
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 			choActores.add("Seleccionar un actor...");
 			while (BD.rs.next())
 			{
 				choActores.add(BD.rs.getInt("idActor") + " | " + BD.rs.getString("nombreActor") + " | "
 						+ BD.rs.getString("apellidosActor") + " | " + BD.rs.getString("salarioActor"));
+=======
+			choActores.add("Elige un actor...");
+			while (BD.rs.next()) {
+				int id = BD.rs.getInt("idActor");
+				String nombre = BD.rs.getString("nombreActor");
+				String apellidos = BD.rs.getString("apellidosActor");
+				String actor = nombre + " " + apellidos;
+				mapaActores.put(actor, id);
+				choActores.add(actor);
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			}
+		} catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe, "", "");
+		} catch (SQLException se) {
+			dialogoComprobacion(se, "", "");
+		} finally {
+			try {
+				BD.desconectarBD();
+			} catch (SQLException se) {
+				dialogoComprobacion(se, "", "");
+			}
+		}
+	}
+	
+	public void obtenerDatosActor(Choice choActores) {
+		String actor = choActores.getSelectedItem();
+		idActorSeleccionado = mapaActores.get(actor);
+		sentenciaSQL = BD.consultaSQLActores + " WHERE idActor = ?";
+		try
+
+		{
+			BD.conectarBD();
+			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+			BD.ps.setInt(1, idActorSeleccionado);
+			BD.rs = BD.ps.executeQuery();
+			BD.rs.next();
+			String nombre = BD.rs.getString("nombreActor");
+			txtNombre.setText(nombre);
+			String apellidos = (BD.rs.getString("apellidosActor"));
+			txtApellidos.setText(apellidos);
+			String salario = (BD.rs.getString("salarioActor"));
+			txtSalario.setText(salario + "€");
+			actorSeleccionado = nombre + " " + apellidos + " (" + salario + "€)";
+			lblElecc.setText("Estas editando a: " + actorSeleccionado);
 		}
 
 		catch (ClassNotFoundException cnfe)
@@ -360,6 +336,56 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 			}
 		}
+
+	}
+
+	public void modificarActor(TextField nombreText, TextField apellidosText, TextField salarioText) {
+		
+		String nombre = nombreText.getText().trim();
+		String apellidos = apellidosText.getText().trim();
+		String salarioString = salarioText.getText().trim();
+		String salarioFormateado = salarioString.replace(',','.').replace("€", "");
+		
+		String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
+
+		actorNuevo = nombre + " " + apellidos + " (" + salarioFormateado + "€)";
+		
+		try {
+			float salario = Float.parseFloat(salarioFormateado);
+			if (salario < 0) {
+				dialogoComprobacion(new Exception("El salario no puede ser negativo"), "", "");
+			} else {
+				BD.conectarBD();
+				BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+				BD.ps.setString(1, nombre);
+				BD.ps.setString(2, apellidos);
+				BD.ps.setFloat(3, salario);
+				BD.ps.setInt(4, idActorSeleccionado);
+				BD.ps.executeUpdate();
+				dialogoComprobacion(null, actorSeleccionado, actorNuevo);
+				actorSeleccionado = actorNuevo;
+				lblElecc.setText("Estás editando : " + actorSeleccionado);
+				ventana2.validate();
+			}
+		} catch (NumberFormatException nfe) {
+			dialogoComprobacion(nfe, "", "");
+
+		} catch (ClassNotFoundException cnfe) {
+			dialogoComprobacion(cnfe, "", "");
+		} catch (SQLException se) {
+			dialogoComprobacion(se, "", "");
+		} finally {
+			try {
+				BD.desconectarBD();
+			}
+
+			catch (SQLException se) {
+				dialogoComprobacion(se, "", "");
+			}
+
+		}
+
+		rellenarChoice();
 	}
 
 	public void dialogoComprobacion(Exception e, String actorS, String actorN)
@@ -369,10 +395,16 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaF.setText("Se ha modificado a \"" + actorS + "\", ahora es \"" + actorN + "\".");
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 		} else
 		{
+=======
+			lblDiaF.setBackground(diaFeedback.getBackground());
+		} else {
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
+			lblDiaF.setBackground(diaFeedback.getBackground());
 
 			switch (e.getClass().getSimpleName())
 			{
@@ -408,6 +440,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 	}
 
 	@Override
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource().equals(btnEditar))
@@ -451,6 +484,12 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 					}
 				}
+=======
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(btnEditar)) {
+			if (choActores.getSelectedIndex() != 0) {
+				obtenerDatosActor(choActores);
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 				ventana2.setVisible(true);
 
 			} else
@@ -459,6 +498,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 			}
 		}
 
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 		else if (e.getSource() == btnAceptar)
 		{
 
@@ -470,6 +510,18 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 			else
 			{
+=======
+		else if (e.getSource() == btnAceptar) {
+
+			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
+					|| (txtSalario.getText().trim().isEmpty())) {
+				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
+			}
+
+			else {
+				modificarActor(txtNombre, txtApellidos, txtSalario);
+			}
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 
 				String nombre = txtNombre.getText();
 				String apellidos = txtApellidos.getText();
@@ -537,6 +589,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 			txtSalario.setText("");
 			txtNombre.requestFocus();
 		}
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2))
 		{
 			new AltaDirector();
@@ -574,6 +627,40 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct))
 		{
 			diaDesarrollo.setVisible(true);
+=======
+		if (e.getSource() == mnuAltDir) {
+			new AltaDirector();
+		} else if (e.getSource() == mnuBajaDir) {
+			new BajaDirector();
+		} else if (e.getSource() == mnuModDir) {
+			new ModificacionDirector();
+		} else if (e.getSource() == mnuConsDir) {
+			new ConsultaDirector();
+		} else if (e.getSource() == mnuAltPel) {
+			new AltaPelicula();
+		} else if (e.getSource() == mnuBajaPel) {
+			new BajaPelicula();
+		} else if (e.getSource() == mnuConsPel) {
+			new ConsultaPelicula();
+		} else if (e.getSource() == mnuModPel) {
+			new ModificacionPelicula();
+		} else if (e.getSource() == mnuAltAct) {
+			new AltaActor();
+		} else if (e.getSource() == mnuBajaAct) {
+			new BajaActor();
+		} else if (e.getSource() == mnuModAct) {
+			new ModificacionActor();
+		} else if (e.getSource() == mnuConsAct) {
+			new ConsultaActor();
+		} else if (e.getSource() == mnuAltPelAct) {
+			new AltaPelAct();
+		} else if (e.getSource() == mnuBajaPelAct) {
+			new BajaPelAct();
+		} else if (e.getSource() == mnuModPelAct) {
+			new ModificacionPelAct();
+		} else if (e.getSource() == mnuConsPelAct) {
+			new ConsultaPelAct();
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 		}
 	}
 
@@ -584,6 +671,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		if (e.getSource() == diaFeedback)
 		{
 			diaFeedback.dispose();
+<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
 		} else if (e.getSource() == diaDesarrollo)
 		{
 			diaDesarrollo.dispose();
@@ -591,6 +679,10 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 		if (e.getSource() == ventana2)
 		{
+=======
+		}
+		if (e.getSource() == ventana2) {
+>>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			ventana2.dispose();
 		} else if (e.getSource() == ventana1)
 		{
