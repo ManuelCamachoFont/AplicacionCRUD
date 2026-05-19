@@ -33,12 +33,16 @@ public class Login extends WindowAdapter implements ActionListener {
 
 	Dialog dlgError = new Dialog(ventana, "Error", true);
 	Label lblMensaje = new Label("Error de credenciales");
+	
+	int contador;
+	
 
 	public Login() {
 
 		ventana.setLayout(gridbag);
-		ventana.setBackground(new Color(213, 255, 255));
-		ventana.setFont(new Font("SansSerif", 0, 12));
+		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
+		ventana.setFont(new Font("Comfortaa", 0, 12));
 
 		gbc.insets = new Insets(7, 7, 7, 7);
 
@@ -111,12 +115,18 @@ public class Login extends WindowAdapter implements ActionListener {
 
 		if (e.getSource() == btnIniciar) {
 
+			if (contador == 3) {
+				Utilidades.consultarAyuda();
+			}
+			
 			String usuarioEscrito = txtUsuario.getText();
 			String claveEscrita = txtClave.getText();
 
 			if (Usuario.validar(usuarioEscrito, claveEscrita) == true) {
 				accederBD();
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Inicio de sesión"));
 			} else {
+				contador++;
 				dlgError.setVisible(true);
 			}
 		}

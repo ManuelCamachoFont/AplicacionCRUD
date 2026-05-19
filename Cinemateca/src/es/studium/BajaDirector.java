@@ -67,24 +67,20 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-<<<<<<< HEAD:Cinemateca/src/es/studium/BajaDirector.java
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
-
-	String directorSeleccionado = "";
-=======
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/BajaDirector.java
 
 	String directorSeleccionado = "";
 	
 	HashMap<String,Integer>mapaDirectores = new HashMap();
+	
+	String logs;
 
 	public BajaDirector()
 	{
 		ventana.setFont(new Font("SansSerif", 0, 12));
 		ventana.setBackground(new Color(255, 165, 00));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -275,6 +271,8 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 
 		String director = choDirectores.getSelectedItem();
 		int idDirector = mapaDirectores.get(director);
+		logs = BD.eliminarSQLDirector + "\nValor seleccionado por el usuario: " + idDirector + " = " + director;
+		
 
 		try
 		{
@@ -282,6 +280,8 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLDirector);
 			BD.ps.setInt(1, idDirector);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, directorSeleccionado);
 		} catch (ClassNotFoundException cnfe)
 		{
@@ -309,10 +309,7 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaFeedback.setText("Se ha eliminado correctamente a [" + director + "]");
-<<<<<<< HEAD:Cinemateca/src/es/studium/BajaDirector.java
-=======
 			lblDia.setBackground(dialogo.getBackground());
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/BajaDirector.java
 		} else
 		{
 			diaFeedback.setTitle("Error");
@@ -323,19 +320,27 @@ public class BajaDirector extends WindowAdapter implements ActionListener
 			{
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
 				if (e.getMessage().contains("foreign"))
 				{
+					Utilidades.guardarLog(
+							Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), e.getMessage()));
 					lblDiaFeedback.setText("Está operación no está permitida, existen relaciones entre los registros. ["
 							+ e.getMessage() + "]");
 				} else
 				{
+					Utilidades.guardarLog(
+							Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 					lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 					break;
 				}
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}

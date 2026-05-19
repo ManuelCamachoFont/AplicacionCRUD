@@ -27,8 +27,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 
-public class ModificacionActor extends WindowAdapter implements ActionListener
-{
+public class ModificacionActor extends WindowAdapter implements ActionListener {
 
 	Frame ventana1 = new Frame("Actores - Modificación");
 
@@ -86,9 +85,12 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 	String actorSeleccionado;
 
 	String actorNuevo = "";
+	
+	String logs;
+	
+	String ultimaSencia = "";
 
-	public ModificacionActor()
-	{
+	public ModificacionActor() {
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -139,12 +141,13 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
 		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
 		Usuario.permisosBasico(mnuPelAct, mnuBajaPelAct, mnuModPelAct, mnuConsPelAct);
-
+		
 		ventana1.setMenuBar(mnuBar);
 
 		// Ventana 1
 		ventana1.setLayout(gridbag);
 		ventana1.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana1);
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoice();
 
@@ -179,6 +182,7 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		// Ventana 2
 		ventana2.setLayout(gridbag);
 		ventana2.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana2);
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -253,27 +257,14 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		}
 	}
 
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-	private void rellenarChoice()
-	{
-		try
-=======
 	private void rellenarChoice() {
 		choActores.removeAll();
 		mapaActores.clear();
 		try {
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.consultaSQLActores);
 			BD.rs = BD.ps.executeQuery();
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-			choActores.add("Seleccionar un actor...");
-			while (BD.rs.next())
-			{
-				choActores.add(BD.rs.getInt("idActor") + " | " + BD.rs.getString("nombreActor") + " | "
-						+ BD.rs.getString("apellidosActor") + " | " + BD.rs.getString("salarioActor"));
-=======
 			choActores.add("Elige un actor...");
 			while (BD.rs.next()) {
 				int id = BD.rs.getInt("idActor");
@@ -282,7 +273,6 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 				String actor = nombre + " " + apellidos;
 				mapaActores.put(actor, id);
 				choActores.add(actor);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			}
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "", "");
@@ -301,6 +291,10 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		String actor = choActores.getSelectedItem();
 		idActorSeleccionado = mapaActores.get(actor);
 		sentenciaSQL = BD.consultaSQLActores + " WHERE idActor = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idActorSeleccionado + " " + actor;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 		try
 
 		{
@@ -313,25 +307,20 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 			txtNombre.setText(nombre);
 			String apellidos = (BD.rs.getString("apellidosActor"));
 			txtApellidos.setText(apellidos);
-			String salario = (BD.rs.getString("salarioActor"));
-			txtSalario.setText(salario + "€");
-			actorSeleccionado = nombre + " " + apellidos + " (" + salario + "€)";
+			String salario = (BD.rs.getString("salarioEuro"));
+			txtSalario.setText(salario);
+			actorSeleccionado = nombre + " " + apellidos + " (" + salario + ")";
 			lblElecc.setText("Estas editando a: " + actorSeleccionado);
 		}
 
-		catch (ClassNotFoundException cnfe)
-		{
+		catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "", "");
-		} catch (SQLException se)
-		{
+		} catch (SQLException se) {
 			dialogoComprobacion(se, "", "");
-		} finally
-		{
-			try
-			{
+		} finally {
+			try {
 				BD.desconectarBD();
-			} catch (SQLException se)
-			{
+			} catch (SQLException se) {
 				dialogoComprobacion(se, "", "");
 
 			}
@@ -347,6 +336,11 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		String salarioFormateado = salarioString.replace(',','.').replace("€", "");
 		
 		String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + salarioString;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+		
 
 		actorNuevo = nombre + " " + apellidos + " (" + salarioFormateado + "€)";
 		
@@ -388,44 +382,44 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 		rellenarChoice();
 	}
 
-	public void dialogoComprobacion(Exception e, String actorS, String actorN)
-	{
-		if (e == null)
-		{
+	public void dialogoComprobacion(Exception e, String actorS, String actorN) {
+		if (e == null) {
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaF.setText("Se ha modificado a \"" + actorS + "\", ahora es \"" + actorN + "\".");
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-		} else
-		{
-=======
 			lblDiaF.setBackground(diaFeedback.getBackground());
 		} else {
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			diaFeedback.setTitle("Error");
 			diaFeedback.setBackground(new Color(243, 70, 74));
 			lblDiaF.setBackground(diaFeedback.getBackground());
 
-			switch (e.getClass().getSimpleName())
-			{
+			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
-				if (e.getMessage().contains("Incorrect decimal value"))
-				{
+				if (e.getMessage().contains("Incorrect decimal value")) {
+					Utilidades.guardarLog(
+							Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), e.getMessage()));
 					lblDiaF.setText("El formato no es válido. Escriba un número. [" + e.getMessage() + "]");
-				} else
-				{
+				} else {
+					Utilidades.guardarLog(
+							Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 					lblDiaF.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				}
 				break;
 			case "NumberFormatException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText(
 						"El salario contiene carácteres no válidos. Escriba un número [" + e.getMessage() + "]");
 				break;
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -434,200 +428,44 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		new ModificacionActor();
 	}
 
 	@Override
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-	public void actionPerformed(ActionEvent e)
-	{
-		if (e.getSource().equals(btnEditar))
-		{
-			if (choActores.getSelectedIndex() != 0)
-			{
-				actorSeleccionado = (choActores.getSelectedItem().split("\\|")[1].trim() + " "
-						+ choActores.getSelectedItem().split("\\|")[2].trim());
-				lblElecc.setText("Estás editando : " + (choActores.getSelectedItem().split("\\|")[1]).trim() + " "
-						+ (choActores.getSelectedItem().split("\\|")[2]).trim());
-				idActor = choActores.getSelectedItem().split("\\|")[0];
-				sentenciaSQL = BD.consultaSQLActores + " WHERE idActor = ?";
-
-				try
-
-				{
-					BD.conectarBD();
-					BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-					BD.ps.setString(1, idActor);
-					BD.rs = BD.ps.executeQuery();
-					BD.rs.next();
-					txtNombre.setText(BD.rs.getString("nombreActor"));
-					txtApellidos.setText(BD.rs.getString("apellidosActor"));
-					txtSalario.setText(BD.rs.getString("salarioActor"));
-				}
-
-				catch (ClassNotFoundException cnfe)
-				{
-					dialogoComprobacion(cnfe, "", "");
-				} catch (SQLException se)
-				{
-					dialogoComprobacion(se, "", "");
-				} finally
-				{
-					try
-					{
-						BD.desconectarBD();
-					} catch (SQLException se)
-					{
-						dialogoComprobacion(se, "", "");
-
-					}
-				}
-=======
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnEditar)) {
 			if (choActores.getSelectedIndex() != 0) {
 				obtenerDatosActor(choActores);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 				ventana2.setVisible(true);
 
-			} else
-			{
+			} else {
 				choActores.requestFocus();
 			}
 		}
 
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-		else if (e.getSource() == btnAceptar)
-		{
-
-			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
-					|| (txtSalario.getText().trim().isEmpty()))
-			{
-				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
-			}
-
-			else
-			{
-=======
 		else if (e.getSource() == btnAceptar) {
 
 			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
 					|| (txtSalario.getText().trim().isEmpty())) {
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Modificación, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
+			}else if (!txtNombre.getText().matches("^[\\p{L} .'-]+$") || !txtApellidos.getText().matches("^[\\p{L} .'-]+$")) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Campos con carácteres no válidos");
+				dialogoComprobacion(new Exception("Alguno de los campos contiene carácteres no válidos"), "", "");
 			}
 
 			else {
 				modificarActor(txtNombre, txtApellidos, txtSalario);
 			}
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 
-				String nombre = txtNombre.getText();
-				String apellidos = txtApellidos.getText();
-				Float salario = Float.parseFloat(txtSalario.getText());
-				String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
-
-				actorNuevo = nombre + " " + apellidos;
-				boolean salarioValido = false;
-
-				try
-				{
-
-					if (salario < 0)
-					{
-						dialogoComprobacion(new Exception("El salario no puede ser negativo"), "", "");
-					} else
-					{
-						salarioValido = true;
-					}
-					if (salarioValido)
-					{
-						BD.conectarBD();
-						BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-						BD.ps.setString(1, nombre);
-						BD.ps.setString(2, apellidos);
-						BD.ps.setFloat(3, salario);
-						BD.ps.setString(4, idActor);
-						BD.ps.executeUpdate();
-						dialogoComprobacion(null, actorSeleccionado, actorNuevo);
-						actorSeleccionado = actorNuevo;
-						lblElecc.setText("Estás editando : " + actorNuevo);
-						ventana2.validate();
-					}
-				} catch (NumberFormatException nfe)
-				{
-					dialogoComprobacion(nfe, "", "");
-
-				} catch (ClassNotFoundException cnfe)
-				{
-					dialogoComprobacion(cnfe, "", "");
-				} catch (SQLException se)
-				{
-					dialogoComprobacion(se, "", "");
-				} finally
-				{
-					try
-					{
-						BD.desconectarBD();
-					}
-
-					catch (SQLException se)
-					{
-						dialogoComprobacion(se, "", "");
-					}
-
-				}
-
-				rellenarChoice();
-			}
-
-		} else if (e.getSource() == btnLimpiar)
-		{
+		} else if (e.getSource() == btnLimpiar) {
 			txtNombre.setText("");
 			txtApellidos.setText("");
 			txtSalario.setText("");
 			txtNombre.requestFocus();
 		}
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-		if ((e.getSource() == mnuAltDir) || (e.getSource() == mnuAltDir2))
-		{
-			new AltaDirector();
-		} else if ((e.getSource() == mnuBajaDir) || (e.getSource() == mnuBajaDir2))
-		{
-			new BajaDirector();
-		} else if ((e.getSource() == mnuModDir) || (e.getSource() == mnuModDir2))
-		{
-			new ModificacionDirector();
-		} else if ((e.getSource() == mnuConsDir) || (e.getSource() == mnuConsDir2))
-		{
-			new ConsultaDirector();
-		} else if ((e.getSource() == mnuAltPel) || (e.getSource() == mnuAltPel2))
-		{
-			new AltaPelicula();
-		} else if ((e.getSource() == mnuBajaPel) || (e.getSource() == mnuBajaPel2))
-		{
-			new BajaPelicula();
-		} else if ((e.getSource() == mnuConsPel) || (e.getSource() == mnuConsPel2))
-		{
-			new ConsultaPelicula();
-		} else if ((e.getSource() == mnuAltAct) || (e.getSource() == mnuAltAct2))
-		{
-			new AltaActor();
-		} else if ((e.getSource() == mnuBajaAct) || (e.getSource() == mnuBajaAct2))
-		{
-			new BajaActor();
-		} else if ((e.getSource() == mnuModAct) || (e.getSource() == mnuModAct2))
-		{
-			new ModificacionActor();
-		} else if ((e.getSource() == mnuConsAct) || (e.getSource() == mnuConsAct2))
-		{
-			new ConsultaActor();
-		} else if ((e.getSource() == mnuModPel) || (e.getSource() == mnuAltPelAct) || (e.getSource() == mnuBajaPelAct)
-				|| (e.getSource() == mnuModPelAct) || (e.getSource() == mnuConsPelAct))
-		{
-			diaDesarrollo.setVisible(true);
-=======
 		if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
 		} else if (e.getSource() == mnuBajaDir) {
@@ -660,32 +498,18 @@ public class ModificacionActor extends WindowAdapter implements ActionListener
 			new ModificacionPelAct();
 		} else if (e.getSource() == mnuConsPelAct) {
 			new ConsultaPelAct();
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 		}
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e)
-	{
+	public void windowClosing(WindowEvent e) {
 
-		if (e.getSource() == diaFeedback)
-		{
+		if (e.getSource() == diaFeedback) {
 			diaFeedback.dispose();
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionActor.java
-		} else if (e.getSource() == diaDesarrollo)
-		{
-			diaDesarrollo.dispose();
-		}
-
-		if (e.getSource() == ventana2)
-		{
-=======
 		}
 		if (e.getSource() == ventana2) {
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionActor.java
 			ventana2.dispose();
-		} else if (e.getSource() == ventana1)
-		{
+		} else if (e.getSource() == ventana1) {
 			ventana1.dispose();
 		}
 

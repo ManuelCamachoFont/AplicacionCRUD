@@ -1,0 +1,25 @@
+[15/05/2026 15:58:03] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 15:58:32] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 19:03:46] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 19:12:51] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 19:56:14] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 19:58:36] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 19:58:49] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:00:19] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:04:37] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:04:44] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:09:54] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:15:12] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:22:19] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:29:30] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:29:59] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:43:40] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:45:39] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[15/05/2026 20:46:12] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:55:34] [] [INFO] [Principal2] Sesión cerrada
+[15/05/2026 20:57:14] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 20:58:18] [Administrador] [INFO] [Login] Inicio de sesión
+[15/05/2026 21:07:04] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 21:07:06] [] [INFO] [Principal2] Salida de la aplicación
+[15/05/2026 21:13:50] [Administrador] [INFO] [Login] Inicio de sesión
+[15/05/2026 21:14:52] [Administrador] [INFO] [Principal2] Salida de la aplicación

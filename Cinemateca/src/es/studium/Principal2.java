@@ -1,28 +1,31 @@
 package es.studium;
 
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.FlowLayout;
 import java.awt.Font;
+
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Label;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+
 public class Principal2 extends WindowAdapter implements ActionListener
 {
 
 	Frame ventana = new Frame("Menú principal");
-	Label lblTitulo = new Label("¡Bienvenido!");
 
+	CanvasImagen canvas = new CanvasImagen();
+	
 	MenuBar mnuBar = new MenuBar();
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
@@ -42,29 +45,44 @@ public class Principal2 extends WindowAdapter implements ActionListener
 	MenuItem mnuConsAct = new MenuItem("Consulta");
 	MenuItem mnuAltPelAct = new MenuItem("Alta");
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
-	MenuItem mnuConsPelAct = new MenuItem("Modificación");
-	MenuItem mnuModPelAct = new MenuItem("Consulta");
-
-	Label lblInfo = new Label("Conexión establecida con la base de datos");
+	MenuItem mnuModPelAct = new MenuItem("Modificacion");
+	MenuItem mnuConsPelAct = new MenuItem("Consulta");
+	
+	Label lblInfo = new Label("¡Bienvenido " + Usuario.nombre + "! se ha establecido conexión", Label.CENTER);
 	Button btnLogOut = new Button("Log Out");
-
-	GridBagLayout gridbag = new GridBagLayout();
-	GridBagConstraints gbc = new GridBagConstraints();
+	Button btnAyuda = new Button("Ayuda");
+	
 
 	public Principal2()
 	{
 
-		ventana.setLayout(gridbag);
-		ventana.setSize(400, 400);
-		ventana.setBackground(new Color(213, 255, 255));
-		ventana.setFont(new Font("SansSerif", 0, 12));
+		ventana.setLayout(null);
+		ventana.setSize(800, 800);
+		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
+
+		canvas.setBounds(0, 0, 800, 800);
+		ventana.add(canvas);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		lblTitulo.setFont(new Font("Serif", 1, 42));
-		ventana.add(lblTitulo, gbc);
+		lblInfo.setBounds(190, 625, 400, 40);
+		ventana.add(lblInfo);
+		
+		btnLogOut.setBounds(75, 725, 200, 40); 
+	    btnLogOut.addActionListener(this);
+	    btnLogOut.setForeground(new Color(255, 215, 0));
+	    btnLogOut.setBackground(Color.BLACK);
+		ventana.add(btnLogOut);
+		
+		btnAyuda.setBounds(500, 725, 200, 40); 
+		btnAyuda.addActionListener(this);
+	    btnAyuda.setForeground(new Color(255, 215, 0));
+	    btnAyuda.setBackground(Color.BLACK);
+		ventana.add(btnAyuda);
+		
+		ventana.setComponentZOrder(lblInfo, 0);
+	    ventana.setComponentZOrder(btnLogOut, 1);
+	    ventana.setComponentZOrder(btnAyuda, 2);
+	    ventana.setComponentZOrder(canvas, 3);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -117,20 +135,42 @@ public class Principal2 extends WindowAdapter implements ActionListener
 
 		ventana.setMenuBar(mnuBar);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		ventana.add(lblInfo, gbc);
-
-		gbc.gridy = 2;
-		gbc.anchor = GridBagConstraints.SOUTHEAST;
-		btnLogOut.addActionListener(this);
-		ventana.add(btnLogOut, gbc);
-
 		ventana.addWindowListener(this);
 		ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
 		ventana.setVisible(true);
 
+	}
+	
+	private class CanvasImagen extends Canvas {
+	    Image fondo = Toolkit.getDefaultToolkit().getImage("img/principal/background.png");
+	    Image logo = Toolkit.getDefaultToolkit().getImage("img/principal/logo.gif");
+	    
+	    Image imagenBuffer;
+	    Graphics gBuffer;
+
+	    @Override
+	    public void update(Graphics g) {
+	        paint(g);
+	    }
+
+	    @Override
+	    public void paint(Graphics g) {
+	        if (imagenBuffer == null) {
+	            imagenBuffer = createImage(this.getWidth(), this.getHeight());
+	            gBuffer = imagenBuffer.getGraphics();
+	        }
+
+	        gBuffer.drawImage(fondo, 0, 0, this.getWidth(), this.getHeight(), this);
+	        
+	        int logoAncho = 400;
+	        int logoAlto = 300;
+	        int logoX = ((this.getWidth() - logoAncho) / 2) - 2;
+	        int logoY = ((this.getHeight() - logoAlto) / 2) - 26;
+	        gBuffer.drawImage(logo, logoX, logoY, logoAncho, logoAlto, this);
+	        
+	        g.drawImage(imagenBuffer, 0, 0, this);
+	    }
 	}
 
 	public static void main(String[] args)
@@ -142,6 +182,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 	public void windowClosing(WindowEvent e)
 	{
 		if (e.getSource() == ventana) {
+			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Salida de la aplicación"));
 		System.exit(0);
 		}
 	}
@@ -149,7 +190,11 @@ public class Principal2 extends WindowAdapter implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == mnuAltDir)
+		if (e.getSource() == btnAyuda) {
+			Utilidades.consultarAyuda();
+			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Apertura de manual de ayuda"));
+		}
+		else if (e.getSource() == mnuAltDir)
 		{
 			new AltaDirector();
 		} else if (e.getSource() == mnuBajaDir)
@@ -202,6 +247,7 @@ public class Principal2 extends WindowAdapter implements ActionListener
 
 		if (e.getSource() == btnLogOut)
 		{
+			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Sesión cerrada"));
 			Usuario.cerrarSesion();
 			new Principal();
 			java.awt.Window[] ventanas = java.awt.Window.getWindows();

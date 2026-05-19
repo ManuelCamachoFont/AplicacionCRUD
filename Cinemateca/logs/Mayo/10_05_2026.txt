@@ -1,0 +1,3 @@
+[10/05/2026 16:53:20] [ Administrador ]Inicio de sesión
+[10/05/2026 16:58:58] [ Administrador ]Inicio de sesión
+[10/05/2026 16:59:00] [  ]Sesión cerrada

@@ -71,10 +71,13 @@ public class BajaPelicula extends WindowAdapter implements ActionListener {
 	String peliculaSeleccionada = "";
 	
 	HashMap<String,Integer>mapaPeliculas = new HashMap();
+	
+	String logs;
 
 	public BajaPelicula() {
 		ventana.setFont(new Font("SansSerif", 0, 12));
 		ventana.setBackground(new Color(255, 165, 0));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -250,15 +253,17 @@ public class BajaPelicula extends WindowAdapter implements ActionListener {
 
 	}
 
-	public void darBaja() {
-
-		String idPelicula = lista.getSelectedItem().split(" ")[0].trim();
-
+	public void darBaja(Choice choPeliculas) {
+		String pelicula = choPeliculas.getSelectedItem();
+		int idPelicula = mapaPeliculas.get(pelicula);
+		logs = BD.eliminarSQLActor + "\nValor seleccionado por el usuario: " + idPelicula + " = " + pelicula;
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLPelicula);
-			BD.ps.setString(1, idPelicula);
+			BD.ps.setInt(1, idPelicula);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, peliculaSeleccionada);
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "");
@@ -289,12 +294,18 @@ public class BajaPelicula extends WindowAdapter implements ActionListener {
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -318,7 +329,7 @@ public class BajaPelicula extends WindowAdapter implements ActionListener {
 		}
 
 		if (e.getSource() == btnDiaSi) {
-			darBaja();
+			darBaja(lista);
 			dialogo.dispose();
 			datos();
 

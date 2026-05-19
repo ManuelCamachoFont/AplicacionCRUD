@@ -1,0 +1,18 @@
+[18/05/2026 09:18:17] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[18/05/2026 09:19:14] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[18/05/2026 09:20:36] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[18/05/2026 09:20:54] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[18/05/2026 09:21:40] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[18/05/2026 09:22:39] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[18/05/2026 09:23:21] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[18/05/2026 09:24:31] [Administrador] [INFO] [Login] Inicio de sesión
+[18/05/2026 09:34:36] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[18/05/2026 09:35:27] [] [INFO] [ModificacionPelAct] Sentencia: SELECT idPeliculaActor, idPelicula, idActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE idPeliculaActor = ?
+ Valores seleccionados por el usuario: 4 Tiburón (1987) - Josefina Manuela Postigo Romero
+[18/05/2026 09:35:34] [] [INFO] [Principal2] Salida de la aplicación
+[18/05/2026 12:25:05] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[18/05/2026 12:25:14] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE nombreActor LIKE ?
+[18/05/2026 12:38:01] [] [INFO] [Principal2] Apertura de manual de ayuda
+[18/05/2026 12:47:43] [] [INFO] [Principal2] Salida de la aplicación
+[18/05/2026 19:52:26] [Usuario] [INFO] [Login] Inicio de sesión
+[18/05/2026 19:52:39] [Usuario] [INFO] [Principal2] Salida de la aplicación

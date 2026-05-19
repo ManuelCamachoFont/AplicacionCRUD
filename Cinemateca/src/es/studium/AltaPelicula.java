@@ -71,11 +71,14 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 	
 	HashMap<String, Integer> mapaDirectores = new HashMap<>();
+	
+	String logs;
 
 	public AltaPelicula() {
 
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 		ventana.setFont(new Font("SanSerif", 0, 12));
 		rellenarChoice();
 
@@ -224,9 +227,6 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 
 		String titulo = txtTitulo.getText();
 		String genero = txtGenero.getText();
-<<<<<<< HEAD:Cinemateca/src/es/studium/AltaPelicula.java
-		String estreno = txtEstreno.getText();
-=======
 		String estreno = txtEstreno.getText().trim().replaceAll("[./ ]", "-");
 		DateTimeFormatter formatoEntrada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		LocalDate fecha = LocalDate.parse(estreno, formatoEntrada);
@@ -234,9 +234,9 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		String fechaFormateada = fecha.format(formatoSalida);
 		String director = choDirectores.getSelectedItem();
 		int idDirector = mapaDirectores.get(director);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/AltaPelicula.java
 		String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
-
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + titulo + ", " +  genero + ", " + estreno + ",  " + director;
+		
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
@@ -245,6 +245,9 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			BD.ps.setString(3, fechaFormateada);
 			BD.ps.setInt(4, idDirector);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+
 			dialogoComprobacion(null);
 
 		} catch (ClassNotFoundException cnfe) {
@@ -310,15 +313,23 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			case "DateTimeParseException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), e.getMessage()));
 				lblDia.setText("Formato de fecha incorrecto. [" + e.getMessage() + "]");
 				break;
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDia.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -343,9 +354,13 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		if (e.getSource() == btnAceptar) {
 			if ((choDirector.getSelectedIndex() == 0) || (txtTitulo.getText().trim().isEmpty())
 					|| (txtGenero.getText().trim().isEmpty()) || (txtEstreno.getText().trim().isEmpty())) {
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Alta, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
 			}
 			else if(!txtEstreno.getText().matches("^\\d{2}[-/]\\d{2}[-/]\\d{4}$")){
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Formato de fecha incorrecto"));
 				dialogoComprobacion(new Exception("Formato de fecha incorrecto"));
 			}
 			else {

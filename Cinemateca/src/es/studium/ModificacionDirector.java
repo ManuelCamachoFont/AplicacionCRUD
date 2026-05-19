@@ -75,58 +75,23 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-	MenuBar mnuBar2 = new MenuBar();
-	Menu mnuDirectores2 = new Menu("Directores");
-	Menu mnuPeliculas2 = new Menu("Películas");
-	Menu mnuActores2 = new Menu("Actores");
-	Menu mnuPelAct2 = new Menu("Peliculas_Actores");
-	MenuItem mnuAltDir2 = new MenuItem("Alta");
-	MenuItem mnuBajaDir2 = new MenuItem("Baja");
-	MenuItem mnuModDir2 = new MenuItem("Modificación");
-	MenuItem mnuConsDir2 = new MenuItem("Consulta");
-	MenuItem mnuAltPel2 = new MenuItem("Alta");
-	MenuItem mnuBajaPel2 = new MenuItem("Baja");
-	MenuItem mnuModPel2 = new MenuItem("Modificación");
-	MenuItem mnuConsPel2 = new MenuItem("Consulta");
-	MenuItem mnuAltAct2 = new MenuItem("Alta");
-	MenuItem mnuBajaAct2 = new MenuItem("Baja");
-	MenuItem mnuModAct2 = new MenuItem("Modificación");
-	MenuItem mnuConsAct2 = new MenuItem("Consulta");
-	MenuItem mnuAltPelAct2 = new MenuItem("Alta");
-	MenuItem mnuBajaPelAct2 = new MenuItem("Baja");
-	MenuItem mnuConsPelAct2 = new MenuItem("Modificación");
-	MenuItem mnuModPelAct2 = new MenuItem("Consulta");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo = new Dialog(ventana1, "Acceso Denegado", true);
-	Label lblDesarrollo = new Label("Esta parte esta en desarrollo");
-
-	// Dialogo para la parte del tercer trimestre
-	Dialog diaDesarrollo2 = new Dialog(ventana2, "Acceso Denegado", true);
-	Label lblDesarrollo2 = new Label("Esta parte está en desarrollo");
-
-=======
 	HashMap<String, Integer> mapaDirectores = new HashMap();
 	
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 	GridBagLayout gridbag = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 
 	String sentenciaSQL = "";
 
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-	String idDirector = "";
-
-	String directorSeleccionado = "";
-=======
 	int idDirectorSeleccionado;
 	
 	String directorSeleccionado;
 
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 	String directorNuevo = "";
-
+	
+	String logs;
+	
+	String ultimaSencia = "";
+	
 	public ModificacionDirector()
 	{
 
@@ -181,19 +146,10 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		ventana1.setMenuBar(mnuBar);
 
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-		Usuario.permisosBasico(mnuDirectores2, mnuBajaDir2, mnuModDir2, mnuConsDir2);
-		Usuario.permisosBasico(mnuPeliculas2, mnuBajaPel2, mnuModPel2, mnuConsPel2);
-		Usuario.permisosBasico(mnuActores2, mnuBajaAct2, mnuModAct2, mnuConsAct2);
-		Usuario.permisosBasico(mnuPelAct2, mnuBajaPelAct2, mnuModPelAct2, mnuConsPelAct2);
-
-		ventana2.setMenuBar(mnuBar2);
-
-=======
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		// Ventana 1
 		ventana1.setLayout(gridbag);
 		ventana1.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana1);
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoice();
 
@@ -229,6 +185,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		// Ventana 2
 		ventana2.setLayout(gridbag);
 		ventana2.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana2);
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -344,13 +301,16 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			}
 		}
 	}
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-=======
 	
 	public void obtenerDatosDirector(Choice choDirectores) {
 		String director = choDirectores.getSelectedItem();
 		idDirectorSeleccionado = mapaDirectores.get(director);
 		sentenciaSQL = BD.consultaSQLDirectores + " WHERE idDirector = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idDirectorSeleccionado + ", " + director;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+		
 		try
 
 		{
@@ -391,6 +351,10 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		String nacionalidad = nacionalidadText.getText().trim();
 		
 		String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, salarioDirector = ? WHERE idDirector = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + nacionalidad;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 
 		directorNuevo = nombre + " " + apellidos + " (" + nacionalidad + ")";
 		
@@ -428,7 +392,6 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 
 		rellenarChoice();
 	}
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 
 	public void dialogoComprobacion(Exception e, String directorS, String directorN)
 	{
@@ -437,10 +400,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			diaFeedback.setTitle("Enhorabuena");
 			diaFeedback.setBackground(new Color(180, 211, 178));
 			lblDiaF.setText("Se ha modificado a \"" + directorS + "\", ahora es \"" + directorN + "\".");
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-=======
 			lblDiaF.setBackground(diaFeedback.getBackground());
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		} else
 		{
 			diaFeedback.setTitle("Error");
@@ -451,13 +411,16 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			{
 
 			case "ClassNotFoundException":
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				lblDiaF.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 
 			default:
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				lblDiaF.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -478,47 +441,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		{
 			if (choDirectores.getSelectedIndex() != 0)
 			{
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-				directorSeleccionado = (choDirectores.getSelectedItem().split("\\|")[1].trim() + " "
-						+ choDirectores.getSelectedItem().split("\\|")[2].trim());
-				lblElecc.setText("Estás editando : " + (choDirectores.getSelectedItem().split("\\|")[1]).trim() + " "
-						+ (choDirectores.getSelectedItem().split("\\|")[2]).trim());
-				idDirector = choDirectores.getSelectedItem().split("\\|")[0];
-				sentenciaSQL = BD.consultaSQLDirectores + " WHERE idDirector = ?";
-
-				try
-
-				{
-					BD.conectarBD();
-					BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-					BD.ps.setString(1, idDirector);
-					BD.rs = BD.ps.executeQuery();
-					BD.rs.next();
-					txtNombre.setText(BD.rs.getString("nombreDirector"));
-					txtApellidos.setText(BD.rs.getString("apellidosDirector"));
-					txtNacionalidad.setText(BD.rs.getString("nacionalidadDirector"));
-				}
-
-				catch (ClassNotFoundException cnfe)
-				{
-					dialogoComprobacion(cnfe, "", "");
-				} catch (SQLException se)
-				{
-					dialogoComprobacion(se, "", "");
-				} finally
-				{
-					try
-					{
-						BD.desconectarBD();
-					} catch (SQLException se)
-					{
-						dialogoComprobacion(se, "", "");
-
-					}
-				}
-=======
 				obtenerDatosDirector(choDirectores);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 				ventana2.setVisible(true);
 
 			} else
@@ -533,56 +456,18 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
 					|| (txtNacionalidad.getText().trim().isEmpty()))
 			{
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Modificación, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
+			}
+			else if (!txtNombre.getText().matches("^[\\p{L} .'-]+$") || !txtApellidos.getText().matches("^[\\p{L} .'-]+$") || !txtNacionalidad.getText().matches("^[\\p{L} .'-]+$")) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Campos con carácteres no válidos");
+				dialogoComprobacion(new Exception("Alguno de los campos contiene carácteres no válidos"), "", "");
 			}
 
 			else
 			{
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-				String nombre = txtNombre.getText();
-				String apellidos = txtApellidos.getText();
-				String nacionalidad = txtNacionalidad.getText();
-				String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, nacionalidadDirector = ? WHERE idDirector = ?";
-
-				directorNuevo = nombre + " " + apellidos;
-
-				try
-				{
-					BD.conectarBD();
-					BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-					BD.ps.setString(1, nombre);
-					BD.ps.setString(2, apellidos);
-					BD.ps.setString(3, nacionalidad);
-					BD.ps.setString(4, idDirector);
-					BD.ps.executeUpdate();
-					dialogoComprobacion(null, directorSeleccionado, directorNuevo);
-					directorSeleccionado = directorNuevo;
-					lblElecc.setText("Estás editando : " + directorNuevo);
-					ventana2.validate();
-				} catch (ClassNotFoundException cnfe)
-				{
-					dialogoComprobacion(cnfe, "", "");
-				} catch (SQLException se)
-				{
-					dialogoComprobacion(se, "", "");
-				} finally
-				{
-					try
-					{
-						BD.desconectarBD();
-					}
-
-					catch (SQLException se)
-					{
-						dialogoComprobacion(se, "", "");
-					}
-
-				}
-
-				rellenarChoice();
-=======
 				modificarDirector(txtNombre, txtApellidos, txtNacionalidad);
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 			}
 
 		} else if (e.getSource() == btnLimpiar)
@@ -651,12 +536,6 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		if (e.getSource() == diaFeedback)
 		{
 			diaFeedback.dispose();
-<<<<<<< HEAD:Cinemateca/src/es/studium/ModificacionDirector.java
-		} else if (e.getSource() == diaDesarrollo)
-		{
-			diaDesarrollo.dispose();
-=======
->>>>>>> 39a8d1f (funcionalidad todas las ventanas):src/es/studium/ModificacionDirector.java
 		}
 
 		if (e.getSource() == ventana2)

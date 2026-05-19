@@ -72,10 +72,13 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 	String actorSeleccionado = "";
 	
 	HashMap<String,Integer>mapaActores = new HashMap();
+	
+	String logs;
 
 	public BajaActor() {
 		ventana.setFont(new Font("SansSerif", 0, 12));
 		ventana.setBackground(new Color(255, 165, 0));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -255,12 +258,14 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 
 		String actor = choActores.getSelectedItem();
 		int idActor = mapaActores.get(actor);
-
+		logs = BD.eliminarSQLActor + "\nValor seleccionado por el usuario: " + idActor + " = " + actor;
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLActor);
 			BD.ps.setInt(1, idActor);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, actorSeleccionado);
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "");
@@ -291,12 +296,18 @@ public class BajaActor extends WindowAdapter implements ActionListener {
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), logs));
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}

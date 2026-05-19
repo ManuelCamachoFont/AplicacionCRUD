@@ -66,11 +66,14 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 	
 	HashMap<String, Integer> mapaPeliculas = new HashMap<>();
 	HashMap<String, Integer> mapaActores = new HashMap<>();
+	
+	String logs;
 
 	public AltaPelAct() {
 
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 		ventana.setFont(new Font("SanSerif", 0, 12));
 		rellenarPeliculas();
 		rellenarActores();
@@ -215,6 +218,9 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 		String actor = choActores.getSelectedItem();
 		int idActor = mapaActores.get(actor);
 		String sentenciaSQL = "INSERT INTO peliculas_actores (idPeliculaFK, idActorFK) VALUES (?, ?)";
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " +  pelicula + ", " + idActor + " " + actor;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 
 		try {
 			BD.conectarBD();
@@ -319,15 +325,19 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 
 			case "ClassNotFoundException":
 				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				break;
 			case "SQLException":
 				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				break;
 			case "DateTimeParseException":
 				lblDia.setText("Formato de fecha incorrecto. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Formato de fecha incorrecto");
 				break;
 			default:
 				lblDia.setText("Error. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 			}
 		}
 		dialogo.pack();
@@ -349,6 +359,7 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 
 		if (e.getSource() == btnAceptar) {
 			if ((choPeliculas.getSelectedIndex() == 0) || choActores.getSelectedIndex() == 0) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Alta, faltan campos por completar");
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
 			}
 			else {

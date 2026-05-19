@@ -64,10 +64,13 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
 
+	String logs;
+
 	public AltaActor() {
 
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 		ventana.setFont(new Font("SanSerif", 0, 12));
 
 		// Menú Directores
@@ -114,7 +117,6 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		mnuPelAct.add(mnuConsPelAct);
 		mnuBar.add(mnuPelAct);
 
-
 		Usuario.permisosBasico(mnuDirectores, mnuBajaDir, mnuModDir, mnuConsDir);
 		Usuario.permisosBasico(mnuPeliculas, mnuBajaPel, mnuModPel, mnuConsPel);
 		Usuario.permisosBasico(mnuActores, mnuBajaAct, mnuModAct, mnuConsAct);
@@ -124,7 +126,7 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 
 		// Ventana Alta
 		gbc.insets = new Insets(10, 10, 10, 10);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridheight = 4;
@@ -197,30 +199,43 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		dialogo.setVisible(false);
 
 	}
-	
+
 	public class CanvasImagen extends Canvas {
-	    public void paint(Graphics g) {
-	        Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\altAct.jpg");
-	        g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
-	    }
+		public void paint(Graphics g) {
+			Image img = Toolkit.getDefaultToolkit().getImage("img\\actores\\altAct.jpg");
+			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
+		}
 	}
 
 	public void darAlta() {
 
 		String nombre = txtNombre.getText();
 		String apellidos = txtApellidos.getText();
-		String salario = txtSalario.getText();
+		String salarioString = txtSalario.getText();
+		String salarioFormateado = salarioString.replace(',', '.').replace("€", "");
 		String sentenciaSQL = "INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)";
-
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", "
+				+ salarioFormateado;
 		try {
-			BD.conectarBD();
-			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
-			BD.ps.setString(1, nombre);
-			BD.ps.setString(2, apellidos);
-			BD.ps.setString(3, salario);
-			BD.ps.executeUpdate();
-			dialogoComprobacion(null);
+			float salario = Float.parseFloat(salarioFormateado);
+			if (salario < 0) {
+				dialogoComprobacion(new Exception("El salario no puede ser negativo"));
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "WARNING",
+						this.getClass().getSimpleName(), "Intento de salario negativo"));
+			} else {
+				BD.conectarBD();
+				BD.ps = BD.connection.prepareStatement(sentenciaSQL);
+				BD.ps.setString(1, nombre);
+				BD.ps.setString(2, apellidos);
+				BD.ps.setFloat(3, salario);
+				BD.ps.executeUpdate();
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+				dialogoComprobacion(null);
+			}
 
+		} catch (NumberFormatException nfe) {
+			dialogoComprobacion(nfe);
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
@@ -232,8 +247,9 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 				dialogoComprobacion(se);
 			}
 		}
-
 	}
+
+	
 
 	public void dialogoComprobacion(Exception e) {
 		if (e == null) {
@@ -250,19 +266,29 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 
 			case "ClassNotFoundException":
 				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "ERROR",
+						this.getClass().getSimpleName(), e.getMessage()));
 				break;
 			case "SQLException":
 				if (e.getMessage().contains("Incorrect decimal value")) {
 					lblDia.setText("El formato no es válido. Escriba un número. [" + e.getMessage() + "]");
+					Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "WARNING",
+							this.getClass().getSimpleName(), e.getMessage()));
 				} else {
 					lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+					Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "ERROR",
+							this.getClass().getSimpleName(), e.getMessage()));
 				}
 				break;
 			case "NumberFormatException":
 				lblDia.setText("El salario contiene carácteres no válidos. Escriba un número [" + e.getMessage() + "]");
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "WARNING",
+						this.getClass().getSimpleName(), e.getMessage()));
 				break;
 			default:
 				lblDia.setText("Error. [" + e.getMessage() + "]");
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "ERROR",
+						this.getClass().getSimpleName(), e.getMessage()));
 			}
 		}
 		dialogo.pack();
@@ -286,75 +312,52 @@ public class AltaActor extends WindowAdapter implements ActionListener {
 		else if (e.getSource() == btnAceptar) {
 			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
 					|| (txtSalario.getText().trim().isEmpty())) {
+				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "WARNING",
+						this.getClass().getSimpleName(), "Intento de Alta, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
+			} else if (!txtNombre.getText().matches("^[\\p{L} .'-]+$")
+					|| !txtApellidos.getText().matches("^[\\p{L} .'-]+$")) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(),
+						"Campos con carácteres no válidos");
+				dialogoComprobacion(new Exception("Alguno de los campos contiene carácteres no válidos"));
 			}
 
 			else {
-				boolean salarioValido = false;
-				try {
-					float salario = Float.parseFloat(txtSalario.getText());
-
-					if (salario < 0) {
-						dialogoComprobacion(new Exception("El salario no puede ser negativo"));
-					} else {
-						salarioValido = true;
-					}
-					if (salarioValido) {
-						darAlta();
-					}
-				} catch (NumberFormatException nfe) {
-					dialogoComprobacion(nfe);
-				}
+				darAlta();
 			}
 		}
 
 		else if (e.getSource() == mnuAltDir) {
 			new AltaDirector();
-		} else if (e.getSource() == mnuBajaDir)
-		{
+		} else if (e.getSource() == mnuBajaDir) {
 			new BajaDirector();
-		} else if (e.getSource() == mnuModDir)
-		{
+		} else if (e.getSource() == mnuModDir) {
 			new ModificacionDirector();
-		} else if (e.getSource() == mnuConsDir)
-		{
+		} else if (e.getSource() == mnuConsDir) {
 			new ConsultaDirector();
-		} else if (e.getSource() == mnuAltPel)
-		{
+		} else if (e.getSource() == mnuAltPel) {
 			new AltaPelicula();
-		} else if (e.getSource() == mnuBajaPel)
-		{
+		} else if (e.getSource() == mnuBajaPel) {
 			new BajaPelicula();
-		} else if (e.getSource() == mnuConsPel)
-		{
+		} else if (e.getSource() == mnuConsPel) {
 			new ConsultaPelicula();
-		} else if (e.getSource() == mnuModPel){
+		} else if (e.getSource() == mnuModPel) {
 			new ModificacionPelicula();
-		}
-		else if (e.getSource() == mnuAltAct)
-		{
+		} else if (e.getSource() == mnuAltAct) {
 			new AltaActor();
-		} else if (e.getSource() == mnuBajaAct)
-		{
+		} else if (e.getSource() == mnuBajaAct) {
 			new BajaActor();
-		} else if (e.getSource() == mnuModAct)
-		{
+		} else if (e.getSource() == mnuModAct) {
 			new ModificacionActor();
-		} else if (e.getSource() == mnuConsAct)
-		{
+		} else if (e.getSource() == mnuConsAct) {
 			new ConsultaActor();
-		}
-		else if (e.getSource() == mnuAltPelAct)
-		{
+		} else if (e.getSource() == mnuAltPelAct) {
 			new AltaPelAct();
-		} else if (e.getSource() == mnuBajaPelAct)
-		{
+		} else if (e.getSource() == mnuBajaPelAct) {
 			new BajaPelAct();
-		} else if (e.getSource() == mnuModPelAct)
-		{
+		} else if (e.getSource() == mnuModPelAct) {
 			new ModificacionPelAct();
-		} else if (e.getSource() == mnuConsPelAct)
-		{
+		} else if (e.getSource() == mnuConsPelAct) {
 			new ConsultaPelAct();
 		}
 	}

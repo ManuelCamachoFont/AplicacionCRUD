@@ -1,24 +1,31 @@
 package es.studium;
 
+import java.awt.Desktop;
+import java.awt.Frame;
+import java.awt.Image;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.filechooser.FileSystemView;
+import javax.imageio.ImageIO;
+
 
 public class Utilidades {
-	public String formatear(String usuario, String texto) {
+	public static String formatearTexto(String usuario, String nivel, String clase, String texto) {
 		LocalDateTime timestamp = LocalDateTime.now();
 		DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-		String cadenaFormateada = "[" + timestamp.format(formato) + "] " + "[ " + usuario + " ]" + texto;
+		String cadenaFormateada = "[" + timestamp.format(formato) + "] [" + usuario + "] [" + nivel + "] [" + clase + "] " + texto;
 		return cadenaFormateada;
 	}
 
-	public void guardar(String textoFormateado) {
+	public static void guardarLog(String textoFormateado) {
 
 		try {
 			LocalDateTime timestamp = LocalDateTime.now();
@@ -66,9 +73,7 @@ public class Utilidades {
 			}
 			String nombreFichero = timestamp.format(formatoFichero).concat(".txt");
 
-			File escritorio = FileSystemView.getFileSystemView().getHomeDirectory();
-
-			File carpetaLog = new File(escritorio, "Logs");
+			File carpetaLog = new File("Logs");
 
 			File carpetaMes = new File(carpetaLog, nombreDirectorio);
 
@@ -90,4 +95,57 @@ public class Utilidades {
 		}
 
 	}
+	
+	
+	public static void consultarAyuda() {
+		try {
+		    File archivo = new File("help/manual.html");
+		    String rutaAbsoluta = archivo.getAbsolutePath();
+		    
+		    List<String> comando = new ArrayList<>();
+		    comando.add("cmd");
+		    comando.add("/c");
+		    comando.add("start");
+		    comando.add("chrome");
+		    comando.add("--app=file:///" + rutaAbsoluta);
+		    
+		    comando.add("--window-size=800,600"); 
+
+		    ProcessBuilder pb = new ProcessBuilder(comando);
+		    pb.start();
+
+		} catch (Exception ex) {
+			if (Desktop.isDesktopSupported()) {
+				Desktop desktop = Desktop.getDesktop();
+				if (desktop.isSupported(Desktop.Action.BROWSE)) {
+					try {
+						File archivo = new File("help/manual.html");
+						URI uri = archivo.toURI();
+						desktop.browse(uri);
+					} catch (IOException ioe) {
+						System.out.println(ioe.getMessage());
+					}
+				}
+			}
+		}
+	}
+	
+	
+	public static Image cargarIcono(String ruta) {
+        try {
+            return ImageIO.read(new File(ruta));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static void aplicarIcono(String ruta, Frame... ventanas) {
+        Image icono = cargarIcono(ruta);
+        if (icono != null) {
+            for (Frame ventana : ventanas) {
+                ventana.setIconImage(icono);
+            }
+        }
+    }
+	
 }

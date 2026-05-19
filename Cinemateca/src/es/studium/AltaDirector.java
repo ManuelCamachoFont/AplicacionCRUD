@@ -63,11 +63,14 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	MenuItem mnuBajaPelAct = new MenuItem("Baja");
 	MenuItem mnuModPelAct = new MenuItem("Modificación");
 	MenuItem mnuConsPelAct = new MenuItem("Consulta");
+	
+	String logs;
 
 	public AltaDirector() {
 
 		ventana.setLayout(gridbag);
 		ventana.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 		ventana.setFont(new Font("SanSerif", 0, 12));
 
 		// Menú Directores
@@ -210,7 +213,8 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		String apellidos = txtApellidos.getText();
 		String nacionalidad = txtNacionalidad.getText();
 		String sentenciaSQL = "INSERT INTO directores (idDirector, nombreDirector, apellidosDirector, nacionalidadDirector) VALUES (null, ?, ?, ?)";
-
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos
+				+ ", " + nacionalidad;
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
@@ -218,6 +222,8 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 			BD.ps.setString(2, apellidos);
 			BD.ps.setString(3, nacionalidad);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null);
 
 		} catch (ClassNotFoundException cnfe) {
@@ -249,13 +255,16 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 
 			case "ClassNotFoundException":
 				lblDia.setText("Error de driver. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 				break;
 			case "SQLException":
 				lblDia.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(),  e.getMessage());
 				break;
 
 			default:
 				lblDia.setText("Error. [" + e.getMessage() + "]");
+				Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage());
 			}
 		}
 		dialogo.pack();
@@ -279,8 +288,10 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		if (e.getSource() == btnAceptar) {
 			if ((txtNombre.getText().trim().isEmpty()) || (txtApellidos.getText().trim().isEmpty())
 					|| (txtNacionalidad.getText().trim().isEmpty())) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Alta, faltan campos por completar");
 				dialogoComprobacion(new Exception("Rellene todos los campos"));
 			} else if (!txtNombre.getText().matches("^[\\p{L} .'-]+$") || !txtApellidos.getText().matches("^[\\p{L} .'-]+$") || !txtNacionalidad.getText().matches("^[\\p{L} .'-]+$")) {
+				Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Campos con carácteres no válidos");
 				dialogoComprobacion(new Exception("Alguno de los campos contiene carácteres no válidos"));
 			}
 			

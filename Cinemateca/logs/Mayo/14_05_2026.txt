@@ -1,0 +1,16 @@
+[14/05/2026 09:55:17] [] [ERROR] [ConsultaActor] Column 'salarioEuro' not found.
+[14/05/2026 09:55:20] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioActor' FROM actores
+[14/05/2026 09:55:49] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[14/05/2026 09:56:12] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores ORDER BY salarioActor DESC []
+[14/05/2026 09:56:29] [] [ERROR] [ConsultaActor] Parameter index out of range (1 > number of parameters, which is 0).
+[14/05/2026 09:56:56] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ?
+[14/05/2026 09:56:58] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? ORDER BY apellidosActor, nombreActor [%Hernan%]
+[14/05/2026 09:57:06] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ?
+[14/05/2026 09:57:12] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores ORDER BY apellidosActor, nombreActor []
+[14/05/2026 09:57:14] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores ORDER BY nombreActor, apellidosActor []
+[14/05/2026 09:57:16] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[14/05/2026 09:59:41] [] [INFO] [Principal2] Salida de la aplicación
+[14/05/2026 10:00:28] [] [INFO] [Principal2] Salida de la aplicación
+[14/05/2026 10:01:21] [] [INFO] [Principal2] Salida de la aplicación
+[14/05/2026 10:05:50] [] [INFO] [Principal2] Salida de la aplicación
+[14/05/2026 10:57:19] [] [INFO] [Principal2] Salida de la aplicación

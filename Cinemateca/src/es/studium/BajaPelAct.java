@@ -72,10 +72,13 @@ public class BajaPelAct extends WindowAdapter implements ActionListener {
 	String pelActSeleccionado = "";
 	
 	HashMap<String,Integer>mapaPelAct = new HashMap();
+	
+	String logs;
 
 	public BajaPelAct() {
 		ventana.setFont(new Font("SansSerif", 0, 12));
 		ventana.setBackground(new Color(255, 165, 0));
+		Utilidades.aplicarIcono("ico/icono.png", ventana);
 
 		// Menú Directores
 		mnuAltDir.addActionListener(this);
@@ -255,12 +258,14 @@ public class BajaPelAct extends WindowAdapter implements ActionListener {
 
 		String pelAct = choPelAct.getSelectedItem();
 		int idPelAct = mapaPelAct.get(pelAct);
-
+		logs = BD.eliminarSQLPelAct + "\nValor seleccionado por el usuario: " + idPelAct + " = " + pelAct;
 		try {
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(BD.eliminarSQLPelAct);
 			BD.ps.setInt(1, idPelAct);
 			BD.ps.executeUpdate();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, pelActSeleccionado);
 		} catch (ClassNotFoundException cnfe) {
 			dialogoComprobacion(cnfe, "");
@@ -291,12 +296,18 @@ public class BajaPelAct extends WindowAdapter implements ActionListener {
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaFeedback.setText("Error. [" + e.getMessage() + "]");
 			}
 		}

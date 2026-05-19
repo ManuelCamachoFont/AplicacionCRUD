@@ -89,6 +89,8 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 	String pelActSeleccionada;
 
 	String pelActNueva = "";
+	
+	String logs;
 
 	public ModificacionPelAct() {
 
@@ -147,6 +149,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		// Ventana 1
 		ventana1.setLayout(gridbag);
 		ventana1.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana1);
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoicePelAct();
 
@@ -181,6 +184,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		// Ventana 2
 		ventana2.setLayout(gridbag);
 		ventana2.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana2);
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -243,7 +247,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 
 	public class CanvasImagen extends Canvas {
 		public void paint(Graphics g) {
-			Image img = Toolkit.getDefaultToolkit().getImage("img\\peliculas\\modPel.png");
+			Image img = Toolkit.getDefaultToolkit().getImage("img\\pelAct\\modPelAct.png");
 			g.drawImage(img, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
@@ -319,7 +323,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		}
 	}
 	
-	public void rellenarChoiceA() {
+	private void rellenarChoiceA() {
 
 		choActores.removeAll();
 		mapaActores.clear();
@@ -356,6 +360,10 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		String pelAct = choPelAct.getSelectedItem();
 		idPelActSeleccionada = mapaPelAct.get(pelAct);
 		sentenciaSQL = BD.consultaSQLPelAct2 + " WHERE idPeliculaActor = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelActSeleccionada + " " + pelAct;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 		try
 
 		{
@@ -375,7 +383,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 			for (int i = 0; i < choPeliculas.getItemCount(); i++) {
 				String item = choPeliculas.getItem(i);
 				Integer idItem = mapaPeliculas.get(item);
-				if (idItem != null && idItem == idPelicula) {
+				if (idItem != null && idItem.equals(idPelicula)) {
 					choPeliculas.select(i);
 					break;
 				}
@@ -384,7 +392,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 			for (int i = 0; i < choActores.getItemCount(); i++) {
 				String item = choActores.getItem(i);
 				Integer idItem = mapaActores.get(item);
-				if (idItem != null && idItem == idActor) {
+				if (idItem != null && idItem.equals(idActor)) {
 					choActores.select(i);
 					break;
 				}
@@ -413,7 +421,11 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		String actorSeleccionado = choActores.getSelectedItem();
 		int idActor = mapaActores.get(actorSeleccionado);
 		
-		String sentenciaSQL = "UPDATE peliculas_actores SET idPeliculaFK = ?, idActorFK= ? WHERE idPelicula = ?";
+		String sentenciaSQL = "UPDATE peliculas_actores SET idPeliculaFK = ?, idActorFK= ? WHERE idPeliculaActor = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " + peliculaSeleccionada + ", " + idActor + " " + actorSeleccionado;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 
 		try {
 			
@@ -466,16 +478,24 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			case "DateTimeParseException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Formato de fecha incorrecto. Use DD-MM-AAAA [" + e.getMessage() + "]");
 				break;
 
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -503,6 +523,8 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		else if (e.getSource() == btnAceptar) {
 
 			if ((choPeliculas.getSelectedIndex() == 0 || choActores.getSelectedIndex() == 0)) {
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Modificación, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
 			}
 

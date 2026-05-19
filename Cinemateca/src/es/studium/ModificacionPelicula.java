@@ -91,6 +91,8 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 	String peliculaSeleccionada;
 
 	String peliculaNueva = "";
+	
+	String logs;
 
 	public ModificacionPelicula() {
 
@@ -149,6 +151,7 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 		// Ventana 1
 		ventana1.setLayout(gridbag);
 		ventana1.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana1);
 		gbc.insets = new Insets(10, 10, 10, 10);
 		rellenarChoiceP();
 
@@ -183,6 +186,7 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 		// Ventana 2
 		ventana2.setLayout(gridbag);
 		ventana2.setBackground(new Color(120, 175, 169));
+		Utilidades.aplicarIcono("ico/icono.png", ventana2);
 
 		gbc.insets = new Insets(30, 5, 5, 5);
 
@@ -340,6 +344,11 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 		String pelicula = choPeliculas.getSelectedItem();
 		idPeliculaSeleccionada = mapaPeliculas.get(pelicula);
 		sentenciaSQL = BD.consultaSQLPeliculas3 + " WHERE idPelicula = ?";
+		
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPeliculaSeleccionada + " " + pelicula;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+		
 		try
 
 		{
@@ -398,6 +407,9 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 
 		String sentenciaSQL = "UPDATE peliculas SET tituloPelicula = ?, generoPelicula = ?, fechaEstrenoPelicula = ?, idDirectorFK = ? WHERE idPelicula = ?";
 
+		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + titulo + ", " + genero + ", " + estreno + ", " + directorSeleccionado;
+		Utilidades.guardarLog(
+				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 		
 
 		try {
@@ -459,16 +471,24 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 			switch (e.getClass().getSimpleName()) {
 
 			case "ClassNotFoundException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error de driver. [" + e.getMessage() + "]");
 				break;
 			case "SQLException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error de conexión: url, usuario o clave. [" + e.getMessage() + "]");
 				break;
 			case "DateTimeParseException":
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Formato de fecha incorrecto. Use DD-MM-AAAA [" + e.getMessage() + "]");
 				break;
 
 			default:
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "ERROR", this.getClass().getSimpleName(), e.getMessage()));
 				lblDiaF.setText("Error. [" + e.getMessage() + "]");
 			}
 		}
@@ -497,7 +517,13 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 
 			if ((txtTitulo.getText().trim().isEmpty()) || (txtGenero.getText().trim().isEmpty())
 					|| (txtEstreno.getText().trim().isEmpty()) || choDirectores.getSelectedIndex() == 0) {
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "WARNING", this.getClass().getSimpleName(), "Intento de Modificación, faltan campos por completar"));
 				dialogoComprobacion(new Exception("Rellene todos los campos"), "", "");
+			}else if(!txtEstreno.getText().matches("^\\d{2}[-/]\\d{2}[-/]\\d{4}$")){
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "Formato de fecha incorrecto"));
+				dialogoComprobacion(new Exception("Formato de fecha incorrecto"), "", "");
 			}
 
 			else {

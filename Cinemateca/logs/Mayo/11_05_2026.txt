@@ -1,0 +1,46 @@
+[11/05/2026 12:13:40] [Administrador] [INFO] Inicio de sesión
+[11/05/2026 12:14:02] [Administrador] [WARNING] For input string: "rew"
+[11/05/2026 12:14:04] [Administrador] [WARNING] For input string: "rew"
+[11/05/2026 12:14:06] [Administrador] [INFO] INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+[11/05/2026 12:14:36] [Administrador] [ERROR] El salario no puede ser negativo
+[11/05/2026 12:14:38] [Administrador] [WARNING] Intento de Salario negativo
+[11/05/2026 12:14:53] [Administrador] [INFO] Sesión cerrada
+[11/05/2026 12:16:43] [Usuario] [INFO] Inicio de sesión
+[11/05/2026 12:30:06] [Administrador] [INFO] [Login]Inicio de sesión
+[11/05/2026 12:31:09] [Administrador] [INFO] [Principal2]Salida de la aplicación
+[11/05/2026 12:33:40] [] [INFO] [Principal2]Salida de la aplicación
+[11/05/2026 12:33:52] [] [INFO] [Principal2]Salida de la aplicación
+[11/05/2026 12:34:19] [Usuario] [INFO] [Login]Inicio de sesión
+[11/05/2026 12:36:16] [Usuario] [INFO] [AltaActor]Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?) \| Valores escritos por el usuario: Pedro, Picapiedra, 34223
+[11/05/2026 12:36:20] [Usuario] [WARNING] [AltaActor]For input string: "dsfsd"
+[11/05/2026 12:36:21] [Usuario] [WARNING] [AltaActor]For input string: "dsfsd"
+[11/05/2026 12:36:26] [Usuario] [INFO] [Principal2]Sesión cerrada
+[11/05/2026 12:39:02] [Administrador] [INFO] [Login] Inicio de sesión
+[11/05/2026 12:39:48] [Administrador] [WARNING] [AltaActor] For input string: "jhj"
+[11/05/2026 12:39:49] [Administrador] [WARNING] [AltaActor] For input string: "jhj"
+[11/05/2026 12:39:55] [Administrador] [WARNING] [AltaActor] For input string: "256€"
+[11/05/2026 12:40:09] [Administrador] [WARNING] [AltaActor] For input string: "256€"
+[11/05/2026 12:40:12] [Administrador] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Pedro, Picapiedra, 256
+[11/05/2026 12:40:15] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[11/05/2026 12:42:15] [Administrador] [INFO] [Login] Inicio de sesión
+[11/05/2026 12:42:47] [Administrador] [WARNING] [AltaActor] For input string: "3242€"
+[11/05/2026 12:42:53] [Administrador] [WARNING] [AltaActor] For input string: "3242€"
+[11/05/2026 12:43:59] [Administrador] [WARNING] [AltaActor] For input string: "3242€"
+[11/05/2026 12:44:13] [Administrador] [WARNING] [AltaActor] For input string: "3242€"
+[11/05/2026 12:44:26] [] [WARNING] [AltaActor] For input string: "423€"
+[11/05/2026 12:51:35] [] [WARNING] [AltaActor] For input string: "423€"
+[11/05/2026 13:00:06] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[11/05/2026 13:00:21] [Administrador] [INFO] [Login] Inicio de sesión
+[11/05/2026 13:00:36] [Administrador] [WARNING] [AltaActor] El salario no puede ser negativo
+[11/05/2026 13:00:47] [Administrador] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Walter, White, -343.0
+[11/05/2026 13:01:07] [Administrador] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Ben, White, 985.0
+[11/05/2026 13:01:13] [Administrador] [WARNING] [AltaActor] El salario no puede ser negativo
+[11/05/2026 13:01:14] [Administrador] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Ben, White, -567985.0
+[11/05/2026 13:01:18] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[11/05/2026 13:02:18] [] [WARNING] [AltaActor] El salario no puede ser negativo
+[11/05/2026 13:02:23] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Jose, Fernandez, 900.0

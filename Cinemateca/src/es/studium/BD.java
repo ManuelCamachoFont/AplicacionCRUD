@@ -22,27 +22,16 @@ public class BD {
 	public static String eliminarSQLPelAct =  "DELETE from peliculas_actores WHERE idPeliculaActor = ?";	
 	
 	public static String consultaSQLDirectores = "SELECT * FROM directores";
-	public static String consultaSQLDirectoresN = "SELECT * FROM directores ORDER BY nombreDirector, apellidosDirector";
-	public static String consultaSQLDirectoresA = "SELECT * FROM directores ORDER BY apellidosDirector, nombreDirector";
-	public static String consultaSQLDirectoresNa = "SELECT * FROM directores ORDER BY nacionalidadDirector, apellidosDirector, nombreDirector";
-	
-	public static String consultaSQLActores = "SELECT * FROM actores";
-	public static String consultaSQLActoresN = "SELECT * FROM actores ORDER BY nombreActor, apellidosActor";
-	public static String consultaSQLActoresA = "SELECT * FROM actores ORDER BY apellidosActor, nombreActor";
-	public static String consultaSQLActoresS = "SELECT * FROM actores ORDER BY salarioActor";
+
+	public static String consultaSQLActores = "SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores";
 	
 	public static String consultaSQLPel = "SELECT * FROM peliculas";
 	public static String consultaSQLPeliculas = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK";
 	public static String consultaSQLPeliculas2 = "SELECT idPelicula, tituloPelicula, generoPelicula, YEAR(fechaEstrenoPelicula) AS 'fechaEstrenoPelicula', CONCAT('Dir: ', apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK";
 	public static String consultaSQLPeliculas3 = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector', idDirector FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK";
-	public static String consultaSQLPeliculasT = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK ORDER BY tituloPelicula";
-	public static String consultaSQLPeliculasG = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK ORDER BY generoPelicula, YEAR(fechaEstrenoPelicula)";
-	public static String consultaSQLPeliculasF = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK ORDER BY YEAR(fechaEstrenoPelicula)";
-	public static String consultaSQLPeliculasD = "SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK ORDER BY 5";
 	
 	public static String consultaSQLPelAct = "SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK";
 	public static String consultaSQLPelAct2 = "SELECT idPeliculaActor, idPelicula, idActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK";
-	
 	
 	public static Connection connection = null;
 	public static Statement statement = null;
