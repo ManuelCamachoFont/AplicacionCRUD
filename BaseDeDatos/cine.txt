@@ -3,3 +3,5 @@ peliculas(#idPelicula, tituloPelicula, generoPelicula, fechaEstrenoPelicula, idD
 actores(#idActor, nombreActor, apellidosActor,salarioActor);
 peliculas_actores(#idPeliculasActores, idPeliculaFK, idActorFK);
 usuarios(#idUsuario, nombreUsuario, claveUsuario, tipoUsuario);
+
+

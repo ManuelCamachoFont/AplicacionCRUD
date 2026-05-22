@@ -26,6 +26,7 @@ import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 
 // ¿Si se repite los datos?  ¿Cambiar a preparedStatement?
@@ -52,7 +53,7 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas-Actores");
+	Menu mnuPelAct = new Menu("Películas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -200,8 +201,8 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 		ventana.add(btnLimpiar, gbc);
 
 		ventana.addWindowListener(this);
-		ventana.setLocationRelativeTo(null);
 		ventana.setSize(800, 320);
+		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -224,20 +225,19 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 	}
 
 	public void darAlta(Choice choDirectores) {
-
-		String titulo = txtTitulo.getText();
-		String genero = txtGenero.getText();
-		String estreno = txtEstreno.getText().trim().replaceAll("[./ ]", "-");
-		DateTimeFormatter formatoEntrada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		LocalDate fecha = LocalDate.parse(estreno, formatoEntrada);
-		DateTimeFormatter formatoSalida = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		String fechaFormateada = fecha.format(formatoSalida);
-		String director = choDirectores.getSelectedItem();
-		int idDirector = mapaDirectores.get(director);
-		String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + titulo + ", " +  genero + ", " + estreno + ",  " + director;
 		
 		try {
+			String titulo = txtTitulo.getText();
+			String genero = txtGenero.getText();
+			String estreno = txtEstreno.getText().trim().replaceAll("[./ ]", "-");
+			DateTimeFormatter formatoEntrada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			LocalDate fecha = LocalDate.parse(estreno, formatoEntrada);
+			DateTimeFormatter formatoSalida = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String fechaFormateada = fecha.format(formatoSalida);
+			String director = choDirectores.getSelectedItem();
+			int idDirector = mapaDirectores.get(director);
+			String sentenciaSQL = "INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)";
+			logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + titulo + ", " +  genero + ", " + estreno + ",  " + director;
 			BD.conectarBD();
 			BD.ps = BD.connection.prepareStatement(sentenciaSQL);
 			BD.ps.setString(1, titulo);
@@ -254,7 +254,10 @@ public class AltaPelicula extends WindowAdapter implements ActionListener {
 			dialogoComprobacion(cnfe);
 		} catch (SQLException se) {
 			dialogoComprobacion(se);
-		} finally {
+		} catch (DateTimeParseException dte) {
+			dialogoComprobacion(dte);
+		}
+		finally {
 			try {
 				BD.desconectarBD();
 			} catch (SQLException se) {

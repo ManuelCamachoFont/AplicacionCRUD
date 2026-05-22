@@ -227,16 +227,16 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 		ventana.add(btnPdf, gbc);
 
 		ventana.addWindowListener(this);
-		ventana.setLocationRelativeTo(null);
 		ventana.setSize(1200, 645);
+		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
 		diaFeedback.setLayout(new FlowLayout());
 		diaFeedback.add(lblDiaFeedback);
 		diaFeedback.addWindowListener(this);
-		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setSize(320, 80);
+		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setResizable(false);
 		diaFeedback.setVisible(false);
 
@@ -261,11 +261,11 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 		ventana.validate();
 
 		int anchoScroll = scroll.getViewportSize().width;
-		int anchoId = (int) (anchoScroll * 0.10);
-		int anchoTitulo = (int) (anchoScroll * 0.25);
-		int anchoGenero = (int) (anchoScroll * 0.25);
-		int anchoFecha = (int) (anchoScroll * 0.15);
-		int anchoDirector = (int) (anchoScroll * 0.25);
+		int anchoId = 80;
+		int anchoTitulo = 350;
+		int anchoGenero = 300;
+		int anchoFecha = 120;
+		int anchoDirector = anchoScroll - anchoId - anchoTitulo - anchoGenero - anchoFecha - 1;
 
 		agregarCelda(tabla, "ID", true, 0, 0, anchoId);
 		agregarCelda(tabla, "TÍTULO", true, 0, anchoId, anchoTitulo);
@@ -279,6 +279,9 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 				BD.ps.setString(i + 1, filtro.get(i));
 			}
 			BD.rs = BD.ps.executeQuery();
+			logs = ultimaConsulta + " | Filtros: " + filtrosSentencia;
+			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
+					this.getClass().getSimpleName(), logs));
 
 			int filas = 0;
 			while (BD.rs.next()) {
@@ -318,11 +321,10 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 
 	}
 
-	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila, int x, int ancho) {
-		Label celda = new Label(texto);
+	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila, int columna, int ancho) {
+		Label celda = new Label(texto, Label.CENTER);
 		celda.setBackground(Color.WHITE);
-		celda.setBounds(x, fila * 30, ancho, 30);
-		celda.setAlignment(Label.CENTER);
+		celda.setBounds(columna + 1, fila * 30 + 1, ancho - 1, 29);
 
 		if (encabezado) {
 			celda.setFont(new Font("Arial", Font.BOLD, 14));
@@ -474,8 +476,7 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			btnOrdenFecha.setEnabled(true);
 			btnOrdenDirector.setEnabled(true);
 			btnPdf.setEnabled(true);
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), ultimaConsulta));
+			
 		} else if (e.getSource().equals(btnAddFiltro)) {
 			addFiltro();
 		} else if (e.getSource().equals(btnLimpiarFiltro)) {
@@ -495,9 +496,6 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			sqlFinal += " ORDER BY tituloPelicula";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
 
 		} else if (e.getSource().equals(btnOrdenGenero)) {
 			
@@ -509,9 +507,7 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			sqlFinal += " ORDER BY generoPelicula, YEAR(fechaEstrenoPelicula)";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
+
 		} else if (e.getSource().equals(btnOrdenFecha)) {
 
 			String sqlFinal = BD.consultaSQLPeliculas;
@@ -522,9 +518,6 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			sqlFinal += " ORDER BY YEAR(fechaEstrenoPelicula)";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
 
 		} else if (e.getSource().equals(btnOrdenDirector)) {
 			String sqlFinal = BD.consultaSQLPeliculas;
@@ -535,9 +528,6 @@ public class ConsultaPelicula extends WindowAdapter implements ActionListener {
 			sqlFinal += " ORDER BY 5";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
 
 		}
 

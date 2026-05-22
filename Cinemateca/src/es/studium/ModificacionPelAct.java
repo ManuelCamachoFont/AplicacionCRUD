@@ -57,7 +57,7 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas-Actores");
+	Menu mnuPelAct = new Menu("Películas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -229,8 +229,8 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		ventana2.add(btnLimpiar, gbc);
 
 		ventana2.addWindowListener(this);
-		ventana2.setLocationRelativeTo(null);
 		ventana2.setSize(500, 320);
+		ventana2.setLocationRelativeTo(null);
 		ventana2.setResizable(false);
 		ventana2.setVisible(false);
 
@@ -422,10 +422,6 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 		int idActor = mapaActores.get(actorSeleccionado);
 		
 		String sentenciaSQL = "UPDATE peliculas_actores SET idPeliculaFK = ?, idActorFK= ? WHERE idPeliculaActor = ?";
-		
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " + peliculaSeleccionada + ", " + idActor + " " + actorSeleccionado;
-		Utilidades.guardarLog(
-				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 
 		try {
 			
@@ -437,6 +433,10 @@ public class ModificacionPelAct extends WindowAdapter implements ActionListener 
 			BD.ps.setInt(2, idActor);
 			BD.ps.setInt(3, idPelActSeleccionada);
 			BD.ps.executeUpdate();
+			
+			logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " + peliculaSeleccionada + ", " + idActor + " " + actorSeleccionado;
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, peliculaSeleccionada, pelActNueva);
 			pelActSeleccionada = pelActNueva;
 			lblElecc.setText("Estás editando : " + pelActSeleccionada);

@@ -30,7 +30,7 @@ CREATE TABLE `actores` (
   `apellidosActor` varchar(120) COLLATE utf8mb4_spanish2_ci NOT NULL,
   `salarioActor` decimal(9,2) NOT NULL,
   PRIMARY KEY (`idActor`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `actores` (
 
 LOCK TABLES `actores` WRITE;
 /*!40000 ALTER TABLE `actores` DISABLE KEYS */;
-INSERT INTO `actores` VALUES (1,'Leonardo','DiCaprio',15500.00),(2,'Cillian','Murphy',12000.00),(3,'Brad','Pitt',14500.00),(4,'Robert','Downey Jr.',15000.00),(5,'Margot','Robbie',11000.00),(6,'Timothée','Chalamet',7500.00),(7,'Ryan','Gosling',9500.00),(8,'Florence','Pugh',6800.00),(9,'Matt','Damon',10500.00),(10,'Zendaya','Maree',8000.00);
+INSERT INTO `actores` VALUES (1,'Leonardo','DiCaprio',85000.00),(2,'Samuel','L. Jackson',62000.00),(3,'Sam','Neill',25000.00),(4,'Matt','Damon',58000.00),(5,'Timothée','Chalamet',45000.00),(6,'Rumi','Hiiragi',12000.00),(7,'Antonio','Banderas',35000.00);
 /*!40000 ALTER TABLE `actores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,9 +54,9 @@ CREATE TABLE `directores` (
   `idDirector` int NOT NULL AUTO_INCREMENT,
   `nombreDirector` varchar(45) COLLATE utf8mb4_spanish2_ci NOT NULL,
   `apellidosDirector` varchar(120) COLLATE utf8mb4_spanish2_ci NOT NULL,
-  `nacionalidadDirector` varchar(45) COLLATE utf8mb4_spanish2_ci DEFAULT NULL,
+  `nacionalidadDirector` varchar(45) COLLATE utf8mb4_spanish2_ci NOT NULL,
   PRIMARY KEY (`idDirector`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `directores` (
 
 LOCK TABLES `directores` WRITE;
 /*!40000 ALTER TABLE `directores` DISABLE KEYS */;
-INSERT INTO `directores` VALUES (1,'Christopher','Nolan','Británica'),(2,'Quentin','Tarantino','Estadounidense'),(3,'Martin','Scorsese','Estadounidense'),(4,'Steven','Spielberg','Estadounidense'),(5,'Denis','Villeneuve','Canadiense'),(6,'Greta','Gerwig','Estadounidense'),(7,'Guillermo','del Toro','Mexicana'),(8,'James','Cameron','Canadiense'),(9,'Ridley','Scott','Británica'),(10,'Bong','Joon-ho','Surcoreana');
+INSERT INTO `directores` VALUES (1,'Christopher','Nolan','Británica'),(2,'Quentin','Tarantino','Estadounidense'),(3,'Steven','Spielberg','Estadounidense'),(4,'Martin','Scorsese','Estadounidense'),(5,'Denis','Villeneuve','Canadiense'),(6,'Hayao','Miyazaki','Japonesa'),(7,'Pedro','Almodóvar','Española');
 /*!40000 ALTER TABLE `directores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `peliculas` (
   PRIMARY KEY (`idPelicula`),
   KEY `idDirectorFK` (`idDirectorFK`),
   CONSTRAINT `peliculas_ibfk_1` FOREIGN KEY (`idDirectorFK`) REFERENCES `directores` (`idDirector`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `peliculas` (
 
 LOCK TABLES `peliculas` WRITE;
 /*!40000 ALTER TABLE `peliculas` DISABLE KEYS */;
-INSERT INTO `peliculas` VALUES (1,'Inception','Ciencia Ficción','2010-07-16',1),(2,'Oppenheimer','Drama / Histórico','2023-07-21',1),(3,'Once Upon a Time in Hollywood','Drama / Comedia','2019-07-26',2),(4,'The Wolf of Wall Street','Biografía / Comedia','2013-12-25',3),(5,'Saving Private Ryan','Bélico / Drama','1998-07-24',4),(6,'Dune: Part Two','Ciencia Ficción / Épico','2024-03-01',5),(7,'Barbie','Comedia / Fantasía','2023-07-21',6),(8,'Avatar: The Way of Water','Ciencia Ficción / Acción','2022-12-16',8),(9,'Gladiator','Acción / Épico','2000-05-05',9),(10,'Parasite','Thiller / Drama','2019-05-30',10);
+INSERT INTO `peliculas` VALUES (1,'Inception','Ciencia Ficción','2010-07-16',1),(2,'Pulp Fiction','Crimen','1994-10-14',2),(3,'Jurassic Park','Aventura','1993-06-11',3),(4,'The Departed','Suspense','2006-10-06',4),(5,'Dune: Part Two','Ciencia Ficción','2024-03-01',5),(6,'El viaje de Chihiro','Animación','2001-07-20',6),(7,'Dolor y gloria','Drama','2019-03-22',7);
 /*!40000 ALTER TABLE `peliculas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,7 +114,7 @@ CREATE TABLE `peliculas_actores` (
   KEY `idActorFK` (`idActorFK`),
   CONSTRAINT `peliculas_actores_ibfk_1` FOREIGN KEY (`idPeliculaFK`) REFERENCES `peliculas` (`idPelicula`),
   CONSTRAINT `peliculas_actores_ibfk_2` FOREIGN KEY (`idActorFK`) REFERENCES `actores` (`idActor`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `peliculas_actores` (
 
 LOCK TABLES `peliculas_actores` WRITE;
 /*!40000 ALTER TABLE `peliculas_actores` DISABLE KEYS */;
-INSERT INTO `peliculas_actores` VALUES (1,1,1),(2,2,2),(3,2,4),(4,2,8),(5,2,9),(6,3,1),(7,3,3),(8,3,5),(9,4,1),(10,7,5);
+INSERT INTO `peliculas_actores` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6),(7,7,7);
 /*!40000 ALTER TABLE `peliculas_actores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,7 +149,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Administrador','ab20f6e3ee225e70bdeb0363708de19b44a7e1b6d091599a07007cab3929a554','admin'),(2,'Usuario','b1bbef3b6a1cb6f98a451620e6b59f6329e17fa692b48aa148816c71ef08798f','basico');
+INSERT INTO `usuarios` VALUES (1,'Administrador','ab20f6e3ee225e70bdeb0363708de19b44a7e1b6d091599a07007cab3929a554','admin'),(2,'Usuario','ab20f6e3ee225e70bdeb0363708de19b44a7e1b6d091599a07007cab3929a554','basico');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -162,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-19 19:46:20
+-- Dump completed on 2026-05-22  9:59:46

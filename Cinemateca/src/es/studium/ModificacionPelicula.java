@@ -245,8 +245,8 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 		ventana2.add(btnLimpiar, gbc);
 
 		ventana2.addWindowListener(this);
-		ventana2.setLocationRelativeTo(null);
 		ventana2.setSize(500, 320);
+		ventana2.setLocationRelativeTo(null);
 		ventana2.setResizable(false);
 		ventana2.setVisible(false);
 
@@ -398,21 +398,16 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 
 	public void modificarPelicula(TextField tituloText, TextField generoText, TextField estrenoText,
 			Choice choDirectores) {
-
-		String titulo = tituloText.getText().trim();
-		String genero = generoText.getText().trim();
-		String estreno = estrenoText.getText().trim().replaceAll("[./ ]", "-");
-		String directorSeleccionado = choDirectores.getSelectedItem();
-		int idDirector = mapaDirectores.get(directorSeleccionado);
-
-		String sentenciaSQL = "UPDATE peliculas SET tituloPelicula = ?, generoPelicula = ?, fechaEstrenoPelicula = ?, idDirectorFK = ? WHERE idPelicula = ?";
-
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + titulo + ", " + genero + ", " + estreno + ", " + directorSeleccionado;
-		Utilidades.guardarLog(
-				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 		
-
 		try {
+			String titulo = tituloText.getText().trim();
+			String genero = generoText.getText().trim();
+			String estreno = estrenoText.getText().trim().replaceAll("[./ ]", "-");
+			String directorSeleccionado = choDirectores.getSelectedItem();
+			int idDirector = mapaDirectores.get(directorSeleccionado);
+
+			String sentenciaSQL = "UPDATE peliculas SET tituloPelicula = ?, generoPelicula = ?, fechaEstrenoPelicula = ?, idDirectorFK = ? WHERE idPelicula = ?";
+		
 			DateTimeFormatter formatoEntrada = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 			LocalDate fecha = LocalDate.parse(estreno, formatoEntrada);
 			java.sql.Date fechaFormateada = java.sql.Date.valueOf(fecha);
@@ -428,6 +423,9 @@ public class ModificacionPelicula extends WindowAdapter implements ActionListene
 			BD.ps.setInt(4, idDirector);
 			BD.ps.setInt(5, idPeliculaSeleccionada);
 			BD.ps.executeUpdate();
+			logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + titulo + ", " + genero + ", " + estreno + ", " + directorSeleccionado;
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null, peliculaSeleccionada, peliculaNueva);
 			peliculaSeleccionada = peliculaNueva;
 			lblElecc.setText("Estás editando : " + peliculaSeleccionada);

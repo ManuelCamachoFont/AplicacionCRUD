@@ -1,0 +1,147 @@
+[21/05/2026 00:39:38] [] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 10:47:29] [] [INFO] [ModificacionPelicula] Sentencia: SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector', idDirector FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK WHERE idPelicula = ?
+ Valores seleccionados por el usuario: 4 Scream (2003) Dir: Gonzalez, Pedro
+[21/05/2026 10:49:32] [] [WARNING] [AltaActor] For input string: "4000mil"
+[21/05/2026 10:50:10] [] [ERROR] [AltaActor] El salario no puede ser negativo
+[21/05/2026 10:50:36] [] [WARNING] [AltaActor] Intento de salario negativo
+[21/05/2026 10:50:43] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Penélope, Cruz, 4000
+[21/05/2026 10:57:30] [Administrador] [INFO] [Login] Inicio de sesión
+[21/05/2026 10:57:39] [Administrador] [INFO] [Principal2] Apertura de manual de ayuda
+[21/05/2026 11:39:07] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 11:41:43] [Administrador] [INFO] [Login] Inicio de sesión
+[21/05/2026 11:42:19] [Administrador] [INFO] [ModificacionActor] Sentencia: SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE idActor = ?
+ Valores seleccionados por el usuario: 18 Penélope Cruz
+[21/05/2026 11:50:34] [Administrador] [INFO] [ModificacionPelAct] Sentencia: SELECT idPeliculaActor, idPelicula, idActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE idPeliculaActor = ?
+ Valores seleccionados por el usuario: 3 Defensa (2026) - Carlos Cuarto Parera 
+[21/05/2026 11:50:46] [Administrador] [INFO] [ModificacionPelAct] Sentencia: SELECT idPeliculaActor, idPelicula, idActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE idPeliculaActor = ?
+ Valores seleccionados por el usuario: 5 Halloween (1987) - Walter White
+[21/05/2026 12:04:13] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 13:16:41] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 13:25:46] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 13:28:00] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 13:28:26] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 13:28:38] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 15:37:54] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 15:39:19] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 15:39:55] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 15:40:05] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 15:41:35] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 15:43:18] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 15:43:28] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 15:44:59] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 15:45:55] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 15:45:56] [] [INFO] [ConsultaDirector] SELECT * FROM directores ORDER BY nombreDirector, apellidosDirector []
+[21/05/2026 15:45:58] [] [INFO] [ConsultaDirector] SELECT * FROM directores ORDER BY nacionalidadDirector, apellidosDirector, nombreDirector []
+[21/05/2026 15:46:21] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 15:51:03] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 15:51:37] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 15:51:39] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK ORDER BY `pelicula` []
+[21/05/2026 15:51:47] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 15:53:52] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 16:03:19] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:04:03] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:04:42] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:04:59] [] [ERROR] [AltaActor] Alguno de los campos contiene carácteres no válidos
+[21/05/2026 16:05:07] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testa, Testa, 111
+[21/05/2026 16:05:11] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testb, Testb, 111
+[21/05/2026 16:05:15] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testc, Testc, 111
+[21/05/2026 16:05:18] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testd, Testd, 111
+[21/05/2026 16:05:22] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testf, Testf, 111
+[21/05/2026 16:05:26] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testg, Testg, 111
+[21/05/2026 16:05:29] [] [INFO] [AltaActor] Sentencia: INSERT INTO actores (idActor, nombreActor, apellidosActor, salarioActor) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: Testh, Testh, 111
+[21/05/2026 16:05:37] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:05:50] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 17 = Testh Testh
+[21/05/2026 16:05:54] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 16 = Testg Testg
+[21/05/2026 16:05:58] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 14 = Testd Testd
+[21/05/2026 16:06:01] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 13 = Testc Testc
+[21/05/2026 16:06:05] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 15 = Testf Testf
+[21/05/2026 16:06:09] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 11 = Testa Testa
+[21/05/2026 16:06:12] [] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 12 = Testb Testb
+[21/05/2026 16:06:24] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:06:33] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:10:55] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 16:11:45] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 16:12:43] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 16:14:05] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:14:54] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:15:07] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:15:23] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:15:34] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:16:01] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 16:17:11] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 16:17:37] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 16:18:16] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 16:19:07] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 16:19:49] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 16:19:51] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 16:25:05] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK ORDER BY `actor` []
+[21/05/2026 16:25:07] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK ORDER BY `pelicula` []
+[21/05/2026 18:11:49] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[21/05/2026 18:31:33] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 18:32:00] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE salarioActor >= ?
+[21/05/2026 20:17:01] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE salarioActor >= ?
+[21/05/2026 20:17:02] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE salarioActor >= ? ORDER BY apellidosActor, nombreActor [8000]
+[21/05/2026 20:58:23] [Administrador] [INFO] [Login] Inicio de sesión
+[21/05/2026 21:00:25] [Administrador] [INFO] [Principal2] Sesión cerrada
+[21/05/2026 21:00:33] [Usuario] [INFO] [Login] Inicio de sesión
+[21/05/2026 21:03:36] [Usuario] [INFO] [Principal2] Sesión cerrada
+[21/05/2026 21:05:38] [Administrador] [INFO] [Login] Inicio de sesión
+[21/05/2026 21:12:40] [Administrador] [INFO] [AltaPelicula] Formato de fecha incorrecto
+[21/05/2026 21:12:40] [Administrador] [ERROR] [AltaPelicula] Formato de fecha incorrecto
+[21/05/2026 21:13:46] [Administrador] [INFO] [AltaPelicula] Sentencia: INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)
+ Valores seleccionados por el usuario: Tiburón, Suspense, 20-12-1999,  Christopher Nolan (Británica)
+[21/05/2026 21:20:07] [Administrador] [INFO] [BajaDirector] DELETE from directores WHERE idDirector = ?
+Valor seleccionado por el usuario: 7 = Guillermo del Toro (Mexicana)
+[21/05/2026 21:20:15] [Administrador] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[21/05/2026 21:20:35] [Administrador] [ERROR] [BajaDirector] Cannot delete or update a parent row: a foreign key constraint fails
+[21/05/2026 21:21:17] [Administrador] [INFO] [BajaDirector] DELETE from directores WHERE idDirector = ?
+Valor seleccionado por el usuario: 12 = John Connor (Británico)
+[21/05/2026 21:23:16] [] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 21:25:22] [Administrador] [INFO] [ModificacionActor] Sentencia: SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE idActor = ?
+ Valores seleccionados por el usuario: 9 Matt Damon
+[21/05/2026 21:25:43] [Administrador] [INFO] [ModificacionActor] Sentencia: UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?
+ Valores escritos por el usuario: Matthew Paige, Damon, 10500.00 €
+[21/05/2026 21:26:56] [Administrador] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[21/05/2026 22:35:49] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 22:39:26] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[21/05/2026 22:39:34] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE (nombreActor LIKE ? OR apellidosActor LIKE ?)
+[21/05/2026 22:39:45] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE (nombreActor LIKE ? OR apellidosActor LIKE ?) AND tituloPelicula LIKE ?
+[21/05/2026 22:43:55] [] [INFO] [Principal2] Salida de la aplicación
+[21/05/2026 22:44:02] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK | Filtros: []
+[21/05/2026 22:44:03] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK ORDER BY `pelicula` []
+[21/05/2026 22:44:05] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK ORDER BY `actor` []
+[21/05/2026 22:44:17] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? | Filtros: [%oppen%]
+[21/05/2026 22:44:29] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) | Filtros: [%oppen%, %Ren%, %Ren%]
+[21/05/2026 22:44:31] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) ORDER BY `actor` [%oppen%, %Ren%, %Ren%]
+[21/05/2026 22:44:33] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) ORDER BY `pelicula` [%oppen%, %Ren%, %Ren%]
+[21/05/2026 22:46:40] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK | Filtros: []
+[21/05/2026 22:46:48] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? | Filtros: [%oppen%]
+[21/05/2026 22:46:56] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) | Filtros: [%oppen%, %oren%, %oren%]
+[21/05/2026 22:46:57] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) ORDER BY `pelicula` | Filtros: [%oppen%, %oren%, %oren%]
+[21/05/2026 22:46:58] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK WHERE tituloPelicula LIKE ? AND (nombreActor LIKE ? OR apellidosActor LIKE ?) ORDER BY `actor` | Filtros: [%oppen%, %oren%, %oren%]
+[21/05/2026 22:52:56] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores | Filtros: []
+[21/05/2026 22:52:59] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores ORDER BY nombreActor, apellidosActor | Filtros: []
+[21/05/2026 22:53:00] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores ORDER BY apellidosActor, nombreActor | Filtros: []
+[21/05/2026 22:53:09] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? | Filtros: [%o%]
+[21/05/2026 22:53:10] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? ORDER BY apellidosActor, nombreActor | Filtros: [%o%]
+[21/05/2026 22:53:11] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? ORDER BY nombreActor, apellidosActor | Filtros: [%o%]
+[21/05/2026 22:53:12] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? ORDER BY salarioActor DESC | Filtros: [%o%]
+[21/05/2026 22:53:21] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? AND salarioActor >= ? | Filtros: [%o%, 11000]
+[21/05/2026 22:53:22] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores WHERE apellidosActor LIKE ? AND salarioActor >= ? ORDER BY apellidosActor, nombreActor | Filtros: [%o%, 11000]
+[21/05/2026 22:56:40] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores | Filtros: []
+[21/05/2026 22:56:42] [] [INFO] [ConsultaActor] PDF Generado con la última consulta realizada

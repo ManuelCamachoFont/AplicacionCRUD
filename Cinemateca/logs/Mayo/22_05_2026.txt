@@ -1,0 +1,25 @@
+[22/05/2026 08:53:24] [Administrador] [INFO] [Login] Inicio de sesión
+[22/05/2026 08:53:57] [Administrador] [INFO] [AltaPelicula] Formato de fecha incorrecto
+[22/05/2026 08:53:57] [Administrador] [ERROR] [AltaPelicula] Formato de fecha incorrecto
+[22/05/2026 08:54:10] [Administrador] [INFO] [AltaPelicula] Sentencia: INSERT INTO peliculas (tituloPelicula, generoPelicula, fechaEstrenoPelicula, idDirectorFK) VALUES (?, ?, ?, ?)
+ Valores seleccionados por el usuario: Mortadelo y Filemón, Comedia, 09-04-2007,  Alba  Duino (Italiana)
+[22/05/2026 08:54:26] [Administrador] [INFO] [BajaActor] DELETE from actores WHERE idActor = ?
+Valor seleccionado por el usuario: 15 = Ben White
+[22/05/2026 08:54:40] [Administrador] [INFO] [ConsultaDirector] SELECT * FROM directores | Filtros: []
+[22/05/2026 08:54:48] [Administrador] [INFO] [Principal2] Apertura de manual de ayuda
+[22/05/2026 08:54:55] [Administrador] [INFO] [ConsultaDirector] PDF Generado con la última consulta realizada
+[22/05/2026 08:55:00] [Administrador] [INFO] [Principal2] Sesión cerrada
+[22/05/2026 09:19:56] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK | Filtros: []
+[22/05/2026 09:29:47] [] [WARNING] [AltaPelicula] Text '09-13-1994' could not be parsed: Invalid value for MonthOfYear (valid values 1 - 12): 13
+[22/05/2026 09:32:26] [] [INFO] [Principal2] Salida de la aplicación
+[22/05/2026 09:51:21] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK | Filtros: []
+[22/05/2026 09:51:24] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores | Filtros: []
+[22/05/2026 09:51:45] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK | Filtros: []
+[22/05/2026 09:51:58] [] [INFO] [ConsultaDirector] SELECT * FROM directores | Filtros: []
+[22/05/2026 09:54:45] [] [INFO] [ConsultaDirector] SELECT * FROM directores | Filtros: []
+[22/05/2026 09:54:56] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK | Filtros: []
+[22/05/2026 09:55:02] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores | Filtros: []
+[22/05/2026 09:55:12] [] [INFO] [Principal2] Salida de la aplicación
+[22/05/2026 10:59:29] [Administrador] [INFO] [Login] Inicio de sesión
+[22/05/2026 10:59:32] [Administrador] [INFO] [Principal2] Apertura de manual de ayuda
+[22/05/2026 11:28:18] [Administrador] [INFO] [Principal2] Salida de la aplicación

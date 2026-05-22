@@ -237,8 +237,8 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		ventana2.add(btnLimpiar, gbc);
 
 		ventana2.addWindowListener(this);
-		ventana2.setLocationRelativeTo(null);
 		ventana2.setSize(500, 320);
+		ventana2.setLocationRelativeTo(null);
 		ventana2.setResizable(false);
 		ventana2.setVisible(false);
 
@@ -350,11 +350,7 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 		String apellidos = apellidosText.getText().trim();
 		String nacionalidad = nacionalidadText.getText().trim();
 		
-		String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, salarioDirector = ? WHERE idDirector = ?";
-		
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + nacionalidad;
-		Utilidades.guardarLog(
-				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
+		String sentenciaSQL = "UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, nacionalidadDirector = ? WHERE idDirector = ?";
 
 		directorNuevo = nombre + " " + apellidos + " (" + nacionalidad + ")";
 		
@@ -367,6 +363,9 @@ public class ModificacionDirector extends WindowAdapter implements ActionListene
 				BD.ps.setString(3, nacionalidad);
 				BD.ps.setInt(4, idDirectorSeleccionado);
 				BD.ps.executeUpdate();
+				logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + nacionalidad;
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 				dialogoComprobacion(null, directorSeleccionado, directorNuevo);
 				directorSeleccionado = directorNuevo;
 				lblElecc.setText("Estás editando : " + directorSeleccionado);

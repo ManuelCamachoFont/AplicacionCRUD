@@ -9,7 +9,7 @@ CREATE TABLE directores (
     idDirector INT AUTO_INCREMENT,
     nombreDirector VARCHAR(45) NOT NULL,
     apellidosDirector VARCHAR(120) NOT NULL,
-    nacionalidadDirector VARCHAR(45),
+    nacionalidadDirector VARCHAR(45) NOT NULL,
     PRIMARY KEY (idDirector)
 );
 -- Crear tabla peliculas

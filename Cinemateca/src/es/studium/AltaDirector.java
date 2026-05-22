@@ -46,7 +46,7 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas-Actores");
+	Menu mnuPelAct = new Menu("Películas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -184,8 +184,8 @@ public class AltaDirector extends WindowAdapter implements ActionListener {
 		ventana.add(btnLimpiar, gbc);
 
 		ventana.addWindowListener(this);
-		ventana.setLocationRelativeTo(null);
 		ventana.setSize(600, 300);
+		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 

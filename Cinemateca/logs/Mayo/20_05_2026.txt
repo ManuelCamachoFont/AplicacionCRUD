@@ -1,0 +1,33 @@
+[20/05/2026 18:10:27] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[20/05/2026 18:13:44] [] [INFO] [ConsultaActor] SELECT idActor, nombreActor, apellidosActor, CONCAT(salarioActor, ' €') AS 'salarioEuro' FROM actores
+[20/05/2026 18:13:52] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[20/05/2026 18:14:05] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK ORDER BY YEAR(fechaEstrenoPelicula) []
+[20/05/2026 18:14:20] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[20/05/2026 18:14:46] [] [INFO] [Principal2] Apertura de manual de ayuda
+[20/05/2026 18:15:21] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[20/05/2026 18:15:24] [] [INFO] [Principal2] Salida de la aplicación
+[20/05/2026 18:15:55] [] [INFO] [ConsultaPelAct] SELECT idPeliculaActor, CONCAT(tituloPelicula, ' (', YEAR(fechaEstrenoPelicula), ')') AS 'pelicula', CONCAT(nombreActor, ' ', apellidosActor) AS 'actor' FROM peliculas JOIN peliculas_actores ON peliculas_actores.idPeliculaFK = peliculas.idPelicula JOIN actores ON actores.idActor = peliculas_actores.idActorFK
+[20/05/2026 18:24:00] [Usuario] [INFO] [Login] Inicio de sesión
+[20/05/2026 18:26:08] [Usuario] [INFO] [Principal2] Sesión cerrada
+[20/05/2026 18:26:17] [Administrador] [INFO] [Login] Inicio de sesión
+[20/05/2026 18:29:31] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[20/05/2026 18:29:52] [Administrador] [INFO] [Login] Inicio de sesión
+[20/05/2026 18:30:56] [Administrador] [INFO] [AltaDirector] Sentencia: INSERT INTO directores (idDirector, nombreDirector, apellidosDirector, nacionalidadDirector) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: John, Smith, Estadounidense
+[20/05/2026 18:34:30] [Administrador] [INFO] [BajaDirector] DELETE from directores WHERE idDirector = ?
+Valor seleccionado por el usuario: 11 = John Smith (Estadounidense)
+[20/05/2026 18:37:57] [Administrador] [INFO] [AltaDirector] Sentencia: INSERT INTO directores (idDirector, nombreDirector, apellidosDirector, nacionalidadDirector) VALUES (null, ?, ?, ?)
+ Valores escritos por el usuario: John, Smith, Estadounidense
+[20/05/2026 18:38:54] [Administrador] [INFO] [ModificacionDirector] Sentencia: SELECT * FROM directores WHERE idDirector = ?
+ Valores seleccionados por el usuario: 12, John Smith (Estadounidense)
+[20/05/2026 18:40:02] [Administrador] [INFO] [ModificacionDirector] Sentencia: UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, salarioDirector = ? WHERE idDirector = ?
+ Valores escritos por el usuario: John, Connor, Británico
+[20/05/2026 18:40:35] [] [INFO] [ModificacionDirector] Sentencia: SELECT * FROM directores WHERE idDirector = ?
+ Valores seleccionados por el usuario: 12, John Smith (Estadounidense)
+[20/05/2026 18:40:59] [] [INFO] [ModificacionDirector] Sentencia: UPDATE directores SET nombreDirector = ?, apellidosDirector = ?, nacionalidadDirector = ? WHERE idDirector = ?
+ Valores escritos por el usuario: John, Connor, Británico
+[20/05/2026 18:43:31] [Administrador] [INFO] [Principal2] Salida de la aplicación
+[20/05/2026 18:44:17] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[20/05/2026 18:52:16] [] [INFO] [ConsultaDirector] SELECT * FROM directores
+[20/05/2026 18:56:22] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK
+[20/05/2026 18:56:37] [] [INFO] [ConsultaPelicula] SELECT idPelicula, tituloPelicula, generoPelicula, DATE_FORMAT(fechaEstrenoPelicula, '%d/%m/%Y') AS 'fechaEstrenoPelicula', CONCAT(apellidosDirector, ', ', nombreDirector) AS 'nombreCompletoDirector' FROM peliculas JOIN directores ON directores.idDirector = peliculas.idDirectorFK WHERE generoPelicula LIKE ?

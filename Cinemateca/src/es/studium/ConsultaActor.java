@@ -166,8 +166,8 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		tabla.setBackground(Color.BLACK);
-		tabla.setLayout(new GridLayout(0, 4, 1, 1));
+		tabla.setBackground(new Color(120, 175, 169));
+		tabla.setLayout(null);
 		scroll.add(tabla);
 		scroll.setVisible(false);
 		ventana.add(scroll, gbc);
@@ -229,16 +229,16 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 		ventana.add(btnPdf, gbc);
 
 		ventana.addWindowListener(this);
-		ventana.setLocationRelativeTo(null);
 		ventana.setSize(800, 645);
+		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
 		diaFeedback.setLayout(new FlowLayout());
 		diaFeedback.add(lblDiaFeedback);
 		diaFeedback.addWindowListener(this);
-		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setSize(320, 80);
+		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setResizable(false);
 		diaFeedback.setVisible(false);
 
@@ -260,10 +260,20 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 	public void consultar(Panel tabla, String consulta, ArrayList<String> filtro)
 	{
 		tabla.removeAll();
-		agregarCelda(tabla, "ID", true, 0);
-		agregarCelda(tabla, "NOMBRE", true, 0);
-		agregarCelda(tabla, "APELLIDOS", true, 0);
-		agregarCelda(tabla, "SALARIO", true, 0);
+		canvas.setVisible(false);
+		scroll.setVisible(true);
+		ventana.validate();
+
+		int anchoScroll = scroll.getViewportSize().width;
+		int anchoId = 80;
+		int anchoNombre = 280;
+		int anchoApellidos = 280;
+		int anchoSalario = anchoScroll - anchoId - anchoNombre - anchoApellidos - 1;
+		
+		agregarCelda(tabla, "ID", true, 0, 0, anchoId);
+		agregarCelda(tabla, "NOMBRE", true, 0, anchoId, anchoNombre);
+		agregarCelda(tabla, "APELLIDOS", true, 0, anchoId + anchoNombre, anchoApellidos);
+		agregarCelda(tabla, "SALARIO", true, 0, anchoId + anchoNombre + anchoApellidos, anchoSalario);
 		try
 		{
 			BD.conectarBD();
@@ -272,9 +282,12 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 				BD.ps.setString(i + 1, filtro.get(i));
 			}
 			BD.rs = BD.ps.executeQuery();
+			logs = ultimaConsulta + " | Filtros: " + filtrosSentencia;
+			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
+					this.getClass().getSimpleName(), logs));
 
 
-			int filas = 1;
+			int filas = 0;
 			while (BD.rs.next())
 			{
 				filas++;
@@ -283,17 +296,14 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 				String apellidos = BD.rs.getString("apellidosActor");
 				String salario = BD.rs.getString("salarioEuro");
 
-				agregarCelda(tabla, id, false, filas);
-				agregarCelda(tabla, nombre, false, filas);
-				agregarCelda(tabla, apellidos, false, filas);
-				agregarCelda(tabla, salario, false, filas);
+				agregarCelda(tabla, id, false, filas, 0, anchoId);
+				agregarCelda(tabla, nombre, false, filas, anchoId, anchoNombre);
+				agregarCelda(tabla, apellidos, false, filas, anchoId + anchoNombre, anchoApellidos);
+				agregarCelda(tabla, salario, false, filas, anchoId + anchoNombre + anchoApellidos, anchoSalario);
 
 			}
-			canvas.setVisible(false);
-			scroll.setVisible(true);
-			int anchoScroll = scroll.getViewportSize().width;
-			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas* 30));
-			tabla.setSize(anchoScroll, filas* 30);
+			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas * 30));
+			tabla.setSize(anchoScroll, filas * 30);
 			tabla.revalidate();
 			tabla.repaint();
 			dialogoComprobacion(null);
@@ -316,10 +326,10 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 
 	}
 
-	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila) {
-		Label celda = new Label(texto);
+	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila, int columna, int ancho) {
+		Label celda = new Label(texto, Label.CENTER);
 		celda.setBackground(Color.WHITE);
-		celda.setAlignment(Label.CENTER);
+		celda.setBounds(columna + 1, fila * 30 + 1, ancho - 1, 29);
 
 		if (encabezado) {
 			celda.setFont(new Font("Arial", Font.BOLD, 14));
@@ -408,6 +418,8 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 				BD.ps.setString(i + 1,  filtros.get(i));
 			}
 			BD.rs = BD.ps.executeQuery();
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), "PDF Generado con la última consulta realizada"));
 			
 			while(BD.rs.next()) {
 				String id = String.valueOf(BD.rs.getInt("idActor"));
@@ -483,10 +495,7 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 		btnOrdenApellidos.setEnabled(true);
 		btnOrdenSalario.setEnabled(true);
 		btnPdf.setEnabled(true);
-		Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-				this.getClass().getSimpleName(), ultimaConsulta));
 		}else if (e.getSource().equals(btnAddFiltro)) {
-			// cambiar en el log para añadir el filtro
 			addFiltro();
 		}
 		else if (e.getSource().equals(btnLimpiarFiltro)) {
@@ -507,9 +516,6 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 			sqlFinal += " ORDER BY nombreActor, apellidosActor";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
 
 		}
 		else if (e.getSource().equals(btnOrdenApellidos))
@@ -521,11 +527,7 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 			
 			sqlFinal += " ORDER BY apellidosActor, nombreActor";
 			ultimaConsulta  = sqlFinal;
-			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
-
+			consultar(tabla, ultimaConsulta, filtrosSentencia);	
 		}
 		else if (e.getSource().equals(btnOrdenSalario))
 		{
@@ -537,10 +539,6 @@ public class ConsultaActor extends WindowAdapter implements ActionListener
 			sqlFinal += " ORDER BY salarioActor DESC";
 			ultimaConsulta  = sqlFinal;
 			consultar(tabla, ultimaConsulta, filtrosSentencia);
-			logs = ultimaConsulta + " " + filtrosSentencia ;
-			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), logs));
-
 		}
 
 		if (e.getSource() == mnuAltDir)

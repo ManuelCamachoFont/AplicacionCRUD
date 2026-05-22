@@ -46,7 +46,7 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 	Menu mnuDirectores = new Menu("Directores");
 	Menu mnuPeliculas = new Menu("Películas");
 	Menu mnuActores = new Menu("Actores");
-	Menu mnuPelAct = new Menu("Peliculas-Actores");
+	Menu mnuPelAct = new Menu("Películas-Actores");
 	MenuItem mnuAltDir = new MenuItem("Alta");
 	MenuItem mnuBajaDir = new MenuItem("Baja");
 	MenuItem mnuModDir = new MenuItem("Modificación");
@@ -188,8 +188,8 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 		ventana.add(btnLimpiar, gbc);
 
 		ventana.addWindowListener(this);
-		ventana.setLocationRelativeTo(null);
 		ventana.setSize(600, 300);
+		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
 		ventana.setVisible(true);
 
@@ -218,9 +218,6 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 		String actor = choActores.getSelectedItem();
 		int idActor = mapaActores.get(actor);
 		String sentenciaSQL = "INSERT INTO peliculas_actores (idPeliculaFK, idActorFK) VALUES (?, ?)";
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " +  pelicula + ", " + idActor + " " + actor;
-		Utilidades.guardarLog(
-				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 
 		try {
 			BD.conectarBD();
@@ -228,6 +225,9 @@ public class AltaPelAct extends WindowAdapter implements ActionListener {
 			BD.ps.setInt(1, idPelicula);
 			BD.ps.setInt(2, idActor);
 			BD.ps.executeUpdate();
+			logs = "Sentencia: " + sentenciaSQL + "\n Valores seleccionados por el usuario: " + idPelicula + " " +  pelicula + ", " + idActor + " " + actor;
+			Utilidades.guardarLog(
+					Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 			dialogoComprobacion(null);
 
 		} catch (ClassNotFoundException cnfe) {

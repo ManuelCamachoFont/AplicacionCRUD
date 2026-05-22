@@ -234,8 +234,8 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 		ventana2.add(btnLimpiar, gbc);
 
 		ventana2.addWindowListener(this);
-		ventana2.setLocationRelativeTo(null);
 		ventana2.setSize(500, 320);
+		ventana2.setLocationRelativeTo(null);
 		ventana2.setResizable(false);
 		ventana2.setVisible(false);
 
@@ -337,11 +337,6 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 		
 		String sentenciaSQL = "UPDATE actores SET nombreActor = ?, apellidosActor = ?, salarioActor = ? WHERE idActor = ?";
 		
-		logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + salarioString;
-		Utilidades.guardarLog(
-				Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
-		
-
 		actorNuevo = nombre + " " + apellidos + " (" + salarioFormateado + "€)";
 		
 		try {
@@ -356,6 +351,9 @@ public class ModificacionActor extends WindowAdapter implements ActionListener {
 				BD.ps.setFloat(3, salario);
 				BD.ps.setInt(4, idActorSeleccionado);
 				BD.ps.executeUpdate();
+				logs = "Sentencia: " + sentenciaSQL + "\n Valores escritos por el usuario: " + nombre + ", " + apellidos + ", " + salarioString;
+				Utilidades.guardarLog(
+						Utilidades.formatearTexto(Usuario.nombre, "INFO", this.getClass().getSimpleName(), logs));
 				dialogoComprobacion(null, actorSeleccionado, actorNuevo);
 				actorSeleccionado = actorNuevo;
 				lblElecc.setText("Estás editando : " + actorSeleccionado);

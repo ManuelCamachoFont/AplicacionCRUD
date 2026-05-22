@@ -162,8 +162,8 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		tabla.setBackground(Color.BLACK);
-		tabla.setLayout(new GridLayout(0, 3, 1, 1));
+		tabla.setBackground(new Color(120, 175, 169));
+		tabla.setLayout(null);
 		scroll.add(tabla);
 		scroll.setVisible(false);
 		ventana.add(scroll, gbc);
@@ -232,8 +232,8 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 		diaFeedback.setLayout(new FlowLayout());
 		diaFeedback.add(lblDiaFeedback);
 		diaFeedback.addWindowListener(this);
-		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setSize(320, 80);
+		diaFeedback.setLocationRelativeTo(null);
 		diaFeedback.setResizable(false);
 		diaFeedback.setVisible(false);
 
@@ -255,9 +255,18 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 	public void consultar(Panel tabla, String consulta, ArrayList<String> filtro)
 	{
 		tabla.removeAll();
-		agregarCelda(tabla, "ID", true, 0);
-		agregarCelda(tabla, "PELÍCULA", true, 0);
-		agregarCelda(tabla, "ACTOR", true, 0);
+		canvas.setVisible(false);
+		scroll.setVisible(true);
+		ventana.validate();
+		
+		int anchoScroll = scroll.getViewportSize().width;
+		int anchoId = 80;
+		int anchoPelicula = 350;
+		int anchoActor = anchoScroll - anchoId - anchoPelicula - 1;
+		
+		agregarCelda(tabla, "ID", true, 0, 0, anchoId);
+		agregarCelda(tabla, "PELÍCULA", true, 0, anchoId, anchoPelicula);
+		agregarCelda(tabla, "ACTOR", true, 0, anchoId + anchoPelicula, anchoActor);
 
 		try
 		{
@@ -268,7 +277,7 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 			}
 			BD.rs = BD.ps.executeQuery();
 			
-			int filas = 1;
+			int filas = 0;
 			while (BD.rs.next())
 			{
 				filas++;
@@ -276,16 +285,13 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 				String pelicula = BD.rs.getString("pelicula");
 				String actor = BD.rs.getString("actor");
 				
-				agregarCelda(tabla, id, false, filas);
-				agregarCelda(tabla, pelicula, false, filas);
-				agregarCelda(tabla, actor, false, filas);
+				agregarCelda(tabla, id, false, filas, 0, anchoId);
+				agregarCelda(tabla, pelicula, false, filas, anchoId, anchoPelicula);
+				agregarCelda(tabla, actor, false, filas, anchoId + anchoPelicula, anchoActor);
 				
 			}
-			canvas.setVisible(false);
-			scroll.setVisible(true);
-			int anchoScroll = scroll.getViewportSize().width;
-			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas* 30));
-			tabla.setSize(anchoScroll, filas* 30);
+			tabla.setPreferredSize(new java.awt.Dimension(anchoScroll, filas * 30));
+			tabla.setSize(anchoScroll, filas * 30);
 			tabla.revalidate();
 			tabla.repaint();
 			dialogoComprobacion(null);
@@ -308,10 +314,10 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 		
 	}
 	
-	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila) {
-        Label celda = new Label(texto);
+	private void agregarCelda(Panel tabla, String texto, boolean encabezado, int fila, int columna, int ancho) {
+        Label celda = new Label(texto, Label.CENTER);
         celda.setBackground(Color.WHITE);
-        celda.setAlignment(Label.CENTER);
+        celda.setBounds(columna + 1, fila * 30 + 1, ancho - 1, 29);
         
         if (encabezado) {
             celda.setFont(new Font("Arial", Font.BOLD, 14));
@@ -474,7 +480,7 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 			btnOrdenActores.setEnabled(true);
 			btnPdf.setEnabled(true);
 			Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
-					this.getClass().getSimpleName(), ultimaConsulta));
+					this.getClass().getSimpleName(), ultimaConsulta + " | Filtros: " + filtrosSentencia));
 		}else if (e.getSource().equals(btnAddFiltro)) {
 			addFiltro();
 		} else if (e.getSource().equals(btnLimpiarFiltro)) {
@@ -495,7 +501,7 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 			sqlFinal += " ORDER BY `pelicula`";
 			ultimaConsulta = sqlFinal;
 				consultar(tabla, ultimaConsulta, filtrosSentencia);
-				logs = ultimaConsulta + " " + filtrosSentencia;
+				logs = ultimaConsulta + " | Filtros: " + filtrosSentencia;
 				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
 						this.getClass().getSimpleName(), logs));
 
@@ -509,7 +515,7 @@ public class ConsultaPelAct extends WindowAdapter implements ActionListener
 			sqlFinal += " ORDER BY `actor`";
 			ultimaConsulta = sqlFinal;
 				consultar(tabla, ultimaConsulta, filtrosSentencia);
-				logs = ultimaConsulta + " " + filtrosSentencia;
+				logs = ultimaConsulta + " | Filtros: " + filtrosSentencia;
 				Utilidades.guardarLog(Utilidades.formatearTexto(Usuario.nombre, "INFO",
 						this.getClass().getSimpleName(), logs));
 		}
